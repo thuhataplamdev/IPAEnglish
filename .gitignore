@@ -1,0 +1,30 @@
+# Local/server config and secrets.
+wp-config.php
+.env
+.env.*
+
+# Database dumps and backups.
+*.sql
+*.sql.gz
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.wpress
+
+# WordPress generated/cache content.
+wp-content/cache/
+wp-content/w3tc-config/
+wp-content/upgrade/
+wp-content/upgrade-temp-backup/
+wp-content/ai1wm-backups/
+wp-content/updraft/
+wp-content/uploads/
+
+# Local/editor noise.
+.DS_Store
+Thumbs.db
+*.log
+
+**/checkmail-sw.js
+**/theme_mods.json

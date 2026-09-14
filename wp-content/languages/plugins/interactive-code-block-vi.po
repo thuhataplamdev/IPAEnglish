@@ -1,0 +1,62 @@
+# Translation of Plugins - WordPress Playground Block - Stable (latest release) in Vietnamese
+# This file is distributed under the same license as the Plugins - WordPress Playground Block - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-12-31 16:22:46+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: vi_VN\n"
+"Project-Id-Version: Plugins - WordPress Playground Block - Stable (latest release)\n"
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "code"
+msgstr "mã code"
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "play"
+msgstr "chơi"
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "wordpress playground"
+msgstr "wordpress playground"
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "wordpress"
+msgstr "wordpress"
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "playground"
+msgstr "playground"
+
+#: build/block.json
+msgctxt "block description"
+msgid "Display demo in WordPress Playground"
+msgstr "Hiển thị bản demo trong Khu chơi WordPress"
+
+#: build/block.json
+msgctxt "block title"
+msgid "WordPress Playground"
+msgstr "WordPress Playground"
+
+#. Author of the plugin
+#: wordpress-playground-block.php
+msgid "Dawid Urbański, Adam Zieliński"
+msgstr "Dawid Urbański, Adam Zieliński"
+
+#. Description of the plugin
+#: wordpress-playground-block.php
+msgid "WordPress Playground as a Gutenberg block."
+msgstr "WordPress Playground dưới dạng khối Gutenberg."
+
+#. Plugin Name of the plugin
+#: wordpress-playground-block.php
+msgid "WordPress Playground Block"
+msgstr "WordPress Playground Block"
