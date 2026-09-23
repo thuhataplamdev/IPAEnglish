@@ -10,6 +10,7 @@ This directory contains the source-grounded SEO specification for IPAEnglish. It
 
 - [SEO-SRS.md](./SEO-SRS.md) — Software Requirements Specification: business goals, scope, page-type policies, functional requirements, non-functional requirements, acceptance criteria, KPIs, and release gates.
 - [SEO-TSD.md](./SEO-TSD.md) — Technical Solution Design: ownership model, WordPress/MasterStudy/TranslatePress integration, metadata/canonical/robots/sitemap/schema architecture, performance, testing, deployment, and rollback.
+- [SEO-ESTIMATE.md](./SEO-ESTIMATE.md) — Delivery estimate: assumptions, person-day effort, calendar plan, deployment window, staffing, dependencies, contingency, and post-release monitoring.
 
 ## 1. Source-verified current state
 
