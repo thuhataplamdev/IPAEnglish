@@ -834,20 +834,22 @@ During the three-week engagement, checks should cover:
 
 After handover, ongoing SEO monitoring is a separate operational scope. Recommended follow-up includes monthly Search Console review, new crawl issues, keyword/page performance, and content opportunities.
 
-## 21. Technical decisions required before implementation
+## 21. Resolved technical decisions
 
-| Decision | Options | Recommended baseline |
+| Decision | Resolution | Implementation rule |
 |---|---|---|
-| Target URLs | 3-5 commercial landing pages | Approve in Week 1 based on business priority and keyword intent |
-| Keyword set | Up to 20 keywords | Group by intent and map each to one target URL |
-| Metadata owner | WordPress/plugin/custom | Use the existing production owner unless audit finds conflicts |
-| Sitemap owner | WordPress native vs SEO plugin | Keep one active sitemap owner and submit its canonical endpoint |
-| Canonical host | www vs non-www | Business/ops decision; enforce one |
-| 404 remediation | Direct-link fix, 301, 410, or keep 404 | Choose based on whether a valid replacement exists |
-| Image optimization | Existing plugin/host vs new configuration | Reuse existing capability where safe; avoid duplicate optimization layers |
-| Cache owner | W3TC, Autoptimize, host/CDN | Define one owner per transformation and avoid overlapping rules |
-| GSC property | Domain vs URL-prefix | Prefer the property the business can reliably verify and maintain |
-| GA4 | Existing property vs new property | Reuse valid existing production tracking when available |
+| Canonical host | https://www.ipaenglish.com | Keep apex -> www permanent redirect and generate all canonical/sitemap targets on www |
+| Target URLs | Four Vietnamese URLs: /vi/, /vi/global-english-for-teen-achievers/, /vi/book-a-test/, /vi/learning-system/ | Optimize these four only; English equivalents are regression/parity checks |
+| Keyword set | 20-keyword baseline from KEYWORD-MAP.md | GSC may reorder/replace terms during Week 1, but never exceed 20 without scope change |
+| Metadata owner | WordPress core for document title/canonical + one thin version-controlled IPAEnglish layer for target-page title overrides and Meta Description | Do not add a full SEO plugin in this scope; never emit a second canonical |
+| Sitemap owner | WordPress core /wp-sitemap.xml | Fix current HTTP 404 to 200 and keep robots.txt pointing to it; do not add sitemap_index.xml/plugin sitemap |
+| 404 remediation | Direct-link correction first; 301 only for a true moved/replaced URL with a 1:1 successor; otherwise 404/410 | No blanket redirects to Home and no avoidable redirect chains |
+| Image optimization | WebP currently treated as inactive | Enable one controlled compression/WebP path and verify actual response format + visual quality |
+| Cache ownership | W3 Total Cache = page/browser/cache behavior; Autoptimize = CSS/JS asset optimization | Avoid overlapping minify/cache transforms; Caddy/hosting must not duplicate these responsibilities unless documented |
+| GSC ownership | Required target state: business-owned IPAEnglish Google account as Owner; SEO Exec gets operational access | Prefer Domain property ipaenglish.com when DNS verification is available |
+| GA4 ownership | Required target state: business-owned IPAEnglish GA4 property/admin; SEO Exec gets operational access | Current live tag is not verified; configure/verify during Week 1 and confirm Realtime/DebugView |
+
+These decisions supersede the earlier open-decision list for the current three-week engagement.
 
 ## 22. Definition of done for current SEO engagement
 

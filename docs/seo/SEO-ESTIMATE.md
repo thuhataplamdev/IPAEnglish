@@ -31,6 +31,8 @@ The engagement does not include full content production, backlink campaigns, a c
 
 The expected production-ready handover is at the end of Week 3, assuming required access and approvals are available on time.
 
+The resolved baseline uses **4 Vietnamese target URLs** within the 3-5 URL cap; the exact URLs and 20-keyword mapping are maintained in KEYWORD-MAP.md.
+
 ## 3. Responsibility split
 
 | Role | Main responsibility |

@@ -684,15 +684,30 @@ The engagement is accepted only when:
 | Google processing is slower than project timeline | Sitemap/index status still pending at handover | Treat submission/verification as acceptance, not ranking/indexing completion |
 | Scope expands beyond 20 keywords or 5 URLs | Timeline and effort exceed plan | Raise a separate estimate/change request |
 
-## 13. Open decisions before implementation
+## 13. Resolved implementation decisions
 
-1. What is the production canonical domain and host form?
-2. Who owns/administers Google Search Console and GA4 access?
-3. Which 3-5 URLs are the commercial priority for this engagement?
-4. What is the approved final set of up to 20 keywords?
-5. Which language/version of each target URL is in scope for on-page optimization?
-6. Are Meta Title/Description managed by WordPress core, a dedicated SEO plugin, or custom code on production?
-7. Is the existing sitemap endpoint WordPress native or plugin-owned?
-8. Which 404/redirect findings are business-approved for 301 vs direct-link correction?
-9. Is WebP/image compression already active in production?
-10. Which cache layer is authoritative: W3 Total Cache, Autoptimize, hosting/CDN, or a combination?
+These decisions are closed for the current three-week engagement.
+
+| # | Decision | Resolution | Evidence / operating rule |
+|---:|---|---|---|
+| 1 | Production canonical domain | https://www.ipaenglish.com | Apex https://ipaenglish.com redirects permanently to the www host. All target canonicals, sitemap URLs, internal absolute URLs, and GSC URL checks use www. |
+| 2 | GSC and GA4 ownership | Required ownership model: an IPAEnglish business-owned Google account is Owner/Admin; SEO Exec receives the access needed to configure and verify during the engagement | Do not make a contractor/personal account the sole owner. DNS verification is coordinated with the business/ops owner. Current public runtime does not prove GSC access and no executable GA4 tag is currently verified, so both are Week 1 setup/verification tasks. |
+| 3 | Commercial priority URLs | Four Vietnamese landing pages: /vi/, /vi/global-english-for-teen-achievers/, /vi/book-a-test/, /vi/learning-system/ | These represent local discovery, the live teen course, conversion/placement-test intent, and the differentiated learning method. The adult course is currently not selected because the live page is still Coming soon. |
+| 4 | Keyword set | The 20-keyword baseline in KEYWORD-MAP.md is approved for this engagement | The set is intentionally limited to local English-center, teen/student English, free placement-test, and learning-method intent. Week 1 GSC research may reorder priority, but adding keywords above 20 requires scope change. |
+| 5 | Language/version in scope | Vietnamese /vi/ versions of the four target URLs | English equivalents remain technically crawlable and must not be broken, but English copy optimization is outside the 20-keyword on-page allocation. |
+| 6 | Title/Description owner | Keep WordPress core as title/canonical owner; add one thin version-controlled IPAEnglish metadata layer for the 4 target URLs; do not add a full SEO plugin for this scope | Live output already has WordPress titles and one canonical, but no Meta Description was detected on sampled target pages. The custom layer may override title via WordPress title filters and emit one description, while core canonical remains the sole canonical emitter. |
+| 7 | Sitemap owner | WordPress core native sitemap | robots.txt already points to /wp-sitemap.xml. The endpoint currently returns sitemap XML with HTTP 404, which is a P1 technical defect: fix it to return 200. Do not introduce a second plugin sitemap. |
+| 8 | 404/redirect rule | Use direct-link correction by default; use 301 only for a real moved/replaced public URL with a clear 1:1 successor | Do not blanket-redirect 404s to Home. Broken internal links to existing pages are fixed at source. Removed URLs with no relevant replacement remain 404/410. Redirect chains must be flattened. |
+| 9 | WebP/image compression | Treat WebP as not active and implement it as an in-scope technical fix | A sampled production JPG still returns image/jpeg even when the client advertises WebP support, and no dedicated image/WebP plugin is tracked. Reuse a safe existing/hosting capability if available; otherwise add one controlled image-optimization path. |
+| 10 | Cache ownership | W3 Total Cache owns page/browser/cache behavior; Autoptimize owns CSS/JS asset optimization only; Caddy/hosting must not duplicate those transformations unless explicitly configured | Production HTML contains W3 Total Cache's served-page marker and Autoptimize asset URLs. Keep responsibilities separated to avoid overlapping page cache/minification behavior. |
+
+### 13.1 Approved target URLs
+
+1. https://www.ipaenglish.com/vi/
+2. https://www.ipaenglish.com/vi/global-english-for-teen-achievers/
+3. https://www.ipaenglish.com/vi/book-a-test/
+4. https://www.ipaenglish.com/vi/learning-system/
+
+### 13.2 Decision change control
+
+Any change to canonical host, language scope, sitemap owner, cache ownership, the four target URLs, or the 20-keyword cap must be recorded as a scope/technical decision change before implementation.
