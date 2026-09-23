@@ -1,280 +1,277 @@
 # IPAEnglish SEO Delivery Estimate
 
 **Document ID:** IPA-SEO-ESTIMATE  
-**Version:** 1.0  
-**Status:** Planning baseline  
-**Estimate date:** 2026-09-23  
+**Version:** 1.2
+**Status:** Agreed planning baseline
+**Estimate date:** 2026-09-23
 **Related documents:** [SEO-SRS.md](./SEO-SRS.md), [SEO-TSD.md](./SEO-TSD.md)
 
-## 1. Purpose
+## 1. Scope
 
-This document estimates the effort and calendar time required to complete, test, deploy, and stabilize the SEO scope defined in the IPAEnglish SEO SRS and TSD.
+This estimate covers only the agreed SEO engagement:
 
-The estimate is for the complete technical SEO baseline, not only installation of an SEO plugin. It includes runtime discovery, implementation, LMS and multilingual SEO, structured data, indexation controls, performance checks, testing, production deployment, rollback readiness, and initial post-release monitoring.
+- website audit using Screaming Frog SEO Spider;
+- basic technical SEO review and remediation;
+- Google Search Console setup/verification and sitemap submission;
+- Google Analytics 4 setup/verification;
+- research and mapping for a maximum of 20 keywords;
+- on-page optimization for 3-5 priority URLs/landing pages;
+- basic technical fixes for 404/301, robots, sitemap, HTTPS, image compression/WebP, and caching;
+- final re-crawl, Technical SEO Document, Keyword Map, and handover.
 
-SEO implementation completion and search-engine results are different milestones. The project can complete deployment on a known date, while Google recrawling, reprocessing, indexing, rich-result eligibility, and measurable organic-search impact may take additional days or weeks.
+The engagement does not include full content production, backlink campaigns, a complete multilingual SEO redesign, advanced schema rollout, a full Core Web Vitals engineering project, or optimization beyond the agreed 20 keywords and 3-5 target URLs.
 
-## 2. Estimation basis
+## 2. Timeline summary
 
-### 2.1 Baseline team
+**Total calendar timeline: 3 working weeks**
 
-The expected estimate assumes:
+- **Week 1:** Research, audit, baseline, keyword research, and keyword mapping.
+- **Week 2:** On-page optimization and technical implementation.
+- **Week 3:** Remaining fixes, re-crawl, QA, GSC/GA4 verification, and final handover.
 
-- 1 experienced WordPress/PHP developer as the primary implementer;
-- 1 QA engineer available part-time for regression and release verification;
-- 1 SEO/product/content owner available part-time for policy and content decisions;
-- DevOps or hosting access available when server/CDN/redirect/cache changes are needed.
+The expected production-ready handover is at the end of Week 3, assuming required access and approvals are available on time.
 
-The person-day estimates below represent total engineering/QA effort. Calendar duration may be shorter when work is safely parallelized.
+## 3. Responsibility split
 
-### 2.2 Baseline assumptions
-
-The estimate assumes:
-
-1. staging and production access can be provided without a long procurement or approval delay;
-2. production database and WordPress Admin are available for the Phase 0 runtime audit;
-3. the current WordPress/MasterStudy/TranslatePress architecture remains in place;
-4. there is no full site redesign or LMS migration in the same release;
-5. the scope covers the page types and requirements already defined in the SRS;
-6. launch languages and the production language URL strategy can be confirmed during Phase 0;
-7. content owners can answer blocking questions about which taxonomies, instructor pages, and course hubs should be indexable;
-8. a staging environment can reproduce production routing, language behavior, plugin activation, and caching closely enough for meaningful verification;
-9. no large-scale manual rewrite of existing course/article content is included;
-10. no historical URL migration larger than the redirects required by this SEO rollout is included.
-
-If one or more of these assumptions is false, use the adjustment factors in Section 8.
-
-## 3. Summary estimate
-
-### 3.1 Recommended planning range
-
-| Scenario | Engineering + QA effort | Calendar duration | Use when |
-|---|---:|---:|---|
-| Optimistic | 4-5 person-days | 4-5 working days | Runtime is clean, decisions are immediate, multilingual behavior already works, and only minor performance remediation is needed |
-| Expected | 6-8 person-days | 5-7 working days | Normal implementation with staging QA, multilingual verification, schema, cache/performance checks, and controlled production rollout |
-| Conservative | 9-11 person-days | 8-10 working days | Runtime/plugin conflicts, translated SEO gaps, redirect changes, cache defects, or additional regression work are found |
-
-**Recommended commitment for planning:** 5-7 working days to reach production go-live, with 2-3 additional business days of post-release monitoring.
-
-This is a planning range, not a fixed deadline. The range should be re-baselined after the Phase 0 audit because the repository intentionally does not contain the production database, active-plugin state, live WordPress options, Search Console data, or CDN configuration.
-
-### 3.2 Core implementation effort
-
-The current bottom-up estimate is **5.25-7.75 person-days** before contingency. A small planning buffer produces a practical commitment range of approximately **6-9 person-days**.
-
-The expected 5-7 day schedule assumes development, automated verification, content decisions, and release preparation are performed continuously rather than as separate long handoff phases.
-
-## 4. Work breakdown estimate
-
-| Work package | Scope | Estimate |
-|---|---|---:|
-| Phase 0 — Runtime baseline audit | Active plugins/theme, production URL/canonical host, WordPress settings, live head tags, sitemap, robots, redirects, Search Console/analytics/CWV baseline | 0.5-0.75 day |
-| SEO ownership and implementation setup | Confirm one SEO owner, staging configuration, ownership matrix, implementation skeleton | 0.25-0.5 day |
-| Phase 1 — Indexation foundation | Title/meta ownership, canonical policy, duplicate-canonical prevention, robots rules, sitemap inclusion/exclusion, canonical-host redirects, status/redirect behavior | 0.75-1.0 day |
-| Phase 2 — LMS structured SEO | Course metadata mapping, Course schema, ItemList, Breadcrumb, article/instructor semantics where approved, course taxonomy quality gate | 0.75-1.0 day |
-| Phase 3 — Multilingual SEO | Self-canonical, reciprocal hreflang, x-default decision, translated metadata/slugs, multilingual sitemap, language-variant verification | 0.75-1.0 day |
-| Performance/cache correctness | W3TC/Autoptimize responsibility split, cache correctness, metadata purge, representative CWV remediation | 0.5-0.75 day |
-| Search Console and analytics | Property/sitemap verification, baseline reporting, organic conversion event verification | 0.25-0.5 day |
-| Automated/static verification | Policy tests, canonical/robots/sitemap/schema/language checks, regression guards | 0.5-0.75 day |
-| HTML integration + crawl QA | Representative URL matrix, schema validation, crawl, redirects, private-page/indexability checks | 0.5-0.75 day |
-| Production deployment + rollback verification | Backup/config snapshot, deploy, cache purge, smoke checks, rollback readiness, production crawl spot-check | 0.25-0.5 day |
-| Documentation and handover | Final runtime decisions, operation notes, monitoring checklist, known limitations | 0.25 day |
-| **Total before contingency** |  | **5.25-7.75 days** |
-
-## 5. Proposed calendar plan
-
-**Day 1**
-
-- perform Phase 0 runtime audit;
-- capture current production output and Search Console/performance baseline;
-- confirm canonical host, languages, active plugins, and current SEO owner behavior;
-- close blocking design decisions;
-- establish the implementation skeleton.
-
-**Day 2**
-
-- implement SEO ownership layer/configuration;
-- implement title/meta/robots/canonical policy;
-- ensure exactly one canonical emitter;
-- implement sitemap inclusion/exclusion rules;
-- configure canonical-host redirects if required.
-
-**Day 3**
-
-- implement LMS course metadata mapping;
-- add Course/Breadcrumb/ItemList structured data;
-- apply private LMS page exclusions and taxonomy quality rules;
-- implement/verify multilingual self-canonical and hreflang;
-- verify reciprocal language alternates;
-- implement translated metadata/slug path agreed during Phase 0.
-
-**Day 4**
-
-- verify multilingual sitemap behavior;
-- resolve W3TC/Autoptimize ownership overlap;
-- verify cache keys and metadata purge behavior;
-- address high-impact LCP/INP/CLS problems on representative templates;
-- verify Search Console/analytics integration;
-- run automated/static verification.
-
-**Day 5**
-
-- run HTML integration matrix;
-- run sitemap and structured-data checks;
-- run bounded crawl;
-- fix release-blocking regressions;
-- production configuration review;
-- final deployment checklist and rollback rehearsal.
-
-**Day 6**
-
-- production deployment in an agreed low-risk window;
-- cache/CDN purge;
-- immediate smoke verification;
-- production canonical/robots/hreflang/schema checks;
-- production crawl spot-check;
-- submit/verify sitemap;
-
-**Day 7**
-
-- resolve any release-specific defect;
-- verify Search Console processing and analytics continuity;
-- complete handover and monitoring checklist.
-
-If the implementation is clean after Day 5, production go-live can occur on Day 5 or Day 6. Day 7 is primarily a stabilization allowance, not a mandatory full development day.
-
-## 6. Deployment estimate
-
-### 6.1 Production change window
-
-For a prepared release with staging already approved:
-
-| Activity | Expected duration |
-|---|---:|
-| Pre-deploy backup/config snapshot and release checks | 20-30 minutes |
-| Application/config deployment | 20-45 minutes |
-| Cache/CDN purge and warm-up | 15-30 minutes |
-| Immediate SEO smoke verification | 45-60 minutes |
-| Initial production crawl spot-check | 20-30 minutes |
-
-Plan a **2-3 hour controlled release window**, even if the actual code deployment takes much less time. The extra time is for validation and safe rollback, not continuous downtime.
-
-The desired deployment should not require multi-hour site downtime. If a hosting/database constraint makes downtime necessary, that becomes a separate operational estimate after Phase 0.
-
-### 6.2 First 2-3 business days after release
-
-Monitor daily:
-
-- canonical count and canonical targets on priority templates;
-- robots/noindex behavior;
-- hreflang reciprocity;
-- sitemap availability and submitted/indexed trends;
-- 404/5xx and redirect anomalies;
-- schema validation errors;
-- cache-related language or logged-in/logged-out leakage;
-- Search Console crawl/indexing warnings;
-- analytics organic landing/conversion continuity;
-- representative CWV/Lighthouse regressions.
-
-Critical runtime defects should be corrected immediately. Search Console changes that only reflect normal recrawl/reprocessing should be monitored rather than treated automatically as software defects.
-
-## 7. Definition of implementation complete
-
-The SEO implementation is considered complete when:
-
-1. all release-blocking SRS requirements are implemented or explicitly accepted as deferred;
-2. production page-type indexability matches the approved matrix;
-3. each tested page has no more than one canonical tag and the canonical target is correct;
-4. multilingual pages have valid self-canonical and reciprocal hreflang behavior;
-5. private LMS/account/order/search/filter surfaces are excluded as designed;
-6. sitemap contains only intended canonical/indexable URLs;
-7. supported structured data has no critical validation error;
-8. staging and production smoke/integration checks pass;
-9. cache invalidation works for SEO metadata updates;
-10. rollback steps are documented and usable;
-11. Search Console sitemap/property access and baseline monitoring are in place;
-12. no open P0/P1 SEO defect remains.
-
-Search ranking growth, impressions growth, click growth, or a specific indexing percentage are **not** implementation-complete criteria because they depend on search-engine recrawl, competition, content quality, demand, and time.
-
-## 8. Estimate adjustment factors
-
-Add effort when the following conditions are discovered.
-
-| Condition | Typical additional effort |
-|---|---:|
-| TranslatePress SEO Pack is unavailable and translated slug/meta editing must be custom-built | +1-2 days |
-| Existing active SEO plugin conflicts with the selected ownership model | +0.5-1 day |
-| Large historical redirect/URL migration is required | +1-2 days depending on inventory |
-| More than two launch languages require full template/content verification | +0.25-0.5 day per additional language |
-| Staging differs materially from production | +0.5-1.5 days |
-| No Search Console/analytics access is available and setup/verification must be coordinated | +0.25-1 day plus external approval time |
-| Significant Elementor/slider/third-party-script CWV remediation is required | +0.5-2.5 days |
-| Course/taxonomy content requires manual rewriting rather than technical defaults | estimate separately as content production |
-| CDN/WAF/host redirect rules require external infrastructure coordination | +0.25-1 day plus waiting time |
-| Production plugin/theme upgrades must be bundled with SEO work | estimate separately after compatibility review |
-
-External waiting time is not person-day effort but can extend calendar duration.
-
-## 9. Staffing and parallelization
-
-### Single primary developer
-
-With one experienced developer and part-time QA/SEO support:
-
-- expected effort: 6-8 person-days;
-- expected calendar: approximately 5-7 working days;
-- post-release monitoring: 2-3 business days.
-
-### Two developers
-
-With two developers, selected work can run in parallel:
-
-- Developer A: indexation/canonical/robots/sitemap/runtime ownership;
-- Developer B: LMS schema/multilingual/performance;
-- QA: integration matrix and crawl validation in parallel.
-
-Expected calendar duration can reduce to approximately **4-5 working days**, but deployment and final integration still remain sequential gates.
-
-## 10. Milestones
-
-| Milestone | Target in expected plan |
+| Role | Main responsibility |
 |---|---|
-| M1 — Runtime baseline and decisions complete | Day 1 |
-| M2 — Indexation foundation complete | Day 2 |
-| M3 — LMS + multilingual SEO complete | Day 3 |
-| M4 — Performance/cache + automated verification complete | Day 4 |
-| M5 — Staging release gates passed | Day 5 |
-| M6 — Production go-live | Day 5-6 |
-| M7 — Initial stabilization and handover | Day 7 |
+| SEO Exec | Audit, Screaming Frog crawl, keyword research/mapping, GSC/GA4, Technical SEO Document, on-page optimization, final verification |
+| Dev / Tech Exec | 404/301 fixes, robots/sitemap, HTTPS checks, image compression/WebP, caching/basic speed fixes, technical remediation |
+| Business/Content owner | Approves keyword set, target URLs, and wording changes where required |
 
-Milestone dates should be converted to calendar dates only after the actual project start date and team availability are confirmed.
+## 4. Effort estimate
 
-## 11. Risks to schedule
+### 4.1 SEO Exec
 
-The largest schedule risks are:
+| Work item | Estimated effort |
+|---|---:|
+| GSC/GA4 access check and baseline setup | 0.5 day |
+| Initial Screaming Frog crawl and audit analysis | 1.0-1.5 days |
+| Technical SEO Document preparation | 0.5-1.0 day |
+| Keyword research for maximum 20 keywords | 1.5-2.0 days |
+| Keyword grouping and mapping to 3-5 URLs | 0.5-1.0 day |
+| Meta Title/Description optimization | 0.5-1.0 day |
+| H1/H2/ALT and current-content optimization | 1.0-1.5 days |
+| GSC sitemap submission and checks | 0.25-0.5 day |
+| Final Screaming Frog re-crawl and comparison | 0.5-1.0 day |
+| Final Keyword Map / audit status / handover | 0.5 day |
+| **SEO Exec total** | **7.25-10.0 person-days** |
 
-1. production behavior differing from the repository because active plugins/settings are database-driven;
-2. an untracked SEO plugin or Code Snippets rule already emitting metadata/canonical/schema;
-3. TranslatePress production language configuration differing from assumptions;
-4. custom translated SEO fields/slugs being required without the SEO Pack;
-5. cache/CDN behavior masking or mixing language/metadata changes;
-6. canonical host or URL migration requiring infrastructure changes;
-7. MasterStudy template/plugin output conflicting with custom schema or metadata;
-8. lack of Search Console/analytics access delaying validation;
-9. performance remediation expanding beyond SEO-specific changes;
-10. content decisions for taxonomy/instructor pages not being available when implementation reaches those templates.
+### 4.2 Dev / Tech Exec
 
-The Phase 0 audit exists specifically to turn these unknowns into confirmed scope before the project commits to the final date.
+| Work item | Estimated effort |
+|---|---:|
+| Review audit findings and technical feasibility | 0.5 day |
+| Fix broken links/404s and required 301 redirects | 0.5-1.5 days |
+| robots.txt and sitemap configuration/fixes | 0.5-1.0 day |
+| SSL/HTTPS verification and redirect corrections | 0.25-0.5 day |
+| Image compression/WebP setup | 0.5-1.0 day |
+| Cache/basic performance configuration | 0.5-1.0 day |
+| Final technical QA and remaining in-scope fixes | 0.5-1.0 day |
+| **Dev / Tech Exec total** | **3.25-6.5 person-days** |
 
-## 12. Recommended project commitment
+### 4.3 Combined effort
 
-For stakeholder planning, use:
+Expected combined effort is approximately **10.5-16.5 person-days**, distributed across the three-week calendar.
 
-> **Expected delivery:** approximately 5-7 working days from implementation start to controlled production go-live, assuming normal access and no major runtime conflict. Continue focused monitoring for 2-3 business days after release.
+The calendar does not require all work to happen sequentially. SEO Exec and Dev / Tech Exec can work in parallel after the Week 1 audit backlog is available.
 
-For engineering capacity planning, reserve:
+## 5. Week-by-week plan
 
-> **6-9 person-days** including normal contingency.
+### Week 1 — Research, audit, and planning
 
-Do not promise search-ranking or organic-traffic improvement within the same 5-7 day implementation window. The estimate is for implementation, verification, and deployment of the SEO platform baseline described by the SRS/TSD.
+**SEO Exec**
+
+1. Confirm GSC and GA4 access/status.
+2. Run the initial Screaming Frog crawl.
+3. Review:
+   - 404/broken links;
+   - redirects/chains;
+   - duplicate or missing Title;
+   - duplicate or missing Meta Description;
+   - missing H1;
+   - missing ALT;
+   - oversized images;
+   - canonical/indexability issues;
+   - robots/sitemap observations.
+4. Fill the Technical SEO Document.
+5. Research candidate keywords.
+6. Finalize no more than 20 keywords.
+7. Group keywords by intent/topic.
+8. Map the 20-keyword maximum to 3-5 priority URLs.
+9. Capture current Title, Description, H1/H2, ALT, and relevant copy for those URLs.
+
+**Dev / Tech Exec**
+
+1. Review audit findings.
+2. Confirm which findings require code/config work.
+3. Verify existing HTTPS, robots, sitemap, image optimization, and cache setup.
+4. Prepare implementation tasks for Week 2.
+
+**Week 1 deliverables**
+
+- initial Web Audit;
+- Technical SEO Document;
+- approved or approval-ready Keyword Map;
+- 3-5 priority URLs;
+- technical fix backlog.
+
+### Week 2 — On-page optimization and technical fixes
+
+**SEO Exec**
+
+1. Rewrite or adjust Meta Title for 3-5 target URLs.
+2. Rewrite or adjust Meta Description.
+3. Optimize H1/H2 where needed.
+4. Add or improve meaningful ALT text for target-page images.
+5. Adjust the opening paragraph/sapo or existing body copy where needed.
+6. Do not write a complete new article/page as part of this scope.
+7. Create/verify sitemap submission in GSC.
+
+**Dev / Tech Exec**
+
+1. Fix agreed 404/broken internal links.
+2. Add required 301 redirects.
+3. Correct robots.txt configuration.
+4. Correct or verify automatic sitemap generation.
+5. Verify SSL/HTTPS.
+6. Enable/configure image compression and WebP where appropriate.
+7. Enable/tune cache for basic load-speed improvement.
+8. Verify changes do not break authenticated/private LMS behavior.
+
+**Week 2 deliverables**
+
+- 3-5 target URLs updated for the approved keyword map;
+- agreed technical fixes implemented;
+- GSC sitemap submitted or ready for final verification;
+- updated Technical SEO Document statuses.
+
+### Week 3 — Re-crawl, QA, final fixes, and handover
+
+**SEO Exec**
+
+1. Re-crawl using Screaming Frog.
+2. Compare before/after findings.
+3. Verify final Title/Description/H1/H2/ALT on target URLs.
+4. Verify GSC property and sitemap status.
+5. Verify GA4 receives production traffic.
+6. Finalize Keyword Map.
+7. Finalize Technical SEO Document and Audit Report.
+
+**Dev / Tech Exec**
+
+1. Resolve remaining in-scope issues found by re-crawl.
+2. Verify redirects and 404 behavior.
+3. Verify robots/sitemap.
+4. Verify HTTPS.
+5. Verify image compression/WebP.
+6. Verify cache/basic performance.
+7. Record any deferred items that require separate scope.
+
+**Week 3 deliverables**
+
+- final Technical SEO Document / Web Audit Report;
+- final Screaming Frog before/after evidence or export references;
+- Keyword Map with maximum 20 keywords;
+- 3-5 optimized target URLs;
+- final Title/Description mapping;
+- GSC status and sitemap submission status;
+- GA4 verification status;
+- technical fix status;
+- deferred/recommended next actions.
+
+## 6. Deliverable acceptance criteria
+
+### 6.1 Technical SEO Document and Audit Report
+
+Accepted when:
+
+- initial Screaming Frog crawl is documented;
+- issue owner and status are recorded;
+- each agreed item is marked Fixed, Accepted, Deferred, or Not Applicable;
+- final re-crawl has been completed.
+
+### 6.2 Keyword Map
+
+Accepted when:
+
+- the final set contains no more than 20 keywords;
+- keywords are grouped by search intent/topic;
+- all approved keywords are mapped to 3-5 URLs;
+- the business/content owner has approved the target direction.
+
+### 6.3 On-page optimization
+
+Accepted when all 3-5 target URLs have reviewed:
+
+- Meta Title;
+- Meta Description;
+- H1;
+- relevant H2;
+- relevant image ALT;
+- opening paragraph/sapo or existing copy where an adjustment is needed.
+
+### 6.4 Technical implementation
+
+Accepted when the agreed in-scope items have been fixed or documented:
+
+- broken links/404;
+- required 301 redirects;
+- robots.txt;
+- sitemap;
+- HTTPS/SSL;
+- image compression/WebP;
+- cache/basic speed configuration.
+
+### 6.5 GSC and GA4
+
+Accepted when:
+
+- Google Search Console property access is verified;
+- sitemap has been submitted to GSC;
+- GSC shows the sitemap as received/processed or the submission is documented if Google processing is still pending;
+- GA4 is receiving production traffic;
+- target pages can be identified in reporting.
+
+Google indexing/ranking changes are not an immediate handover acceptance condition because Google processing may continue after the project is complete.
+
+## 7. Dependencies
+
+The three-week timeline assumes:
+
+1. WordPress Admin and production/staging access are available in Week 1.
+2. GSC and GA4 access can be granted without a long approval delay.
+3. Screaming Frog can crawl the public website without blocking/challenge issues.
+4. The 20-keyword maximum and 3-5 target URLs can be approved during Week 1.
+5. Content changes on target pages do not require a separate legal/brand approval cycle.
+6. Dev / Tech Exec can deploy configuration/code changes during Weeks 2-3.
+7. No major site redesign, hosting migration, or plugin migration is introduced in parallel.
+
+External waiting time can move calendar dates even when execution effort remains unchanged.
+
+## 8. Out-of-scope expansion triggers
+
+A separate estimate is required if the audit reveals or stakeholders request:
+
+- more than 20 target keywords;
+- more than 5 on-page target URLs;
+- full article/page writing;
+- large-scale historical redirect migration;
+- advanced multilingual SEO implementation;
+- major schema/structured-data rollout;
+- a full Core Web Vitals remediation project;
+- hosting/CDN migration;
+- large theme/plugin refactor;
+- ongoing monthly SEO operations.
+
+## 9. Final planning commitment
+
+For stakeholder planning:
+
+> **Timeline: 3 working weeks total — 1 week for research/audit and keyword planning, followed by 2 weeks for on-page optimization, technical fixes, verification, and handover.**
+
+Scope commitment:
+
+> **Audit Web + Technical SEO cơ bản + GSC/GA4 + tối ưu On-page tối đa 20 keywords trên 3-5 URL/Landing Page chính.**
+
+The delivery ends with documented implementation status and handover. Search ranking growth is monitored after delivery and is not guaranteed within the three-week implementation period.

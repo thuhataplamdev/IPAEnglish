@@ -1,23 +1,47 @@
 # SEO Technical Solution Design (TSD)
 
 **Document ID:** IPA-SEO-TSD  
-**Version:** 1.0  
-**Status:** Proposed design  
-**Date:** 2026-09-22  
+**Version:** 1.1
+**Status:** Agreed execution design
+**Date:** 2026-09-23
 **System:** IPAEnglish WordPress / MasterStudy LMS  
 **Related:** [SEO-SRS.md](./SEO-SRS.md)
 
 ## 1. Design objective
 
-Implement a deterministic SEO policy for IPAEnglish while preserving the existing WordPress/MasterStudy/TranslatePress architecture.
+The current implementation objective is to deliver the agreed three-week SEO engagement: one week of research/audit followed by two weeks of implementation, verification, and handover.
 
-The design deliberately avoids letting several plugins independently emit the same SEO signals. The central principle is:
+Primary execution tools:
+
+- Screaming Frog SEO Spider for crawl-based audit and re-crawl verification;
+- Google Search Console for ownership, sitemap submission, indexing/query baseline, and post-change validation;
+- Google Analytics 4 for traffic measurement and organic landing-page verification;
+- WordPress/Admin/plugin/runtime configuration and repository changes for technical remediation.
+
+Primary target:
+
+- a maximum of 20 approved keywords;
+- mapped to 3-5 priority URLs/landing pages;
+- on-page optimization limited to metadata, headings, relevant image ALT, and small edits to existing content;
+- basic technical remediation including 404/301, robots, sitemap, HTTPS verification, image compression/WebP, and cache/basic speed improvements.
+
+The broader architecture sections in this TSD remain technical guardrails. They must not be interpreted as mandatory delivery of advanced multilingual SEO, full structured-data rollout, LMS SEO redesign, or a full Core Web Vitals program unless an audited blocker requires it and scope is explicitly expanded.
+
+The design still avoids letting several plugins independently emit the same SEO signals. The central principle is:
 
 > resolve page context once, apply one policy, emit each SEO primitive once.
 
-This document is a design, not the implementation itself.
+### 1.1 Responsibility split
+
+| Role | Execution responsibility |
+|---|---|
+| SEO Exec | GSC/GA4 setup, Screaming Frog audit, Technical SEO Document, keyword research/mapping, on-page optimization, before/after verification |
+| Dev / Tech Exec | 404/301 fixes, robots/sitemap, HTTPS checks, image compression/WebP, caching/basic speed fixes, technical remediation support |
+| Business/Content owner | Approves 20-keyword set, 3-5 target URLs, and wording changes when required |
 
 ## 2. Verified architecture baseline
+
+The sections from architecture baseline through detailed component design are retained as implementation guardrails. They do not expand the current three-week delivery scope beyond the audit, 20-keyword/3-5 URL on-page work, and agreed basic technical fixes.
 
 ### 2.1 Runtime framework
 
@@ -550,6 +574,14 @@ SEO metadata changes require purge/invalidation of the affected URL and language
 
 ### 14.1 Search Console
 
+For this engagement:
+
+1. confirm or create the production Search Console property;
+2. verify access/ownership;
+3. submit the production XML sitemap;
+4. capture baseline indexing/query/page data for the target URLs where available;
+5. record sitemap processing and target-page status in the handover.
+
 Use a domain property where operationally feasible and monitor:
 
 - submitted vs indexed URLs;
@@ -557,10 +589,11 @@ Use a domain property where operationally feasible and monitor:
 - sitemap health;
 - search performance by page/query/country/device;
 - Core Web Vitals;
-- structured-data/search appearance;
 - manual actions/security issues.
 
 ### 14.2 Analytics
+
+For this engagement, confirm GA4 is receiving production page-view traffic and that the 3-5 target landing pages can be identified in reporting. New custom event architecture is not required unless separately approved.
 
 Recommended public conversion funnel:
 
@@ -653,16 +686,23 @@ Build a language-equivalence matrix and assert:
 
 ### 15.6 Crawl tests
 
-Use a bounded staging/production crawl to detect:
+Use Screaming Frog SEO Spider as the primary crawl/audit and re-crawl verification tool.
 
-- orphan pages;
+Initial crawl shall check at minimum:
+
+- 4xx/404 URLs and broken internal links;
+- redirect chains and loops;
 - duplicate titles/descriptions;
-- non-200 internal links;
-- redirect chains;
+- missing titles/descriptions;
+- missing H1;
+- missing image ALT on relevant images;
+- oversized images;
 - canonical conflicts;
 - noindex/index mismatches;
-- excessive parameter URLs;
-- accidentally indexable private pages.
+- robots/sitemap inconsistencies detectable by crawl;
+- target URL status/indexability.
+
+After implementation, re-crawl the affected site/sections and update the Technical SEO Document with final status. Crawl findings are evidence, not automatic defects; false positives and intentionally excluded URLs must be marked accordingly.
 
 ### 15.7 Performance tests
 
@@ -670,58 +710,76 @@ Run mobile and desktop lab tests on representative URLs and compare before/after
 
 ## 16. Deployment plan
 
-### Phase 0 — Runtime baseline
+### Week 1 — Research, audit, and keyword planning
 
-Before code/config changes:
+**SEO Exec**
 
-1. record production domain/canonical host;
-2. export active plugins/settings inventory;
-3. capture robots/sitemap;
-4. crawl representative URLs;
-5. capture metadata/schema/hreflang;
-6. capture Search Console baseline;
-7. capture CWV/Lighthouse baseline.
+- verify GSC and GA4 access/state;
+- crawl the website with Screaming Frog;
+- collect 404/redirect/metadata/H1/ALT/image-size/robots/sitemap findings;
+- populate the Technical SEO Document;
+- research candidate keywords;
+- finalize a maximum of 20 keywords;
+- map the approved keywords to 3-5 priority URLs;
+- capture current Title, Description, headings, ALT, and relevant copy for those URLs.
 
-### Phase 1 — Indexation foundation
+**Dev / Tech Exec**
 
-Implement/verify:
+- review technical findings for feasibility and ownership;
+- confirm current HTTPS, robots, sitemap, image optimization, and cache setup;
+- identify fixes that require code/config changes.
 
-- canonical host redirects;
-- page-type robots policy;
-- one metadata/canonical owner;
-- sitemap inclusion/exclusion;
-- redirect/error policy.
+**Week 1 output**
 
-### Phase 2 — LMS structured SEO
+- Web Audit / Technical SEO Document;
+- approved keyword map draft/final;
+- implementation backlog split between SEO Exec and Dev / Tech Exec.
 
-Implement/verify:
+### Week 2 — On-page optimization and technical fixes
 
-- course metadata defaults/overrides;
-- Course schema;
-- course list ItemList;
-- breadcrumbs;
-- curated course-category quality gate.
+**SEO Exec**
 
-### Phase 3 — Multilingual SEO
+- rewrite/adjust Meta Title and Meta Description for the 3-5 target URLs;
+- optimize H1/H2 where required;
+- add/improve relevant image ALT text;
+- adjust opening paragraph/sapo or existing copy for keyword relevance without full content rewrite;
+- create/verify sitemap submission in GSC.
 
-Implement/verify:
+**Dev / Tech Exec**
 
-- language URL policy;
-- self canonical;
-- reciprocal hreflang/x-default;
-- translated title/description;
-- translated slugs if approved;
-- multilingual sitemap behavior.
+- fix agreed 404s/broken internal links;
+- implement required 301 redirects;
+- correct robots.txt and sitemap behavior;
+- verify SSL/HTTPS;
+- enable/configure WebP or image compression where suitable;
+- enable/tune basic cache/performance configuration.
 
-### Phase 4 — Content/performance/measurement
+### Week 3 — Re-crawl, QA, final fixes, and handover
 
-Implement/verify:
+**SEO Exec**
 
-- internal-link hubs;
-- image policy;
-- article/instructor semantics;
-- CWV optimization;
-- Search Console/analytics conversion reporting.
+- re-crawl using Screaming Frog;
+- compare before/after findings;
+- verify final Title/Description/H1/H2/ALT on 3-5 target URLs;
+- verify GSC sitemap status and target-page crawl/indexing signals available at that time;
+- verify GA4 is receiving traffic;
+- complete Keyword Map and Technical SEO Document.
+
+**Dev / Tech Exec**
+
+- resolve remaining in-scope defects from QA/re-crawl;
+- verify redirects, robots, sitemap, HTTPS, image optimization, and cache behavior;
+- document deferred items requiring future scope.
+
+**Handover package**
+
+- Technical SEO Document / Web Audit Report with final status;
+- Screaming Frog crawl summary/export references;
+- Keyword Map for maximum 20 keywords and 3-5 URLs;
+- final Title/Description per target URL;
+- GSC/GA4 setup status;
+- sitemap submission status;
+- open/deferred recommendations.
 
 ## 17. Rollback plan
 
@@ -762,54 +820,47 @@ Vendor theme/plugin code should not be patched directly for SEO unless no extens
 - Analytics payloads must not include secrets or learner answers.
 - Search crawler accessibility never bypasses authorization.
 
-## 20. Observability and ongoing operations
+## 20. Observability and handover follow-up
 
-Weekly/regular automated or manual checks should cover:
+During the three-week engagement, checks should cover:
 
 - sitemap fetch/parsing;
-- homepage/course/article robots/canonical snapshot;
-- unexpected noindex;
-- representative hreflang pair;
-- 4xx/5xx spike;
-- Search Console indexing changes.
+- robots.txt availability;
+- target-page status/canonical/title snapshot;
+- 4xx/5xx findings from crawl;
+- redirect chains affecting target pages;
+- GSC sitemap and target-page status;
+- GA4 production traffic for target pages.
 
-Monthly SEO review should cover:
-
-- search query/page growth/decline;
-- non-branded opportunities;
-- course CTR and conversions;
-- content decay/update candidates;
-- CWV trends;
-- newly surfaced crawl/index issues.
+After handover, ongoing SEO monitoring is a separate operational scope. Recommended follow-up includes monthly Search Console review, new crawl issues, keyword/page performance, and content opportunities.
 
 ## 21. Technical decisions required before implementation
 
 | Decision | Options | Recommended baseline |
 |---|---|---|
-| SEO owner | Custom MU plugin vs one dedicated SEO plugin | Thin custom policy layer if engineering ownership is preferred; otherwise one plugin, never both |
-| hreflang owner | TranslatePress vs custom | TranslatePress |
-| Sitemap | WordPress native vs SEO plugin | WordPress native when custom policy selected |
-| Translated slugs/meta | TranslatePress SEO Pack vs custom | Verify licensing; prefer supported add-on if available |
+| Target URLs | 3-5 commercial landing pages | Approve in Week 1 based on business priority and keyword intent |
+| Keyword set | Up to 20 keywords | Group by intent and map each to one target URL |
+| Metadata owner | WordPress/plugin/custom | Use the existing production owner unless audit finds conflicts |
+| Sitemap owner | WordPress native vs SEO plugin | Keep one active sitemap owner and submit its canonical endpoint |
 | Canonical host | www vs non-www | Business/ops decision; enforce one |
-| Taxonomy indexation | broad vs curated | Curated only |
-| Instructor indexation | all vs quality-gated | Quality-gated |
-| FAQ schema | target vs no target | No rich-result target |
-| llms.txt | required vs optional | Optional/non-SEO; not a Google Search requirement |
+| 404 remediation | Direct-link fix, 301, 410, or keep 404 | Choose based on whether a valid replacement exists |
+| Image optimization | Existing plugin/host vs new configuration | Reuse existing capability where safe; avoid duplicate optimization layers |
+| Cache owner | W3TC, Autoptimize, host/CDN | Define one owner per transformation and avoid overlapping rules |
+| GSC property | Domain vs URL-prefix | Prefer the property the business can reliably verify and maintain |
+| GA4 | Existing property vs new property | Reuse valid existing production tracking when available |
 
-## 22. Definition of done for SEO foundation
+## 22. Definition of done for current SEO engagement
 
-The SEO foundation is done when:
+The current SEO engagement is done when:
 
-- runtime baseline is documented;
-- one SEO owner is active;
-- canonical host redirect is deterministic;
-- page-type index policy is implemented;
-- sitemap passes validation;
-- public courses are discoverable/indexable;
-- private LMS pages are excluded;
-- multilingual canonical/hreflang passes the matrix;
-- supported schema validates;
-- metadata has no conflicting duplicate emitters;
-- representative pages pass release crawl checks;
-- performance has no unaccepted regression;
-- Search Console is verified and monitoring is operational.
+- initial Screaming Frog audit is completed and documented;
+- the Technical SEO Document contains owner and status for audited issues;
+- a maximum of 20 keywords is approved and mapped to 3-5 target URLs;
+- those 3-5 URLs have reviewed/updated Title, Description, H1/H2, relevant image ALT, and existing copy where needed;
+- agreed 404/301/robots/sitemap/HTTPS issues are fixed or explicitly deferred;
+- image compression/WebP and basic cache configuration are enabled or documented as not applicable;
+- a post-change Screaming Frog re-crawl has been completed;
+- Google Search Console is verified and the sitemap is submitted;
+- GA4 is receiving production traffic;
+- no known in-scope blocker prevents Google from crawling the target URLs;
+- final audit report, keyword map, implementation status, and deferred recommendations are handed over.

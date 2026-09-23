@@ -2,15 +2,17 @@
 
 **Audit date:** 2026-09-22  
 **Repository:** thuhataplamdev/IPAEnglish  
-**Scope:** Technical SEO and SEO platform requirements for the WordPress/MasterStudy LMS application.
+**Current delivery scope:** Web audit + basic technical SEO + Google Search Console/GA4 setup + on-page optimization for a maximum of 20 keywords across 3-5 priority URLs.
 
-This directory contains the source-grounded SEO specification for IPAEnglish. It separates facts verified in the repository from production/runtime facts that cannot be verified without the database, active WordPress options, production domain, Google Search Console, and analytics access.
+This directory contains the source-grounded SEO specification for IPAEnglish. The current engagement is intentionally narrower than a full SEO-platform redesign: one research/audit week followed by two execution weeks. Screaming Frog SEO Spider is the primary crawl/audit tool; Google Search Console and GA4 are the primary measurement/setup tools.
 
 ## Documents
 
-- [SEO-SRS.md](./SEO-SRS.md) — Software Requirements Specification: business goals, scope, page-type policies, functional requirements, non-functional requirements, acceptance criteria, KPIs, and release gates.
-- [SEO-TSD.md](./SEO-TSD.md) — Technical Solution Design: ownership model, WordPress/MasterStudy/TranslatePress integration, metadata/canonical/robots/sitemap/schema architecture, performance, testing, deployment, and rollback.
-- [SEO-ESTIMATE.md](./SEO-ESTIMATE.md) — Delivery estimate: assumptions, person-day effort, calendar plan, deployment window, staffing, dependencies, contingency, and post-release monitoring.
+- [SEO-SRS.md](./SEO-SRS.md) — Software Requirements Specification for the agreed audit, technical SEO, GSC/GA4, 20-keyword mapping, and 3-5 URL on-page scope.
+- [SEO-TSD.md](./SEO-TSD.md) — Technical execution design and implementation guardrails for crawl/audit, basic technical fixes, tracking, on-page changes, validation, and handover.
+- [SEO-ESTIMATE.md](./SEO-ESTIMATE.md) — Three-week delivery plan: one research/audit week plus two implementation/handover weeks.
+- [TECHNICAL-SEO-AUDIT.md](./TECHNICAL-SEO-AUDIT.md) — Working/handover template for Screaming Frog findings, technical owner, fix status, and verification evidence.
+- [KEYWORD-MAP.md](./KEYWORD-MAP.md) — Working/handover template for the maximum 20-keyword set mapped to 3-5 priority URLs with final on-page metadata.
 
 ## 1. Source-verified current state
 
