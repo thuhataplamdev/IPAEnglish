@@ -110,7 +110,8 @@ Rules:
 | Language URL conversion | TranslatePress |
 | hreflang | TranslatePress by default |
 | SEO page classification | IPA SEO policy layer or selected SEO plugin |
-| Title/meta/robots/canonical | One SEO owner only |
+| Title/meta/robots | One SEO owner only |
+| Canonical URL resolution + HTML `rel="canonical"` emission | One SEO owner only; WordPress core `rel_canonical` and any custom/plugin renderer must never emit in parallel |
 | JSON-LD | One SEO owner only |
 | Sitemap inclusion | One SEO owner using WordPress sitemap APIs or selected plugin |
 | HTTPS/canonical host redirects | Web server/CDN/edge |
@@ -197,6 +198,34 @@ Algorithm:
 7. verify target returns intended 200/indexable response.
 
 Do not cross-canonical valid language variants.
+
+#### 4.4.1 Canonical emission ownership and WordPress core
+
+The checked-in WordPress 7.1 source already registers the core canonical renderer:
+
+```php
+add_action( 'wp_head', 'rel_canonical' );
+```
+
+Therefore `CanonicalResolver` computes the canonical URL, but **canonical HTML emission must have exactly one owner**. The implementation must choose one of these mutually exclusive modes:
+
+1. **WordPress-core-owned emission**
+   - keep the core `rel_canonical` callback enabled;
+   - do not render another `<link rel="canonical">` from the IPA SEO layer or another SEO plugin;
+   - only use this mode when the core output can represent the complete IPAEnglish canonical policy for the page type and language.
+2. **IPA SEO/plugin-owned emission**
+   - disable/remove the WordPress core `rel_canonical` callback after WordPress has registered it and before `wp_head` executes;
+   - ensure any selected third-party SEO plugin's canonical renderer is also disabled unless that plugin is the chosen canonical owner;
+   - render exactly one canonical tag using the resolved URL.
+
+The implementation must not use a "core canonical plus custom canonical" strategy, even when both URLs are expected to match. Ownership is about preventing duplicate markup as well as preventing conflicting URLs.
+
+Implementation acceptance:
+
+- public indexable pages: exactly one HTML `link[rel="canonical"]`;
+- pages where policy intentionally omits canonical: zero canonical tags;
+- no tested page may emit more than one canonical tag;
+- the canonical target must match the current-language policy and return the intended response.
 
 ### 4.5 AlternateLanguageAdapter
 
@@ -287,7 +316,7 @@ Expected integration categories:
 |---|---|
 | Title | document-title filters/API |
 | Robots | `wp_robots` filter/API |
-| Canonical | canonical URL filter/API or controlled canonical renderer |
+| Canonical | choose exactly one emitter: keep WordPress core `rel_canonical`, or disable it before `wp_head` and use one controlled SEO-owner renderer |
 | Head metadata | one controlled `wp_head` renderer |
 | Sitemap | WordPress sitemap provider/query filters |
 | Redirect | canonical-host at edge; WordPress redirect hooks only for application URL migrations |
@@ -296,6 +325,8 @@ Expected integration categories:
 | Cache invalidation | W3TC purge integration or documented purge after metadata updates |
 
 Exact hooks are implementation details to confirm from local WordPress 7.1 source; the TSD intentionally does not freeze obsolete hook names beyond stable APIs already verified.
+
+For canonical specifically, the current repository already verifies that WordPress 7.1 registers `rel_canonical` on `wp_head`. Any implementation that introduces a custom canonical renderer must explicitly account for and disable that default emitter before rendering its own tag.
 
 ## 6. MasterStudy integration
 
