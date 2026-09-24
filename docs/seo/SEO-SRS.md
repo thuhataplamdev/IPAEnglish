@@ -104,31 +104,31 @@ The engagement is accepted only when the following are handed over:
 5. working Google Search Console and GA4 access/tracking;
 6. sitemap submitted to Google Search Console and accepted for processing.
 
-The broader technical requirements below remain engineering guardrails and future reference. Advanced multilingual, schema, LMS-platform, and performance work is not automatically in scope unless required to remediate a critical issue found during this engagement.
+The broader technical requirements below remain engineering guardrails and future reference. Advanced multilingual SEO, structured data/schema, social metadata, a custom SEO override platform, and full Core Web Vitals remediation are outside the current scope.
 
 ## 6. Technical reference: page-type SEO policy
 
 The following is an engineering reference baseline, not a commitment to redesign every page type in this engagement. Only issues affecting the audited site, target URLs, sitemap/robots behavior, or agreed technical backlog are mandatory in the current scope.
 
-| Page type | Index | Follow | Sitemap | Canonical | Primary schema |
-|---|---:|---:|---:|---|---|
-| Home | Yes | Yes | Yes | Self | Organization + WebSite |
-| Public marketing/static page | Yes | Yes | Yes | Self | WebPage + Breadcrumb where applicable |
-| Blog/article | Yes | Yes | Yes | Self | Article/BlogPosting + Breadcrumb |
-| Curated blog/category hub | Conditional | Yes | If indexable | Self | CollectionPage/Breadcrumb |
-| Tag/date archive | Default No | Yes | No | Self or no canonical policy per implementation | None required |
-| Course detail (`stm-courses`) | Yes | Yes | Yes | Self | Course + Breadcrumb |
-| Curated course category | Conditional | Yes | If indexable | Self | ItemList + Breadcrumb |
-| Public instructor profile | Conditional | Yes | If indexable | Self | ProfilePage/Person where data supports it |
-| WordPress internal search | No | Yes | No | Search URL or none; never canonicalize to unrelated content | None |
-| Filter/sort/faceted URL | No by default | Yes | No | Clean parent listing URL when content-equivalent | None |
-| Login/register/password-reset | No | No/Yes as operationally needed | No | Self | None |
-| Account/LMS dashboard | No | No | No | Self | None |
-| Lesson (`stm-lessons`) | No | No | No | Self | None |
-| Quiz/question/review/order | No | No | No | Self | None |
-| Checkout/payment/order confirmation | No | No | No | Self | None |
-| 404/410 | No | N/A | No | None | None |
-| Preview/draft | No | No | No | None | None |
+| Page type | Index | Follow | Sitemap | Canonical |
+|---|---:|---:|---:|---|
+| Home | Yes | Yes | Yes | Self |
+| Public marketing/static page | Yes | Yes | Yes | Self |
+| Blog/article | Yes | Yes | Yes | Self |
+| Curated blog/category hub | Conditional | Yes | If indexable | Self |
+| Tag/date archive | Default No | Yes | No | Self or no canonical policy per implementation |
+| Course detail (stm-courses) | Yes | Yes | Yes | Self |
+| Curated course category | Conditional | Yes | If indexable | Self |
+| Public instructor profile | Conditional | Yes | If indexable | Self |
+| WordPress internal search | No | Yes | No | Search URL or none; never canonicalize to unrelated content |
+| Filter/sort/faceted URL | No by default | Yes | No | Clean parent listing URL when content-equivalent |
+| Login/register/password-reset | No | No/Yes as operationally needed | No | Self |
+| Account/LMS dashboard | No | No | No | Self |
+| Lesson (stm-lessons) | No | No | No | Self |
+| Quiz/question/review/order | No | No | No | Self |
+| Checkout/payment/order confirmation | No | No | No | Self |
+| 404/410 | No | N/A | No | None |
+| Preview/draft | No | No | No | None |
 
 “Conditional” means the page is indexable only when it has a clear search purpose, unique useful content, and enough inventory/content to avoid thin pages.
 
@@ -146,29 +146,29 @@ Acceptance criteria:
 - HTTP permanently redirects to HTTPS.
 - All non-canonical host variants permanently redirect to the chosen canonical host.
 - Redirects avoid multi-hop chains under normal requests.
-- Generated canonical, sitemap, hreflang, Open Graph URL, and internal absolute URLs use the canonical origin.
+- Generated canonical, sitemap, and internal absolute URLs use the canonical origin.
 
-### SEO-FR-002 — Unique title
+### SEO-FR-002 — Title using existing WordPress fields
 
-Every indexable page shall output one useful document title.
+Each of the four target pages shall use the existing WordPress page/site title mechanism. No separate SEO-title storage or override subsystem is required for this engagement.
 
 Acceptance criteria:
 
 - Exactly one effective HTML title exists.
-- Title is descriptive and specific to the page.
-- Course title identifies the course.
-- Boilerplate does not overwhelm the page-specific text.
-- Templates do not produce the same title for distinct indexable URLs.
+- SEO Exec updates the existing WordPress title/site-title inputs needed for the target page.
+- Title is descriptive, natural, and aligned with the approved keyword intent.
+- No new parallel SEO-title field or editor UI is introduced.
 
-### SEO-FR-003 — Meta description
+### SEO-FR-003 — Meta description using existing WordPress data
 
-Every priority/indexable landing page shall support a useful meta description.
+Each of the four target pages shall output one useful Meta Description without introducing a standalone SEO override system.
 
 Acceptance criteria:
 
-- At most one meta description is emitted.
-- Editor override is supported for priority pages/courses.
-- A deterministic fallback can be generated from excerpt/summary when no override exists.
+- At most one Meta Description is emitted.
+- Description content is maintained through an existing WordPress-native content field such as Excerpt/summary.
+- If Page does not currently expose Excerpt, Dev / Tech Exec may enable native WordPress Page excerpt support; this is configuration/minimal integration, not a new SEO subsystem.
+- The child theme may contain the minimal renderer required to output one Meta Description from that native field.
 - Empty, duplicated, or site-wide generic descriptions are surfaced by QA.
 
 ### SEO-FR-004 — Canonical URL
@@ -259,79 +259,16 @@ Acceptance criteria:
 - Language switching creates stable URLs, not cookie-only alternate content.
 - Search crawlers can fetch each intended language without requiring interaction.
 
-### SEO-FR-012 — hreflang
+### Current-scope multilingual boundary
 
-Language variants shall publish reciprocal hreflang annotations.
+Hreflang implementation, translated slug work, translated SEO-field infrastructure, and structured-data/schema rollout are outside the current engagement.
 
-Acceptance criteria:
+The current requirement is only regression safety:
 
-- Every language page includes itself and all equivalent published alternates.
-- Hreflang language/region codes are valid.
-- Alternate URLs return 200 and are canonical in their own language.
-- Optional `x-default` points to the designated fallback selector/default page.
-- Hreflang is omitted for pages with no valid alternate instead of fabricating URLs.
-
-### SEO-FR-013 — Language-specific canonical
-
-Canonicalization shall not collapse valid translations into one language.
-
-Acceptance criteria:
-
-- Vietnamese URL canonicals to Vietnamese URL, English to English URL, etc.
-- A translated page is not canonically pointed to the default language merely because content originates there.
-
-### SEO-FR-014 — Translated SEO fields and slugs
-
-If translated pages are intended to rank independently, the system shall support translated search-facing metadata and, when required by the content strategy, translated slugs.
-
-Acceptance criteria:
-
-- Title and description can match the target language.
-- Slug behavior is documented and stable.
-- The implementation uses either a verified TranslatePress SEO Pack capability or a custom version-controlled equivalent; free TranslatePress capability must not be assumed beyond what is verified.
-- URL changes include redirect mappings.
-
-### SEO-FR-015 — Site/entity structured data
-
-The site shall publish one coherent structured-data graph for site/business identity.
-
-Acceptance criteria:
-
-- Organization/WebSite data reflects real visible business information.
-- URLs, names, logos, and social identifiers are accurate.
-- Duplicate conflicting Organization/WebSite nodes are not emitted by multiple owners.
-
-### SEO-FR-016 — Course structured data
-
-Eligible course pages and course lists shall implement Google-supported Course structured data.
-
-Acceptance criteria:
-
-- Course schema reflects visible course data.
-- Course list/hub markup uses ItemList where applicable.
-- List items use unique course URLs and deterministic positions.
-- At least three valid courses exist before treating a list as Course-list rich-result eligible.
-- Required/recommended fields are validated against current Google documentation before release.
-
-### SEO-FR-017 — Breadcrumb structured data
-
-Indexable hierarchical pages shall expose breadcrumb structured data consistent with visible navigation.
-
-Acceptance criteria:
-
-- Breadcrumb order and URLs match the logical hierarchy.
-- The current page and ancestors use canonical URLs.
-- Structured-data breadcrumb does not describe a hierarchy hidden from users.
-
-### SEO-FR-018 — Article structured data
-
-Editorial article/blog templates shall support Article or BlogPosting structured data.
-
-Acceptance criteria:
-
-- Headline, author, dates, image, and publisher values match visible/page metadata.
-- Modified date changes only for meaningful editorial updates.
-- Author is a real attributable person/entity when supplied.
+- existing English and Vietnamese URLs must remain reachable after changes to the four Vietnamese target pages;
+- the implementation must not intentionally rebuild TranslatePress hreflang behavior;
+- URL/slug translation changes require separate scope;
+- schema/structured-data implementation is not a release gate for this engagement.
 
 ### SEO-FR-019 — Instructor profile semantics
 
@@ -341,7 +278,6 @@ Acceptance criteria:
 
 - Profile contains unique biography/expertise and relevant public courses.
 - Thin auto-generated user archives remain noindex.
-- If ProfilePage/Person schema is used, it matches visible information.
 
 ### SEO-FR-020 — Crawlable internal links
 
@@ -386,15 +322,9 @@ Acceptance criteria:
 - Cache behavior and canonical behavior agree on URL identity.
 - Functional parameters that materially change content are reviewed before canonical stripping.
 
-### SEO-FR-024 — Social metadata
+### Current-scope social metadata boundary
 
-Indexable priority pages shall provide deterministic Open Graph and Twitter/X-compatible metadata.
-
-Acceptance criteria:
-
-- URL, title, description, and image align with canonical page metadata.
-- Course shares show course-specific content.
-- Language variants use language-appropriate text/image when configured.
+Open Graph, Twitter/X cards, and other social-share metadata are outside the requested deliverables. Existing behavior must not be intentionally broken, but no implementation or acceptance work is required for social metadata.
 
 ### SEO-FR-025 — Search Console
 
@@ -426,15 +356,17 @@ Acceptance criteria:
 - No password, lesson answer, payment secret, or sensitive private learner content is sent as analytics payload.
 - Search Console and analytics can be joined conceptually by landing page/date, without requiring personal identity.
 
-### SEO-FR-027 — Editor-controlled SEO override
+### SEO-FR-027 — Use existing WordPress metadata editing
 
-Priority public pages/courses shall allow controlled overrides for at least SEO title and description.
+No standalone SEO override system shall be built for this engagement.
 
 Acceptance criteria:
 
-- Override has documented precedence over generated default.
-- Clearing an override restores the deterministic fallback.
-- Robots/canonical overrides, if exposed to editors, require guardrails to prevent accidental sitewide deindexing/canonicalization.
+- SEO Exec uses the existing WordPress editing workflow for the four target pages.
+- Document title is sourced from existing WordPress title/site-title behavior.
+- Meta Description is sourced from a WordPress-native Excerpt/summary field and rendered once.
+- If Page excerpt support is not enabled, Dev / Tech Exec may enable the native feature in the child theme.
+- No new custom SEO settings screen, custom SEO database model, or parallel per-page SEO field suite is introduced.
 
 ### SEO-FR-028 — Single SEO output owner
 
@@ -445,12 +377,11 @@ Acceptance criteria:
 - One canonical tag.
 - One robots policy result.
 - One effective title.
-- No conflicting schema graphs for the same entity.
 - Enabling a third-party SEO plugin requires disabling overlapping custom renderers.
 
 ### SEO-FR-029 — AI search compatibility
 
-The system shall optimize for search-engine AI features through the same crawlability, indexability, content-quality, structured-data, and performance foundations.
+The system shall remain compatible with search-engine AI features through normal crawlability, indexability, useful content, and basic performance foundations.
 
 Acceptance criteria:
 
@@ -468,10 +399,9 @@ Required baseline evidence:
 - rendered head tags for representative page types;
 - robots.txt and sitemap;
 - status/redirect matrix;
-- language/hreflang matrix;
 - crawl sample;
 - Search Console index/performance baseline;
-- Core Web Vitals/Lighthouse baseline;
+- basic Lighthouse/load-speed baseline;
 - active plugin/settings inventory.
 
 ### SEO-FR-031 — Screaming Frog website audit
@@ -590,19 +520,23 @@ Translated content intended for indexing must be useful and readable in the targ
 
 ## 9. Non-functional requirements
 
-### SEO-NFR-001 — Core Web Vitals
+### SEO-NFR-001 — Basic performance hygiene
 
-For key public templates, target 75th-percentile field performance:
+The current engagement includes basic load-speed improvements, not a full Core Web Vitals remediation program.
 
-- LCP <= 2.5 seconds;
-- INP <= 200 milliseconds;
-- CLS <= 0.1.
+Acceptance criteria:
 
-Field data is authoritative when available. Lab/Lighthouse is a diagnostic gate, not a substitute for field data.
+- capture a before/after Lighthouse or equivalent diagnostic sample on the target pages;
+- enable or tune basic caching without breaking LMS/private flows;
+- enable image compression/WebP where technically suitable;
+- avoid obvious regressions caused by the SEO changes;
+- record larger JavaScript/CSS/Elementor/CWV remediation as future work if it exceeds the basic scope.
+
+LCP/INP/CLS may be observed as diagnostics but are not contractual pass/fail targets for this engagement.
 
 ### SEO-NFR-002 — Renderability
 
-Critical main content, links, headings, metadata, and structured data must be available to normal search-engine rendering without login or user gestures for public pages.
+Critical main content, links, headings, and metadata must be available to normal search-engine rendering without login or user gestures for public pages.
 
 ### SEO-NFR-003 — Availability
 
@@ -625,7 +559,7 @@ SEO changes must be tested with:
 
 ### SEO-NFR-006 — Security/privacy
 
-SEO and analytics outputs must never disclose private learner/order data. Structured data must use public information only.
+SEO and analytics outputs must never disclose private learner/order data.
 
 ### SEO-NFR-007 — Cache correctness
 
@@ -695,7 +629,7 @@ These decisions are closed for the current three-week engagement.
 | 3 | Commercial priority URLs | Four Vietnamese landing pages: /vi/, /vi/global-english-for-teen-achievers/, /vi/book-a-test/, /vi/learning-system/ | These represent local discovery, the live teen course, conversion/placement-test intent, and the differentiated learning method. The adult course is currently not selected because the live page is still Coming soon. |
 | 4 | Keyword set | The 20-keyword baseline in KEYWORD-MAP.md is approved for this engagement | The set is intentionally limited to local English-center, teen/student English, free placement-test, and learning-method intent. Week 1 GSC research may reorder priority, but adding keywords above 20 requires scope change. |
 | 5 | Language/version in scope | Vietnamese /vi/ versions of the four target URLs | English equivalents remain technically crawlable and must not be broken, but English copy optimization is outside the 20-keyword on-page allocation. |
-| 6 | Title/Description owner | Keep WordPress core as title/canonical owner; add one thin version-controlled IPAEnglish metadata layer for the 4 target URLs; do not add a full SEO plugin for this scope | Live output already has WordPress titles and one canonical, but no Meta Description was detected on sampled target pages. The custom layer may override title via WordPress title filters and emit one description, while core canonical remains the sole canonical emitter. |
+| 6 | Title/Description owner | Use the existing WordPress editing model; no new SEO override subsystem | Use existing WordPress title/site-title behavior. Store Meta Description content in a native WordPress Excerpt/summary field; if Page excerpts are disabled, enable native Page excerpt support and render exactly one description through the child theme. WordPress core remains the canonical owner. |
 | 7 | Sitemap owner | WordPress core native sitemap | robots.txt already points to /wp-sitemap.xml. The endpoint currently returns sitemap XML with HTTP 404, which is a P1 technical defect: fix it to return 200. Do not introduce a second plugin sitemap. |
 | 8 | 404/redirect rule | Use direct-link correction by default; use 301 only for a real moved/replaced public URL with a clear 1:1 successor | Do not blanket-redirect 404s to Home. Broken internal links to existing pages are fixed at source. Removed URLs with no relevant replacement remain 404/410. Redirect chains must be flattened. |
 | 9 | WebP/image compression | Treat WebP as not active and implement it as an in-scope technical fix | A sampled production JPG still returns image/jpeg even when the client advertises WebP support, and no dedicated image/WebP plugin is tracked. Reuse a safe existing/hosting capability if available; otherwise add one controlled image-optimization path. |

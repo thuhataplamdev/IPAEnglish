@@ -62,62 +62,58 @@ These are requirements of the Phase 0 baseline audit in the SRS/TSD, not assumpt
 
 ## 3. Current SEO architecture assessment
 
-The repository has a workable SEO foundation but no single tracked component currently owns the full SEO contract.
+The repository has enough existing WordPress capability to complete the current engagement without building a separate SEO platform.
 
 Existing useful capabilities:
 
-1. WordPress provides title handling, canonical/sitemap primitives, robots APIs, and semantic publishing infrastructure.
-2. MasterStudy exposes public course landing pages that can be search destinations.
-3. TranslatePress can output language alternates and can convert language URLs.
-4. W3 Total Cache and Autoptimize provide a performance foundation.
-5. HTTPS redirection is already present.
+1. WordPress already provides page titles, canonical output, robots APIs, and the native sitemap framework.
+2. MasterStudy/Elementor already provide the visible landing-page content.
+3. TranslatePress already handles the current English/Vietnamese language routing and should be left unchanged.
+4. W3 Total Cache and Autoptimize already provide the current caching/front-end optimization foundation.
+5. HTTPS redirection and the production www host are already active.
 
-Primary gaps to close:
+Primary gaps to close for this engagement:
 
-1. Define one authoritative SEO owner for metadata, canonical, robots directives, structured data, and sitemap policy.
-2. Define page-type indexability for LMS/private pages, search pages, taxonomies, filters, and account/transaction pages.
-3. Make multilingual canonical/hreflang behavior deterministic.
-4. Provide Course + ItemList, Breadcrumb, Article, and organization/site structured data without duplicate schema emitters.
-5. Establish production canonical-host normalization.
-6. Add measurable release gates using Search Console, structured-data validation, crawl checks, and Core Web Vitals.
-7. Decide how content editors manage per-page SEO overrides.
-8. Verify translated slug/meta support; TranslatePress free alone should not be assumed to provide the complete multilingual SEO editing workflow.
+1. Audit the live site with Screaming Frog and record actionable issues.
+2. Fix the native WordPress sitemap endpoint so it returns HTTP 200.
+3. Configure/verify GSC and GA4 using business-owned accounts.
+4. Optimize the approved 20 keywords across the four Vietnamese target URLs.
+5. Use the existing WordPress editing model for Title and Meta Description data; do not build a separate SEO override system.
+6. Fix agreed 404/301, robots, image/WebP, and cache/basic-speed issues.
+7. Re-crawl and hand over final issue status and keyword mapping.
 
-## 4. SEO implementation principle
+## 4. Current-scope implementation principle
 
-**One responsibility, one owner.**
+Use existing WordPress capabilities first and add only the smallest integration required.
 
-At runtime, exactly one component should own each of these surfaces:
+Current ownership:
 
-- title/meta description;
-- canonical;
-- robots meta;
-- Open Graph/Twitter metadata;
-- XML sitemap filtering;
-- JSON-LD graph.
+- Title: existing WordPress page/site title behavior.
+- Meta Description source: WordPress-native Excerpt/summary.
+- Meta Description output: one minimal child-theme renderer.
+- Canonical: WordPress core.
+- Sitemap: WordPress core native sitemap.
+- Language routing: existing TranslatePress configuration; regression check only.
+- Page/browser cache: W3 Total Cache.
+- CSS/JS optimization: Autoptimize.
+- Search monitoring: Google Search Console.
+- Analytics: GA4.
 
-TranslatePress should remain the language URL/hreflang owner unless a deliberate replacement is made. MasterStudy remains the course/LMS data owner. W3TC/Autoptimize remain performance tooling and must not become metadata owners.
+Hreflang redesign, translated slugs, schema/structured data, social metadata, and a new SEO override platform are explicitly outside the current scope.
 
-The TSD recommends a thin, version-controlled IPAEnglish SEO policy layer for deterministic behavior. If the project instead adopts a third-party SEO plugin for editor UX, the same contracts apply and the custom renderer must be disabled for overlapping outputs.
+## 5. Search-engine guidance used for this scope
 
-## 5. 2026 search-engine guidance incorporated
+The current work follows the relevant foundational guidance only:
 
-The requirements follow current official Google Search guidance as of the audit date:
-
-- Search Essentials and people-first content;
-- unique, descriptive title links and useful snippets;
+- useful, descriptive titles and snippets;
 - canonicalization and crawl/index controls;
-- XML sitemap best practices;
-- localized URLs with reciprocal hreflang;
-- Course list structured data using Course and ItemList;
-- Breadcrumb and Article structured data;
-- Search/AI features relying on the same foundational SEO practices;
-- Core Web Vitals targets at the 75th percentile.
+- XML sitemap correctness;
+- crawlable internal links and valid status codes;
+- image ALT and basic performance hygiene;
+- Search Console monitoring;
+- people-first on-page content.
 
-Two deliberate non-goals:
-
-- **FAQ rich-result implementation is not a release requirement.** Google removed FAQ rich-result documentation in June 2026; FAQ content can still be useful to users.
-- **`llms.txt` is not an SEO acceptance criterion for Google Search.** Google guidance does not require it for Search/AI visibility. It may be evaluated separately for non-Google consumers.
+Advanced structured-data and multilingual SEO guidance may be referenced in future work but is not part of this engagement.
 
 ## 6. Official references
 
@@ -127,10 +123,6 @@ Two deliberate non-goals:
 - Canonicalization: https://developers.google.com/search/docs/crawling-indexing/canonicalization
 - Robots.txt: https://developers.google.com/search/docs/crawling-indexing/robots/intro
 - Sitemaps: https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap
-- Localized versions/hreflang: https://developers.google.com/search/docs/specialty/international/localized-versions
-- Course structured data: https://developers.google.com/search/docs/appearance/structured-data/course
-- Breadcrumb structured data: https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
-- Article structured data: https://developers.google.com/search/docs/appearance/structured-data/article
 - AI features and website guidance: https://developers.google.com/search/docs/appearance/ai-features
 - AI optimization guidance: https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
 - Web Vitals: https://web.dev/articles/vitals

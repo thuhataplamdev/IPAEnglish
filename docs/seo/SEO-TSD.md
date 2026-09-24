@@ -90,271 +90,107 @@ The Apache file contains:
 
 The HTTPS redirect keeps the incoming host. Canonical www/non-www host normalization therefore remains an infrastructure requirement.
 
-## 3. Proposed ownership model
+## 3. Current-scope ownership model
 
-### 3.1 Recommended model
+### 3.1 No new SEO subsystem
 
-Create a thin version-controlled **IPAEnglish SEO Policy Layer**, preferably as an MU plugin so behavior is not dependent on the active presentation theme.
+Do not create a separate IPAEnglish SEO Policy Layer, SEO plugin replacement, SEO settings screen, or custom SEO data model for this engagement.
 
-Suggested future location:
+Use the existing WordPress stack:
 
-`wp-content/mu-plugins/ipaenglish-seo/`
+- WordPress core/page editor for page titles and canonical output;
+- WordPress-native Excerpt/summary data as the Meta Description source;
+- MasterStudy/Elementor for visible page content;
+- TranslatePress remains untouched for existing language routing;
+- WordPress core remains the sitemap owner;
+- W3 Total Cache owns page/browser caching;
+- Autoptimize owns CSS/JS asset optimization.
 
-Recommended responsibilities:
+The child theme may contain only the minimal integration needed to expose native WordPress data in the document head or enable an existing WordPress feature.
 
-- context classification;
-- metadata defaults and controlled overrides;
-- robots/indexability;
-- canonical normalization;
-- sitemap inclusion policy;
-- structured-data graph;
-- social metadata;
-- testable integration adapters for MasterStudy and TranslatePress.
-
-Do **not** put the main SEO policy in the parent MasterStudy theme because vendor upgrades can overwrite it. Avoid using untracked Code Snippets as the authoritative source.
-
-### 3.2 Alternative: dedicated third-party SEO plugin
-
-If the team chooses an SEO plugin for editor UX, it may replace the custom renderers for title/description/canonical/robots/sitemap/schema.
-
-Rules:
-
-1. only one SEO plugin is active as primary owner;
-2. custom emitters for overlapping surfaces are disabled;
-3. TranslatePress compatibility is verified;
-4. MasterStudy course support is verified;
-5. configuration is documented/exported where possible;
-6. acceptance tests remain exactly the same.
-
-### 3.3 Responsibility table
+### 3.2 Responsibility table
 
 | Surface | Owner |
 |---|---|
-| Business/content fields | WordPress/MasterStudy |
-| Language URL conversion | TranslatePress |
-| hreflang | TranslatePress by default |
-| SEO page classification | IPA SEO policy layer or selected SEO plugin |
-| Title/meta/robots | One SEO owner only |
-| Canonical URL resolution + HTML `rel="canonical"` emission | One SEO owner only; WordPress core `rel_canonical` and any custom/plugin renderer must never emit in parallel |
-| JSON-LD | One SEO owner only |
-| Sitemap inclusion | One SEO owner using WordPress sitemap APIs or selected plugin |
-| HTTPS/canonical host redirects | Web server/CDN/edge |
-| HTML/page cache | W3TC |
-| Front-end optimization | Autoptimize/W3TC, coordinated |
-| Search performance/index monitoring | Search Console |
-| Conversion analytics | GA4/approved analytics |
+| Page title/content | Existing WordPress page editor / Elementor content |
+| Meta Description content | WordPress-native Excerpt/summary field |
+| Meta Description HTML output | Minimal child-theme wp_head integration, exactly once |
+| Canonical HTML output | WordPress core rel_canonical |
+| robots.txt | Existing WordPress/runtime configuration |
+| XML sitemap | WordPress core native sitemap |
+| Language routing | Existing TranslatePress configuration; regression check only |
+| 404/301 | WordPress/server configuration according to audited URL list |
+| HTML/page cache | W3 Total Cache |
+| CSS/JS optimization | Autoptimize |
+| Image compression/WebP | One controlled image-optimization path selected during implementation |
+| Search monitoring | Google Search Console |
+| Analytics | GA4 |
 
-## 4. Component design
+### 3.3 Title handling
 
-If the custom policy layer is selected, split behavior by responsibility.
+For the four target Vietnamese pages, prefer editing the existing WordPress page/site title inputs rather than creating a second SEO-title field.
 
-### 4.1 SeoContextResolver
+Rules:
 
-Inputs:
+1. keep one effective HTML title;
+2. use the target keyword naturally;
+3. do not introduce a custom SEO-title database field;
+4. verify navigation/visible heading behavior after any page-title edit because Elementor/theme templates may reuse the WordPress page title.
 
-- request/query state;
-- WordPress queried object;
-- post type/taxonomy;
-- authentication state;
-- MasterStudy route/content information;
-- current TranslatePress language;
-- pagination/query parameters.
+If a page-title change would create an unacceptable visible/navigation side effect, use the smallest existing WordPress document-title filter necessary for that page. This is an exception, not a new override system.
 
-Output model:
+### 3.4 Meta Description handling
 
-- `pageType`;
-- `indexable`;
-- `follow`;
-- `canonicalUrl`;
-- `language`;
-- `alternateUrls`;
-- `sitemapEligible`;
-- `schemaProfile`;
-- `socialProfile`.
+WordPress core does not currently emit a Meta Description on the sampled production pages. The current scope still requires a Meta Description for the four target URLs.
 
-The resolver is the single source of page classification used by all emitters.
+Use this minimal approach:
 
-### 4.2 MetadataResolver
+1. use a WordPress-native Excerpt/summary field as the editable description source;
+2. if the Page post type does not expose Excerpt, enable native Page excerpt support in the child theme;
+3. output one escaped Meta Description from that field through a minimal child-theme wp_head callback;
+4. do not create a custom SEO settings screen or a parallel suite of _ipa_seo_* fields;
+5. if the excerpt is empty, omit the tag and surface the page in QA instead of generating a generic site-wide description.
 
-Precedence:
+### 3.5 Canonical ownership
 
-1. explicit SEO override;
-2. page-type-specific source field;
-3. deterministic generated fallback;
-4. site-level fallback.
+Keep WordPress core rel_canonical as the sole canonical emitter.
 
-Example default sources:
+The implementation must not add a custom canonical renderer. Acceptance remains exactly one canonical on each sampled target page.
 
-| Page | Title source | Description source |
-|---|---|---|
-| Home | configured SEO home title | configured business proposition |
-| Page | explicit override -> post title | override -> excerpt/curated summary |
-| Article | override -> post title | override -> excerpt |
-| Course | override -> course title | override -> course excerpt/short description |
-| Course category | override/term meta -> term name | curated term description |
-| Instructor | override -> display name + role/topic | biography excerpt |
+### 3.6 Sitemap ownership
 
-Generated descriptions must be length-aware but not mechanically cut in a way that destroys meaning. Google may rewrite snippets; the system’s job is to provide a strong candidate.
+Keep WordPress core as the sole sitemap owner.
 
-### 4.3 RobotsPolicy
+The current production /wp-sitemap.xml body is sitemap XML but responds with HTTP 404. Fix the routing/status behavior so the same native endpoint returns HTTP 200. Do not add another sitemap plugin or sitemap_index.xml owner.
 
-Rules derive from the SRS page matrix.
+### 3.7 Scope boundary
 
-Baseline:
+Do not expand this engagement into hreflang redesign, translated slugs, translated SEO infrastructure, structured data/schema, social metadata, or a custom SEO override platform. Existing behavior on those surfaces is regression-only.
 
-- `index,follow`: useful public home/pages/articles/courses/approved hubs;
-- `noindex,follow`: internal search, thin archives, filter/sort pages where links should still be discovered;
-- `noindex,nofollow`: private/user/transactional contexts when links are not public discovery paths;
-- drafts/previews: noindex and excluded from sitemap.
+## 4. WordPress integration map
 
-Use the WordPress robots metadata API/filter rather than raw duplicate tags.
+Use existing WordPress capabilities and the child theme only where a minimal integration is required.
 
-### 4.4 CanonicalResolver
-
-Algorithm:
-
-1. determine canonical WordPress object URL;
-2. force canonical scheme/host from deployment configuration;
-3. apply language conversion for current TranslatePress language;
-4. normalize only known non-content tracking parameters;
-5. preserve parameters that materially identify distinct intended content;
-6. apply trailing-slash/permalink convention consistently;
-7. verify target returns intended 200/indexable response.
-
-Do not cross-canonical valid language variants.
-
-#### 4.4.1 Canonical emission ownership and WordPress core
-
-The checked-in WordPress 7.1 source already registers the core canonical renderer:
-
-```php
-add_action( 'wp_head', 'rel_canonical' );
-```
-
-Therefore `CanonicalResolver` computes the canonical URL, but **canonical HTML emission must have exactly one owner**. The implementation must choose one of these mutually exclusive modes:
-
-1. **WordPress-core-owned emission**
-   - keep the core `rel_canonical` callback enabled;
-   - do not render another `<link rel="canonical">` from the IPA SEO layer or another SEO plugin;
-   - only use this mode when the core output can represent the complete IPAEnglish canonical policy for the page type and language.
-2. **IPA SEO/plugin-owned emission**
-   - disable/remove the WordPress core `rel_canonical` callback after WordPress has registered it and before `wp_head` executes;
-   - ensure any selected third-party SEO plugin's canonical renderer is also disabled unless that plugin is the chosen canonical owner;
-   - render exactly one canonical tag using the resolved URL.
-
-The implementation must not use a "core canonical plus custom canonical" strategy, even when both URLs are expected to match. Ownership is about preventing duplicate markup as well as preventing conflicting URLs.
-
-Implementation acceptance:
-
-- public indexable pages: exactly one HTML `link[rel="canonical"]`;
-- pages where policy intentionally omits canonical: zero canonical tags;
-- no tested page may emit more than one canonical tag;
-- the canonical target must match the current-language policy and return the intended response.
-
-### 4.5 AlternateLanguageAdapter
-
-TranslatePress remains the default hreflang renderer.
-
-Integration requirements:
-
-- confirm configured languages at runtime;
-- confirm reciprocal alternates;
-- enable `x-default` only when a meaningful fallback is defined;
-- verify URL conversion for course/page/post/taxonomy types;
-- verify translations are actually publishable/indexable;
-- verify translated slug/meta behavior separately from hreflang.
-
-The custom SEO owner must not emit a second hreflang set unless it explicitly disables/replaces TranslatePress output.
-
-### 4.6 SitemapPolicy
-
-Prefer WordPress native sitemap infrastructure unless a selected SEO plugin becomes the sitemap owner.
-
-Include:
-
-- home/public pages;
-- published indexable posts/articles;
-- published indexable courses;
-- approved public taxonomies/hubs;
-- language variants when the chosen multilingual integration reliably exposes them.
-
-Exclude:
-
-- lessons;
-- quizzes;
-- questions;
-- reviews/orders;
-- account/dashboard/login/reset;
-- checkout/payment/order confirmation;
-- search result pages;
-- preview/draft;
-- noindex pages;
-- redirects/errors;
-- filter/sort/query duplicates;
-- thin/disallowed archives.
-
-Before implementation, verify the exact sitemap hooks against the WordPress 7.1 APIs in this repository. Candidate integration surfaces include post-type/taxonomy provider filters and query-argument filters; do not copy hook names from an older WordPress version without source verification.
-
-### 4.7 StructuredDataGraph
-
-Emit a single JSON-LD graph per page where practical.
-
-Base nodes:
-
-- `Organization`;
-- `WebSite`;
-- `WebPage` or subtype;
-- `BreadcrumbList` where hierarchy exists.
-
-Template-specific nodes:
-
-- Course detail: `Course`;
-- Course hub/list: `ItemList` with Course references/items;
-- Article: `Article` or `BlogPosting`;
-- Public instructor profile: `ProfilePage` + `Person` only when profile quality supports indexing.
-
-Do not manufacture fields that are not visible/true. Do not output fake aggregate ratings, prices, availability, instructors, or dates.
-
-FAQ content may exist in HTML, but FAQ rich-result schema is not an implementation target in this 2026 baseline.
-
-### 4.8 SocialMetaRenderer
-
-For priority indexable pages emit one coherent set of:
-
-- `og:type`;
-- `og:url`;
-- `og:title`;
-- `og:description`;
-- `og:image`;
-- Twitter/X-compatible card metadata.
-
-Use the same resolved canonical/title/description where appropriate to prevent divergence.
-
-## 5. WordPress integration map
-
-The implementation should use public WordPress hooks/APIs, verified against the checked-in 7.1 source before coding.
-
-Expected integration categories:
-
-| Need | WordPress integration |
+| Need | Current-scope implementation |
 |---|---|
-| Title | document-title filters/API |
-| Robots | `wp_robots` filter/API |
-| Canonical | choose exactly one emitter: keep WordPress core `rel_canonical`, or disable it before `wp_head` and use one controlled SEO-owner renderer |
-| Head metadata | one controlled `wp_head` renderer |
-| Sitemap | WordPress sitemap provider/query filters |
-| Redirect | canonical-host at edge; WordPress redirect hooks only for application URL migrations |
-| Query classification | main-query/queried-object APIs |
-| Metadata storage | post/term options/meta APIs |
-| Cache invalidation | W3TC purge integration or documented purge after metadata updates |
+| Title | Existing WordPress page/site title behavior; smallest document-title filter only if a page-title edit has unacceptable UI side effects |
+| Meta Description source | WordPress-native Excerpt/summary |
+| Meta Description output | One minimal child-theme wp_head callback |
+| Robots | Existing WordPress/runtime behavior; only fix audited defects |
+| Canonical | Keep WordPress core rel_canonical; no custom renderer |
+| Sitemap | Keep WordPress core native sitemap; fix /wp-sitemap.xml HTTP status to 200 |
+| Redirect | Direct-link correction or one-hop 301 only for confirmed moved/replaced URLs |
+| Query/page editing | Existing WordPress/Elementor admin |
+| Cache | W3 Total Cache for page/browser cache; Autoptimize for CSS/JS optimization |
+| Image optimization | One selected image compression/WebP path |
+| Analytics | GA4 business-owned property |
+| Search monitoring | GSC business-owned property |
 
-Exact hooks are implementation details to confirm from local WordPress 7.1 source; the TSD intentionally does not freeze obsolete hook names beyond stable APIs already verified.
+No custom SEO metadata storage model is required.
 
-For canonical specifically, the current repository already verifies that WordPress 7.1 registers `rel_canonical` on `wp_head`. Any implementation that introduces a custom canonical renderer must explicitly account for and disable that default emitter before rendering its own tag.
+## 5. MasterStudy integration
 
-## 6. MasterStudy integration
-
-### 6.1 Course detail
+### 5.1 Course detail
 
 Data mapping should use MasterStudy/WordPress data as source of truth:
 
@@ -370,7 +206,7 @@ Data mapping should use MasterStudy/WordPress data as source of truth:
 
 The adapter should isolate MasterStudy-specific meta keys/functions so LMS upgrades affect one module rather than every SEO renderer.
 
-### 6.2 Course category
+### 5.2 Course category
 
 For `stm_lms_course_taxonomy`:
 
@@ -379,7 +215,7 @@ For `stm_lms_course_taxonomy`:
 - render ItemList for visible listed courses;
 - include in sitemap only when indexable.
 
-### 6.3 Private learning objects
+### 5.3 Private learning objects
 
 Never infer public SEO eligibility merely because a WordPress URL can technically resolve. The post-type policy is authoritative:
 
@@ -389,54 +225,34 @@ Never infer public SEO eligibility merely because a WordPress URL can technicall
 - order excluded;
 - review object excluded as a standalone SEO URL.
 
-## 7. Multilingual design
+## 6. Out-of-scope compatibility boundary
 
-### 7.1 URL model
+The engagement does not implement:
 
-Use one stable URL per language. The exact production pattern must be verified from TranslatePress runtime configuration, for example subdirectory-style language paths.
+- hreflang changes;
+- translated slug changes;
+- translated SEO-field infrastructure;
+- structured data/schema;
+- Open Graph or Twitter/X metadata;
+- a separate SEO override platform.
 
-Do not invent a domain/path in source documentation.
+Existing English/Vietnamese routing and language switching must continue working after edits to the four Vietnamese target pages.
 
-### 7.2 Canonical + hreflang invariant
+## 7. URL and redirect design
 
-For each equivalent page set:
-
-- each language URL self-canonicalizes;
-- each includes reciprocal alternate references to published equivalents;
-- each alternate resolves to 200 and is not noindex;
-- optional x-default points to the chosen fallback.
-
-### 7.3 Translated slugs
-
-Because the tracked free TranslatePress code explicitly treats slug translation as an SEO Pack feature, choose one path:
-
-**Path A — TranslatePress SEO Pack**
-- verify compatible licensed add-on is deployed;
-- verify slug translation, metadata translation, sitemap integration;
-- document settings.
-
-**Path B — Custom**
-- store translated SEO metadata/slug mappings in version-compatible WordPress data;
-- generate redirects when a translated slug changes;
-- integrate with TranslatePress language resolution.
-
-Path A is operationally simpler if already licensed. Path B has higher engineering/maintenance cost.
-
-## 8. URL and redirect design
-
-### 8.1 Canonical host
+### 7.1 Canonical host
 
 Configure the web server/CDN so all alternate host variants redirect directly to the selected HTTPS host.
 
 Current tracked Apache rule only enforces HTTPS and uses the received host, so host normalization must be added at deployment once the canonical domain is known.
 
-### 8.2 Tracking parameters
+### 7.2 Tracking parameters
 
 Known campaign parameters should not create canonical identities. Examples include common analytics/ad click parameters.
 
 Do not blanket-strip all query parameters: course filters, pagination, preview, authentication, or application state can have different semantics.
 
-### 8.3 URL migration
+### 7.3 URL migration
 
 Any change to:
 
@@ -452,10 +268,10 @@ requires:
 2. one-hop permanent redirects;
 3. internal link updates;
 4. sitemap update;
-5. canonical/hreflang update;
+5. canonical and internal-link update;
 6. Search Console monitoring.
 
-## 9. robots.txt design
+## 8. robots.txt design
 
 Recommended baseline behavior:
 
@@ -467,98 +283,36 @@ Recommended baseline behavior:
 
 WordPress admin AJAX/resource endpoints needed by rendering must not be accidentally blocked.
 
-## 10. Structured data details
+## 9. Metadata storage design
 
-### 10.1 Course detail example model
+Do not create a custom SEO metadata subsystem.
 
-Logical fields:
+For the four target pages:
 
-- `@type: Course`;
-- name;
-- description;
-- provider/organization where accurate;
-- URL;
-- image if representative;
-- course/instructor properties supported by current Google/schema guidance and visible content.
+- use existing WordPress page/site title behavior for Title;
+- use a WordPress-native Excerpt/summary field as the editable Meta Description source;
+- if Page excerpts are not enabled, enable native Page excerpt support in the child theme;
+- render exactly one escaped Meta Description from that native field;
+- do not introduce a custom SEO settings screen;
+- do not introduce a parallel set of custom SEO fields;
+- keep WordPress core as canonical owner.
 
-Before implementation, compare required/recommended properties with the current Google Course documentation because rich-result requirements can change.
+## 10. Basic performance optimization
 
-### 10.2 Course list
+The current engagement covers only basic speed hygiene.
 
-A qualifying list/hub:
+Implementation focus:
 
-- visibly contains at least three eligible courses;
-- has ItemList positions;
-- each item resolves to a unique canonical course URL;
-- list order in JSON-LD reflects visible order.
+- W3 Total Cache owns page/browser caching;
+- Autoptimize owns CSS/JS asset optimization;
+- enable one image compression/WebP path;
+- avoid duplicate minification/cache transforms;
+- verify forms, LMS/login flows, and target-page rendering after changes;
+- capture a before/after Lighthouse or equivalent diagnostic sample.
 
-### 10.3 Breadcrumb
+LCP, INP, and CLS may be observed, but a full Core Web Vitals remediation program is outside scope. Larger Elementor/JavaScript/CSS work must be logged as deferred work rather than silently expanding this engagement.
 
-The JSON-LD hierarchy must correspond to a visible, sensible navigation path. Do not use breadcrumbs to stuff keywords.
-
-### 10.4 Article
-
-Use visible headline, author, publish/modified date, images, publisher. Do not change `dateModified` for trivial technical cache/template deployments.
-
-## 11. Metadata storage design
-
-If custom SEO editing is implemented, use namespaced fields such as:
-
-- `_ipa_seo_title`;
-- `_ipa_seo_description`;
-- `_ipa_seo_robots_override`;
-- `_ipa_seo_og_image_id`.
-
-Guardrails:
-
-- canonical override should not be a free-text field for ordinary editors unless needed;
-- robots noindex override should display a warning;
-- sanitization/permissions/nonces required;
-- translated values must be language-aware;
-- empty override means “use generated default.”
-
-If a third-party SEO plugin is selected, do not create parallel fields unless migration requires them.
-
-## 12. Performance and Core Web Vitals
-
-### 12.1 Targets
-
-At the 75th percentile for key public templates:
-
-- LCP <= 2.5 s;
-- INP <= 200 ms;
-- CLS <= 0.1.
-
-### 12.2 Existing tools
-
-W3 Total Cache and Autoptimize overlap in some optimization areas. The deployment must define which tool owns:
-
-- page cache;
-- CSS minification/aggregation;
-- JS minification/defer/delay;
-- image lazy loading;
-- CDN rewriting;
-- browser cache.
-
-Do not enable the same transformation blindly in both.
-
-### 12.3 Template-specific priorities
-
-Home/course/article:
-
-- prioritize LCP hero/featured image;
-- do not lazy-load the LCP image;
-- set image dimensions/aspect ratio;
-- reduce blocking CSS/JS;
-- minimize large slider/Elementor payload where unnecessary;
-- preload only critical assets with measured benefit;
-- use modern image formats where supported;
-- avoid layout shifts from fonts/banners/iframes;
-- delay non-essential third-party scripts.
-
-Measure after each optimization because aggressive script delay can break enrollment/forms/analytics.
-
-## 13. Cache correctness
+## 11. Cache correctness
 
 Cache keys must distinguish:
 
@@ -570,9 +324,9 @@ Never cache personalized dashboard/order content into a public page cache.
 
 SEO metadata changes require purge/invalidation of the affected URL and language variants.
 
-## 14. Analytics and Search Console design
+## 12. Analytics and Search Console design
 
-### 14.1 Search Console
+### 12.1 Search Console
 
 For this engagement:
 
@@ -591,7 +345,7 @@ Use a domain property where operationally feasible and monitor:
 - Core Web Vitals;
 - manual actions/security issues.
 
-### 14.2 Analytics
+### 12.2 Analytics
 
 For this engagement, confirm GA4 is receiving production page-view traffic and that the 3-5 target landing pages can be identified in reporting. New custom event architecture is not required unless separately approved.
 
@@ -605,53 +359,37 @@ Recommended public conversion funnel:
 
 Keep event payloads content-oriented. Do not send learner answers, credentials, private order notes, or payment secrets.
 
-## 15. Testing strategy
+## 13. Testing strategy
 
-### 15.1 Static/source tests
+### 13.1 Static/source tests
 
-When custom code exists:
+When minimal child-theme code is added, test only the behavior introduced by this engagement:
 
-- unit tests for context classification;
-- title/description precedence;
-- robots policy;
-- canonical URL normalization;
-- sitemap inclusion;
-- schema construction;
-- language mapping.
+- Page excerpt support is enabled when required;
+- one Meta Description is emitted from the native WordPress source;
+- no duplicate canonical is introduced;
+- sitemap fix preserves valid XML and changes the response status to 200;
+- cache/optimization changes do not alter authenticated/private behavior.
 
-### 15.2 HTML integration matrix
+### 13.2 HTML integration matrix
 
-Test at minimum:
+Test the four Vietnamese target URLs plus a small regression sample of the corresponding English URLs and key private/LMS routes.
 
-- home;
-- static page;
-- article;
-- public course;
-- approved course category;
-- thin category;
-- internal search;
-- filter/sort URL;
-- login/account;
-- lesson;
-- quiz/question where routable;
-- 404;
-- every launch language variant.
-
-For each capture:
+For each target page capture:
 
 - HTTP status;
 - final URL/redirect chain;
-- title;
-- meta description;
+- Title;
+- Meta Description;
 - robots;
 - canonical;
-- hreflang;
-- OG/Twitter tags;
-- JSON-LD;
-- H1;
-- key crawlable links.
+- H1/H2;
+- relevant image ALT;
+- key internal links.
 
-### 15.3 Sitemap tests
+The English counterparts are regression checks only. Hreflang, translated slugs, structured data, and social metadata are not acceptance surfaces.
+
+### 13.3 Sitemap tests
 
 Automated checks:
 
@@ -663,28 +401,18 @@ Automated checks:
 - no private post type;
 - public course coverage matches intended inventory.
 
-### 15.4 Structured-data tests
+### 13.4 Multilingual regression check
 
-Use:
+For each edited Vietnamese target page, verify only that:
 
-- schema parser/unit tests;
-- Google Rich Results Test for supported search features;
-- Search Console enhancement reports after deployment.
+- the page still resolves normally;
+- its English counterpart remains reachable;
+- the existing language switch still works;
+- no URL structure is changed as part of this engagement.
 
-Zero critical validation errors on supported templates is the release gate.
+No hreflang validation, translated-slug implementation, or translated SEO infrastructure is required.
 
-### 15.5 Multilingual tests
-
-Build a language-equivalence matrix and assert:
-
-- self canonical;
-- reciprocal hreflang;
-- valid codes;
-- no alternate -> redirect/error/noindex;
-- x-default consistent;
-- translated metadata language matches visible content.
-
-### 15.6 Crawl tests
+### 13.5 Crawl tests
 
 Use Screaming Frog SEO Spider as the primary crawl/audit and re-crawl verification tool.
 
@@ -704,11 +432,11 @@ Initial crawl shall check at minimum:
 
 After implementation, re-crawl the affected site/sections and update the Technical SEO Document with final status. Crawl findings are evidence, not automatic defects; false positives and intentionally excluded URLs must be marked accordingly.
 
-### 15.7 Performance tests
+### 13.6 Performance tests
 
-Run mobile and desktop lab tests on representative URLs and compare before/after. Use Search Console/CrUX field data when sufficient traffic exists.
+Run a basic before/after Lighthouse or equivalent diagnostic check on the target pages. Record larger performance work as deferred if it exceeds cache/image/basic front-end tuning.
 
-## 16. Deployment plan
+## 14. Deployment plan
 
 ### Week 1 — Research, audit, and keyword planning
 
@@ -781,7 +509,7 @@ Run mobile and desktop lab tests on representative URLs and compare before/after
 - sitemap submission status;
 - open/deferred recommendations.
 
-## 17. Rollback plan
+## 15. Rollback plan
 
 Every SEO rollout must support reverting without leaving search signals inconsistent.
 
@@ -797,30 +525,28 @@ Rollback order:
 
 Never roll back a public URL migration by simply removing redirects after search engines/users have adopted the new URL. URL rollback needs its own migration plan.
 
-## 18. Upgrade strategy
+## 16. Upgrade strategy
 
 After WordPress, MasterStudy, TranslatePress, W3TC, Autoptimize, or the selected SEO plugin changes:
 
 1. run the HTML integration matrix;
 2. verify CPT/taxonomy registrations;
 3. verify sitemap coverage;
-4. verify canonical/hreflang;
-5. verify schema;
-6. verify cache/language/private-page behavior;
-7. compare performance.
+4. verify canonical and sitemap behavior;
+5. verify cache/private-page behavior;
+6. compare basic performance.
 
 Vendor theme/plugin code should not be patched directly for SEO unless no extension point exists and the patch is explicitly maintained.
 
-## 19. Security and privacy
+## 17. Security and privacy
 
-- No private learner data in metadata/schema.
+- No private learner data in metadata or analytics.
 - No order/payment data in indexable HTML.
 - No authentication token/session identifier in canonical/sitemap.
-- Do not leak draft course content through structured data.
 - Analytics payloads must not include secrets or learner answers.
 - Search crawler accessibility never bypasses authorization.
 
-## 20. Observability and handover follow-up
+## 18. Observability and handover follow-up
 
 During the three-week engagement, checks should cover:
 
@@ -834,14 +560,14 @@ During the three-week engagement, checks should cover:
 
 After handover, ongoing SEO monitoring is a separate operational scope. Recommended follow-up includes monthly Search Console review, new crawl issues, keyword/page performance, and content opportunities.
 
-## 21. Resolved technical decisions
+## 19. Resolved technical decisions
 
 | Decision | Resolution | Implementation rule |
 |---|---|---|
 | Canonical host | https://www.ipaenglish.com | Keep apex -> www permanent redirect and generate all canonical/sitemap targets on www |
 | Target URLs | Four Vietnamese URLs: /vi/, /vi/global-english-for-teen-achievers/, /vi/book-a-test/, /vi/learning-system/ | Optimize these four only; English equivalents are regression/parity checks |
 | Keyword set | 20-keyword baseline from KEYWORD-MAP.md | GSC may reorder/replace terms during Week 1, but never exceed 20 without scope change |
-| Metadata owner | WordPress core for document title/canonical + one thin version-controlled IPAEnglish layer for target-page title overrides and Meta Description | Do not add a full SEO plugin in this scope; never emit a second canonical |
+| Metadata owner | Existing WordPress title/site-title behavior + native Excerpt/summary for Meta Description | Do not build a separate SEO override system. Child-theme code may only enable Page excerpts and emit one Meta Description. WordPress core remains canonical owner. |
 | Sitemap owner | WordPress core /wp-sitemap.xml | Fix current HTTP 404 to 200 and keep robots.txt pointing to it; do not add sitemap_index.xml/plugin sitemap |
 | 404 remediation | Direct-link correction first; 301 only for a true moved/replaced URL with a 1:1 successor; otherwise 404/410 | No blanket redirects to Home and no avoidable redirect chains |
 | Image optimization | WebP currently treated as inactive | Enable one controlled compression/WebP path and verify actual response format + visual quality |
@@ -851,7 +577,7 @@ After handover, ongoing SEO monitoring is a separate operational scope. Recommen
 
 These decisions supersede the earlier open-decision list for the current three-week engagement.
 
-## 22. Definition of done for current SEO engagement
+## 20. Definition of done for current SEO engagement
 
 The current SEO engagement is done when:
 
