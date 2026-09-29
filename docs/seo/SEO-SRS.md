@@ -1,9 +1,9 @@
 # SEO Software Requirements Specification (SRS)
 
 **Document ID:** IPA-SEO-SRS  
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Agreed delivery scope
-**Date:** 2026-09-23
+**Date:** 2026-09-29
 **System:** IPAEnglish WordPress / MasterStudy LMS  
 **Related:** [SEO-TSD.md](./SEO-TSD.md)
 
@@ -103,6 +103,40 @@ The engagement is accepted only when the following are handed over:
 4. resolved or documented basic technical issues;
 5. working Google Search Console and GA4 access/tracking;
 6. sitemap submitted to Google Search Console and accepted for processing.
+
+### 5.3 Delivery roadmap and timeline
+
+The agreed delivery duration is **3 working weeks**: **1 week of research/audit** followed by **2 weeks of implementation, verification, and handover**. The roadmap below is the delivery baseline for the current engagement and does not expand the approved scope.
+
+After the Week 1 audit backlog is available, SEO Exec and Dev / Tech Exec may work in parallel. Access delays, business approval delays, or newly discovered work outside the agreed basic SEO scope may move dependent tasks or require a separate change request; they do not automatically expand the three-week scope.
+
+#### Roadmap
+
+| Phase | Timing | Primary objective | Primary owners | Milestone / exit gate |
+|---|---|---|---|---|
+| Phase 1 — Baseline, audit, and research | Week 1 | Establish measurement/crawl baseline, complete the first technical audit, finalize the maximum 20-keyword set, and map it to the four approved Vietnamese target URLs | SEO Exec, supported by Dev / Tech Exec and Business owner | **Gate A — Audit & Keyword Baseline Approved:** GSC/GA4 access state recorded, Screaming Frog baseline completed, Technical SEO Document populated, keyword map approved, and implementation backlog assigned |
+| Phase 2 — On-page and technical implementation | Week 2 | Apply approved on-page changes and remediate agreed basic technical defects | SEO Exec + Dev / Tech Exec in parallel | **Gate B — Implementation Ready for QA:** target URLs updated; agreed critical/high-priority in-scope fixes implemented or explicitly deferred with reason; robots/sitemap/redirect/cache/image changes ready for re-crawl |
+| Phase 3 — Verification, final fixes, and handover | Week 3 | Re-crawl, compare before/after state, close remaining in-scope defects, and prepare handover evidence | SEO Exec + Dev / Tech Exec | **Gate C — Handover Accepted:** release acceptance matrix in Section 11 is satisfied, final audit/keyword documents are complete, and all unresolved items are documented as deferred/out-of-scope |
+
+#### Detailed timeline
+
+| Working period | SEO Exec activities | Dev / Tech Exec activities | Required output |
+|---|---|---|---|
+| Week 1 — Day 1 | Confirm GSC/GA4 access and ownership; capture current measurement/indexing state; start Screaming Frog crawl | Confirm current HTTPS, robots.txt, sitemap, cache, and image-optimization configuration | Access/baseline record and initial crawl evidence |
+| Week 1 — Day 2-3 | Analyze crawl findings; prepare Technical SEO Document; research and group candidate keywords by intent | Review technical findings; classify feasibility, risk, and implementation owner; identify code/config fixes | Prioritized audit backlog and keyword candidate set |
+| Week 1 — Day 4-5 | Finalize maximum 20 keywords; map them to the four approved Vietnamese target URLs; capture current Title/Description/H1/H2/ALT/copy baseline | Confirm implementation approach for agreed technical items | Approved Keyword Map, completed Week 1 audit baseline, and assigned Week 2 backlog |
+| Week 2 | Update Title, Meta Description, H1/H2, relevant ALT text, and small existing-copy adjustments on the approved target URLs; create/verify sitemap submission in GSC | Fix agreed 404/broken-link and 301 cases; correct robots/sitemap behavior; verify HTTPS; implement agreed WebP/image compression and basic cache/performance fixes | Updated target URLs and implemented technical backlog ready for QA |
+| Week 3 — Early | Re-crawl with Screaming Frog; compare before/after findings; verify final on-page output, GSC signals available at that time, and GA4 traffic reception | Fix remaining in-scope QA/re-crawl defects; verify redirects, robots, sitemap, HTTPS, image, and cache behavior | Re-crawl evidence and closed/final-status issue list |
+| Week 3 — Final | Finalize Keyword Map, Technical SEO Document, audit report, GSC/GA4 setup status, sitemap status, and deferred recommendations | Provide final technical status and document any deferred items requiring future scope | Handover package defined in Section 5.2 and acceptance evidence for Section 11 |
+
+#### Timeline control rules
+
+1. The final keyword set and target-page mapping must be approved by the end of Week 1 so Week 2 on-page work is not blocked.
+2. Critical crawl/indexing blockers discovered in Week 1 are prioritized before cosmetic or lower-impact findings.
+3. Week 2 implementation may run in parallel between SEO Exec and Dev / Tech Exec once ownership is assigned.
+4. Week 3 is reserved for re-crawl, QA, final in-scope corrections, and handover; it is not a buffer for adding new keywords, pages, advanced schema, multilingual redesign, or full content production.
+5. Google indexing/ranking completion is not a schedule acceptance condition. Submission, configuration, crawlability, and available verification evidence are the acceptance conditions within the project timeline.
+6. Any request above 20 keywords, beyond the approved 3-5 URL cap, or outside the stated technical scope requires a separately approved change request and estimate.
 
 The broader technical requirements below remain engineering guardrails and future reference. Advanced multilingual SEO, structured data/schema, social metadata, a custom SEO override platform, and full Core Web Vitals remediation are outside the current scope.
 
