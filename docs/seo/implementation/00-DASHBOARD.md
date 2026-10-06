@@ -6,7 +6,7 @@
 
 | ID | Task | Timing | Owner | Priority | Source status | Dependency |
 |---|---|---|---|---|---|---|
-| SEO-W1-01 | Access & Measurement Baseline | Week 1 | SEO Exec | High | READY | — |
+| SEO-W1-01 | Access & Measurement Baseline | Week 1 | SEO Exec | High | DONE | — |
 | SEO-W1-02 | Initial Screaming Frog Crawl | Week 1 | SEO Exec | High | READY | W1-01 (access helpful, not hard blocker for crawl) |
 | SEO-W1-03 | Technical Audit Triage & Backlog | Week 1 | SEO Exec + Dev/Tech | High | BLOCKED | W1-02 |
 | SEO-W1-04 | Keyword Validation & Final Mapping | Week 1 | SEO Exec + Business | High | BASELINE_RESOLVED | W1-01; revalidate with GSC if available |
