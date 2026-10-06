@@ -254,3 +254,99 @@ a.woocommerce-LoopProduct-link.woocommerce-loop-product__link {
 .widget_stm_recent_posts .cats_w {
     margin-left: 83px;
 }
+
+.ipa-floating-chat-button {
+    position: fixed;
+    right: 22px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 10px 28px rgba(20, 32, 48, 0.24);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.ipa-facebook-floating-button {
+    bottom: 96px;
+    background: #0084ff;
+}
+
+.ipa-zalo-floating-button {
+    bottom: 24px;
+    background: #0068ff;
+}
+
+.ipa-floating-chat-button:hover,
+.ipa-floating-chat-button:focus {
+    color: #fff !important;
+    text-decoration: none !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 14px 34px rgba(20, 32, 48, 0.32) !important;
+}
+
+.ipa-facebook-floating-button:hover,
+.ipa-facebook-floating-button:focus {
+    background: #006fd6 !important;
+}
+
+.ipa-zalo-floating-button:hover,
+.ipa-zalo-floating-button:focus {
+    background: #0056d6 !important;
+}
+
+.ipa-floating-chat-button:focus {
+    outline: 3px solid rgba(0, 104, 255, 0.24);
+    outline-offset: 4px;
+}
+
+.ipa-floating-chat-button__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+.ipa-floating-chat-button__svg {
+    display: block !important;
+    width: 34px !important;
+    height: 34px !important;
+    max-width: 34px !important;
+    max-height: 34px !important;
+    fill: #fff !important;
+}
+
+@media (max-width: 767px) {
+    .ipa-floating-chat-button {
+        right: 16px;
+        width: 56px;
+        height: 56px;
+    }
+
+    .ipa-facebook-floating-button {
+        bottom: 84px;
+    }
+
+    .ipa-zalo-floating-button {
+        bottom: 18px;
+    }
+
+    .ipa-floating-chat-button__icon {
+        font-size: 15px;
+    }
+
+    .ipa-floating-chat-button__svg {
+        width: 31px !important;
+        height: 31px !important;
+        max-width: 31px !important;
+        max-height: 31px !important;
+    }
+}
