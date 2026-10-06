@@ -2,6 +2,10 @@
 wp-config.php
 .env
 .env.*
+docker-compose.local.yml
+docker-compose.override.yml
+*.local.yml
+*.local.yaml
 
 # Database dumps and backups.
 *.sql
