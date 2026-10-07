@@ -1,0 +1,12 @@
+https://www.ipaenglish.com/wp-sitemap-posts-page-1.xml	HTTP=200	CONTENT_TYPE=application/xml; charset=UTF-8	XML_PARSE=OK
+https://www.ipaenglish.com/wp-sitemap-posts-teachers-1.xml	HTTP=200	CONTENT_TYPE=application/xml; charset=UTF-8	XML_PARSE=OK
+https://www.ipaenglish.com/wp-sitemap-posts-stm-certificates-1.xml	HTTP=200	CONTENT_TYPE=application/xml; charset=UTF-8	XML_PARSE=OK
+https://www.ipaenglish.com/wp-sitemap-users-1.xml	HTTP=200	CONTENT_TYPE=application/xml; charset=UTF-8	XML_PARSE=OK
+
+Content URL sanity check
+https://www.ipaenglish.com/wp-sitemap-posts-page-1.xml	URL_COUNT=32	CANONICAL_HOST_OK=True	OBVIOUS_PRIVATE_PATTERN=NONE
+https://www.ipaenglish.com/wp-sitemap-posts-teachers-1.xml	URL_COUNT=1	CANONICAL_HOST_OK=True	OBVIOUS_PRIVATE_PATTERN=NONE
+https://www.ipaenglish.com/wp-sitemap-posts-stm-certificates-1.xml	URL_COUNT=10	CANONICAL_HOST_OK=True	OBVIOUS_PRIVATE_PATTERN=NONE
+https://www.ipaenglish.com/wp-sitemap-users-1.xml	URL_COUNT=2	CANONICAL_HOST_OK=True	OBVIOUS_PRIVATE_PATTERN=NONE
+TOTAL_URLS=45
+SUSPICIOUS_URLS=0

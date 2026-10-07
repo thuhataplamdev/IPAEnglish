@@ -5,6 +5,7 @@
 **Priority:** High  
 **Audit mapping:** TECH-001  
 **Dependency:** SEO-W1-03
+**Status:** DONE — production sitemap runtime fixed and verified; Google Search Console accepted the sitemap submission on 2026-10-07. Final Google fetch/processing status remains a Week 3 verification item.
 
 ## Objective
 
@@ -39,6 +40,27 @@ Giữ WordPress core là sitemap owner duy nhất và sửa `/wp-sitemap.xml` t�
 7. Purge relevant cache.
 8. Verify endpoint.
 
+## Implementation checkpoint — 2026-10-07
+
+- Reproduced production `/wp-sitemap.xml`: valid WordPress sitemap XML body with HTTP 404 and XML content type.
+- Confirmed `/robots.txt` still references the native sitemap.
+- Root cause matches WordPress Core #65945: WordPress 7.1 `WP::handle_404()` can mark valid native sitemap routes as 404 when the main query has no published posts.
+- Backported the official WordPress 7.1.1 fix from the upstream package into only:
+  - `wp-includes/class-wp.php`;
+  - `wp-includes/sitemaps/class-wp-sitemaps.php`.
+- No second sitemap owner/plugin is introduced.
+- Production deploy completed after verified database + source backups and dedicated rollback copies of the two replaced core files.
+- Both deployed files match the intended upstream WordPress 7.1.1 backport hashes and pass PHP lint.
+- WordPress object cache and W3 Total Cache were purged successfully.
+- Production `/wp-sitemap.xml` now returns HTTP 200 with `application/xml`; the sitemap index parses successfully.
+- Anonymous public verification returns four public child sitemaps; all four return HTTP 200 with XML content type, parse successfully, and use the HTTPS canonical host.
+- `/robots.txt` still references `https://www.ipaenglish.com/wp-sitemap.xml`.
+- The project owner submitted `wp-sitemap.xml` in GSC and the UI confirmed `Đã gửi sơ đồ trang web thành công` on 2026-10-07.
+- Immediately after the successful submission confirmation, the GSC table still displayed the previous `Không thể tìm nạp` state. This is not claimed as a successful Google fetch; final processing/fetch status is deferred to W3 verification.
+- Owner browser evidence displayed seven child sitemap rows while anonymous public verification returned four. The exact session/cache reason is not assumed; both observations are recorded in evidence.
+
+Evidence: `docs/seo/evidence/w2-03/`.
+
 ## Acceptance
 
 - Status 200.
@@ -53,6 +75,8 @@ Giữ WordPress core là sitemap owner duy nhất và sửa `/wp-sitemap.xml` t�
 
 SEO Exec submit sitemap sau khi HTTP 200 đã pass. Ghi trạng thái `Submitted / Received / Processing / Success` theo trạng thái thực tế, không chờ Google index toàn bộ để close project.
 
+Recorded state for W2-03 closure: **Submitted successfully on 2026-10-07**. Google fetch/processing/indexing is not claimed complete and remains part of W3 verification.
+
 ## Rollback
 
 - Revert rewrite/filter change.
@@ -62,8 +86,8 @@ SEO Exec submit sitemap sau khi HTTP 200 đã pass. Ghi trạng thái `Submitted
 
 ## Definition of Done
 
-- [ ] TECH-001 Fixed.
-- [ ] HTTP 200 verified.
-- [ ] XML validity verified.
-- [ ] robots.txt directive verified.
-- [ ] GSC submission evidence recorded.
+- [x] TECH-001 Fixed.
+- [x] HTTP 200 verified.
+- [x] XML validity verified.
+- [x] robots.txt directive verified.
+- [x] GSC submission evidence recorded.
