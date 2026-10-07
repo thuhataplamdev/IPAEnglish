@@ -1,0 +1,11 @@
+# Screaming Frog runtime proof — W1-02
+
+2026-10-07 10:15:08,745 [47153] [main] INFO  - Running: Screaming Frog SEO Spider 24.3
+2026-10-07 10:15:08,746 [47153] [main] INFO  - Licence Status: Missing.
+2026-10-07 10:15:08,903 [47153] [main] INFO  - User has accepted the current version of the EULA
+2026-10-07 10:15:11,358 [47153] [SpiderMain 1] INFO  - Starting to spider https://www.ipaenglish.com/
+2026-10-07 10:15:20,399 [47153] [SpiderMain 1] INFO  - Spider changing state from: SpiderActiveAwaitingApiState to: SpiderCrawlIdleState
+
+core_crawl_exit_code=0
+reports_exit_code=0
+images_alt_exit_code=0

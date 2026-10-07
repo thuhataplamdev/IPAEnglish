@@ -7,8 +7,8 @@
 | ID | Task | Timing | Owner | Priority | Source status | Dependency |
 |---|---|---|---|---|---|---|
 | SEO-W1-01 | Access & Measurement Baseline | Week 1 | SEO Exec | High | DONE | — |
-| SEO-W1-02 | Initial Screaming Frog Crawl | Week 1 | SEO Exec | High | READY | W1-01 (access helpful, not hard blocker for crawl) |
-| SEO-W1-03 | Technical Audit Triage & Backlog | Week 1 | SEO Exec + Dev/Tech | High | BLOCKED | W1-02 |
+| SEO-W1-02 | Initial Screaming Frog Crawl | Week 1 | SEO Exec | High | DONE | W1-01 complete; official Screaming Frog 24.3 evidence captured 2026-10-07 |
+| SEO-W1-03 | Technical Audit Triage & Backlog | Week 1 | SEO Exec + Dev/Tech | High | READY | W1-02 complete |
 | SEO-W1-04 | Keyword Validation & Final Mapping | Week 1 | SEO Exec + Business | High | BASELINE_RESOLVED | W1-01; revalidate with GSC if available |
 | SEO-W1-05 | Target-page On-page Baseline | Week 1 | SEO Exec | High | READY | W1-02/W1-04 recommended |
 | SEO-W2-01 | Title + Meta Description Implementation | Week 2 | SEO Exec + Dev/Tech | Medium | OPEN | W1-04,W1-05 |
@@ -28,15 +28,15 @@
 | Audit finding | Task |
 |---|---|
 | TECH-001 — `/wp-sitemap.xml` returns XML with HTTP 404 | SEO-W2-03 |
-| TECH-002 — Meta Description missing on 4 target URLs | SEO-W2-01 |
+| TECH-002 — Meta Description missing on 4 target URLs (and all 26 crawled HTML pages) | SEO-W2-01 |
 | TECH-003 — Vietnamese target titles still generic/English on samples | SEO-W2-01 |
 | TECH-004 — GA4 execution tag not verified | SEO-W2-08 |
 | TECH-005 — WebP delivery not active in sampled image | SEO-W2-05 |
-| TECH-006 — H1 needs confirmation/fix on Book a Test / Learning System | SEO-W2-02 |
+| TECH-006 — H1 missing on Teen / Book a Test / Learning System target pages | SEO-W2-02 |
 | TECH-007 — W3TC + Autoptimize ownership overlap risk | SEO-W2-06 |
-| TECH-008 — URL-specific 404/redirect list pending crawl | SEO-W2-04 |
+| TECH-008 — W1-02 found 0 internal 4xx and 0 redirect chains; preserve clean baseline/regression policy | SEO-W2-04 |
 | TECH-009 — robots.txt accepted baseline | SEO-W2-07 regression |
-| TECH-010 — WordPress canonical accepted baseline | SEO-W2-07 regression |
+| TECH-010 — WordPress canonical accepted baseline; all 4 targets self-canonical in W1-02 | SEO-W2-07 regression |
 
 ## Gate A — End of Week 1
 
