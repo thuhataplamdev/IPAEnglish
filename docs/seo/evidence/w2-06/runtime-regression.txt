@@ -1,0 +1,32 @@
+SEO-W2-06 runtime regression evidence
+Date: 2026-10-07
+
+Target pages after purge
+/vi/                                      HTTP 200
+/vi/global-english-for-teen-achievers/   HTTP 200
+/vi/book-a-test/                         HTTP 200
+/vi/learning-system/                     HTTP 200
+
+Anonymous login/account/booking checks after purge
+/wp-login.php             HTTP 200, 0 Autoptimize cache refs, login form present
+/user-account/            HTTP 200, public shell rendered
+/membership-account/      HTTP 200, public shell rendered
+/my-account/              HTTP 200, public shell rendered
+/courses/                 HTTP 200, public shell rendered
+/vi/book-a-test/          HTTP 200, public optimized assets present, form markup present
+
+Language isolation after alternating requests
+/       <html lang="en-US"
+/vi/    <html lang="vi"
+
+Public optimization / compression after purge
+Autoptimize CSS sample: HTTP 200
+Content-Encoding: zstd
+Server: Caddy
+Vary: Accept-Encoding
+
+Safety interpretation
+- W3TC page cache remains globally OFF (`pgcache.enabled=false`).
+- W3TC minify remains OFF.
+- Autoptimize logged-in optimization is unchecked/empty; plugin code treats any value other than `on` as bypass for logged-in users with edit capability.
+- No authenticated real-user cookie/session was created or impersonated for this task.

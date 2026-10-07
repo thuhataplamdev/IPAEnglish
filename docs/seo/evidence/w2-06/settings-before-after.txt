@@ -1,0 +1,33 @@
+SEO-W2-06 selected configuration evidence
+Date: 2026-10-07
+
+BEFORE
+autoptimize_optimize_logged="on"
+pgcache.enabled=false
+minify.enabled=false
+browsercache.enabled=true
+browsercache.html.compression=true
+browsercache.cssjs.compression=true
+browsercache.other.compression=true
+
+AFTER
+autoptimize_optimize_logged=""
+pgcache.enabled=false
+minify.enabled=false
+browsercache.enabled=true
+browsercache.html.compression=false
+browsercache.cssjs.compression=false
+browsercache.other.compression=false
+
+Cache purge result
+AUTOPTIMIZE_CACHE_CLEARED
+W3TC_FLUSHED
+WP_CACHE_FLUSHED
+
+Caddy runtime compression owner
+Sampled Autoptimize CSS after change:
+HTTP/2 200
+content-encoding: zstd
+content-type: text/css; charset=utf-8
+server: Caddy
+vary: Accept-Encoding
