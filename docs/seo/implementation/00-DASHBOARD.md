@@ -15,7 +15,7 @@
 | SEO-W2-02 | H1/H2/ALT/Existing Copy Optimization | Week 2 | SEO Exec | Medium | OPEN | W1-04,W1-05 |
 | SEO-W2-03 | Fix Native Sitemap HTTP 200 + Submit GSC | Week 2 | Dev/Tech + SEO | High | DONE | TECH-001 runtime fixed; public sitemap + 4 public child sitemaps verified HTTP 200/XML; robots retained; GSC submission accepted 2026-10-07; final Google fetch/processing status moves to W3 |
 | SEO-W2-04 | Broken Links / 404 / 301 Remediation | Week 2 | Dev/Tech | Medium | NOT_APPLICABLE_BASELINE | W1-03: no internal 3xx/4xx/5xx or redirect chains |
-| SEO-W2-05 | Image Compression / WebP | Week 2 | Dev/Tech | Medium | READY | W1-03 complete |
+| SEO-W2-05 | Image Compression / WebP | Week 2 | Dev/Tech | Medium | DONE | TECH-005 fixed 2026-10-07; single server-owned WebP path deployed; 56/56 target-page variants generated; sampled aggregate weight -68.0%; modern/fallback and 4-page image regression passed |
 | SEO-W2-06 | Cache Ownership + Basic Performance | Week 2 | Dev/Tech | Medium | IN_PROGRESS_SOURCE | W1-03 |
 | SEO-W2-07 | Robots / HTTPS / Canonical Regression | Week 2 | Dev/Tech | Low | ACCEPTED_BASELINE | W2 changes |
 | SEO-W2-08 | GA4 Production Setup / Verification | Week 2 | SEO Exec + Dev/Tech | High | DONE_OWNER_CONFIRMED | W1-01 complete; owner confirmed GA4 done; W3 final regression remains |

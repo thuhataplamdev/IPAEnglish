@@ -1,0 +1,34 @@
+SEO-W2-05 production runtime verification — 2026-10-07
+
+Backfill summary
+FILES_FOUND=56
+GENERATED=56
+SKIPPED=0
+ORIGINAL_BYTES=3382026
+WEBP_BYTES=1081000
+SAVING=68.0%
+
+Same-URL negotiation sample: /wp-content/uploads/2025/08/IPA-English-1024x536.jpg
+Modern client: HTTP=200 CONTENT_TYPE=image/webp CONTENT_LENGTH=34172 VARY=Accept
+Fallback client: HTTP=200 CONTENT_TYPE=image/jpeg CONTENT_LENGTH=89034 VARY=Accept
+Original dimensions=1024x536 WebP dimensions=1024x536
+
+Four-page regression
+/vi/: HTTP=200 IMAGES=13 UPLOAD_JPEG_PNG=10 BROKEN=0 MODERN_FAIL=0 FALLBACK_FAIL=0
+/vi/global-english-for-teen-achievers/: HTTP=200 IMAGES=33 UPLOAD_JPEG_PNG=31 BROKEN=0 MODERN_FAIL=0 FALLBACK_FAIL=0
+/vi/book-a-test/: HTTP=200 IMAGES=20 UPLOAD_JPEG_PNG=18 BROKEN=0 MODERN_FAIL=0 FALLBACK_FAIL=0
+/vi/learning-system/: HTTP=200 IMAGES=24 UPLOAD_JPEG_PNG=22 BROKEN=0 MODERN_FAIL=0 FALLBACK_FAIL=0
+UNIQUE_IMAGES=54
+UNIQUE_UPLOAD_JPEG_PNG=51
+FAILURES=0
+
+Priority fidelity samples (Imagick PSNR)
+IPA-English-1024x536.jpg: 33.76 dB, 1024x536
+Image-8-Large-1-1024x768.jpeg: 38.64 dB, 1024x768
+Image-12-Large-1279x852.jpeg: 40.50 dB, 1279x852
+IPA-student-Large-1279x852.jpeg: 42.30 dB, 1279x852
+7.-Learning-System-Infographic-version-1-410x1024.png: 30.40 dB, 410x1024
+Tony-Profile-Picture-e1723626782498.png: 39.70 dB, 271x271
+
+WP_CACHE_FLUSH=OK
+W3TC_FLUSH=OK
