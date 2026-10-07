@@ -4,6 +4,7 @@
 **Owner:** SEO Exec + Dev / Tech Exec  
 **Priority:** High  
 **Dependency:** SEO-W1-02
+**Status:** DONE — completed 2026-10-07
 
 ## Objective
 
@@ -53,10 +54,21 @@ Baseline hiện có:
 
 Backlog Week 2 phải đủ để mỗi item có một verification method, không có item kiểu “fix SEO” chung chung.
 
+Authoritative triage output: `docs/seo/implementation/W1-03-TECHNICAL-TRIAGE.md`.
+
+### Execution result — 2026-10-07
+
+- 10/10 audit findings were triaged against the official W1-02 Screaming Frog baseline.
+- Actionable Week 2 implementation: TECH-001, TECH-002, TECH-003, TECH-005, TECH-006, TECH-007.
+- TECH-004 is Fixed by owner-confirmed GA4 completion; no duplicate GA4 owner is added, and W3 retains final regression verification.
+- Accepted/no-remediation baseline: TECH-008, TECH-009, TECH-010.
+- SEO-W2-04 is `NOT_APPLICABLE_BASELINE` because W1-02 found 0 internal 3xx/4xx/5xx and 0 redirect chains; re-open only if later evidence changes.
+- Broader sitewide title/meta/H1/ALT cleanup and advanced performance/media work are explicitly Deferred.
+
 ## Definition of Done
 
-- [ ] Crawl findings triaged.
-- [ ] Owner assigned.
-- [ ] False positives/accepted behavior separated.
-- [ ] Week 2 backlog bounded to current scope.
-- [ ] Deferred items documented.
+- [x] Crawl findings triaged.
+- [x] Owner assigned.
+- [x] False positives/accepted behavior separated.
+- [x] Week 2 backlog bounded to current scope.
+- [x] Deferred items documented.
