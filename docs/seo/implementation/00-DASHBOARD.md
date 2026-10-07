@@ -17,9 +17,9 @@
 | SEO-W2-04 | Broken Links / 404 / 301 Remediation | Week 2 | Dev/Tech | Medium | NOT_APPLICABLE_BASELINE | W1-03: no internal 3xx/4xx/5xx or redirect chains |
 | SEO-W2-05 | Image Compression / WebP | Week 2 | Dev/Tech | Medium | DONE | TECH-005 fixed 2026-10-07; single server-owned WebP path deployed; 56/56 target-page variants generated; sampled aggregate weight -68.0%; modern/fallback and 4-page image regression passed |
 | SEO-W2-06 | Cache Ownership + Basic Performance | Week 2 | Dev/Tech | Medium | DONE | TECH-007 fixed 2026-10-07; W3TC page cache/minify remain OFF, W3TC compression flags disabled, Autoptimize owns public HTML/CSS/JS and bypasses logged-in editors/admins, Caddy owns zstd/gzip; runtime + equivalent before/after evidence captured |
-| SEO-W2-07 | Robots / HTTPS / Canonical Regression | Week 2 | Dev/Tech | Low | READY | W2-03,W2-05,W2-06 complete; run final regression gate now |
+| SEO-W2-07 | Robots / HTTPS / Canonical Regression | Week 2 | Dev/Tech | Low | DONE | Robots + canonical regression passed 2026-10-07; Caddy apex normalization corrected so tested noncanonical host/scheme variants converge to HTTPS `www` in one redirect; 4/4 target canonicals remain single/self/200 |
 | SEO-W2-08 | GA4 Production Setup / Verification | Week 2 | SEO Exec + Dev/Tech | High | DONE_OWNER_CONFIRMED | W1-01 complete; owner confirmed GA4 done; W3 final regression remains |
-| SEO-W3-01 | Final Re-crawl + Before/After QA | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | Remaining: W2-01,W2-02,W2-07; W2-03,W2-05,W2-06,W2-08 satisfied and W2-04 baseline no-op |
+| SEO-W3-01 | Final Re-crawl + Before/After QA | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | Remaining: W2-01,W2-02; W2-03,W2-05,W2-06,W2-07,W2-08 satisfied and W2-04 baseline no-op |
 | SEO-W3-02 | Final GSC + GA4 Verification | Week 3 | SEO Exec | High | READY | W2-03 and W2-08 complete; verify refreshed GSC sitemap fetch/processing state and final GA4 runtime in W3 |
 | SEO-W3-03 | Handover + Sign-off | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | W3-01,W3-02 |
 
