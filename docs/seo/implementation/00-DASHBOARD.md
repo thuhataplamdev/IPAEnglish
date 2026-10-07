@@ -8,17 +8,17 @@
 |---|---|---|---|---|---|---|
 | SEO-W1-01 | Access & Measurement Baseline | Week 1 | SEO Exec | High | DONE | — |
 | SEO-W1-02 | Initial Screaming Frog Crawl | Week 1 | SEO Exec | High | DONE | W1-01 complete; official Screaming Frog 24.3 evidence captured 2026-10-07 |
-| SEO-W1-03 | Technical Audit Triage & Backlog | Week 1 | SEO Exec + Dev/Tech | High | READY | W1-02 complete |
+| SEO-W1-03 | Technical Audit Triage & Backlog | Week 1 | SEO Exec + Dev/Tech | High | DONE | W1-02 complete; triage finalized 2026-10-07 |
 | SEO-W1-04 | Keyword Validation & Final Mapping | Week 1 | SEO Exec + Business | High | BASELINE_RESOLVED | W1-01; revalidate with GSC if available |
 | SEO-W1-05 | Target-page On-page Baseline | Week 1 | SEO Exec | High | READY | W1-02/W1-04 recommended |
 | SEO-W2-01 | Title + Meta Description Implementation | Week 2 | SEO Exec + Dev/Tech | Medium | OPEN | W1-04,W1-05 |
 | SEO-W2-02 | H1/H2/ALT/Existing Copy Optimization | Week 2 | SEO Exec | Medium | OPEN | W1-04,W1-05 |
-| SEO-W2-03 | Fix Native Sitemap HTTP 200 + Submit GSC | Week 2 | Dev/Tech + SEO | High | OPEN | W1-03 |
-| SEO-W2-04 | Broken Links / 404 / 301 Remediation | Week 2 | Dev/Tech | Medium | OPEN | W1-03 |
-| SEO-W2-05 | Image Compression / WebP | Week 2 | Dev/Tech | Medium | OPEN | W1-03 |
+| SEO-W2-03 | Fix Native Sitemap HTTP 200 + Submit GSC | Week 2 | Dev/Tech + SEO | High | READY | W1-03 complete |
+| SEO-W2-04 | Broken Links / 404 / 301 Remediation | Week 2 | Dev/Tech | Medium | NOT_APPLICABLE_BASELINE | W1-03: no internal 3xx/4xx/5xx or redirect chains |
+| SEO-W2-05 | Image Compression / WebP | Week 2 | Dev/Tech | Medium | READY | W1-03 complete |
 | SEO-W2-06 | Cache Ownership + Basic Performance | Week 2 | Dev/Tech | Medium | IN_PROGRESS_SOURCE | W1-03 |
 | SEO-W2-07 | Robots / HTTPS / Canonical Regression | Week 2 | Dev/Tech | Low | ACCEPTED_BASELINE | W2 changes |
-| SEO-W2-08 | GA4 Production Setup / Verification | Week 2 | SEO Exec + Dev/Tech | High | OPEN | W1-01 |
+| SEO-W2-08 | GA4 Production Setup / Verification | Week 2 | SEO Exec + Dev/Tech | High | DONE_OWNER_CONFIRMED | W1-01 complete; owner confirmed GA4 done; W3 final regression remains |
 | SEO-W3-01 | Final Re-crawl + Before/After QA | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | All applicable W2 tasks |
 | SEO-W3-02 | Final GSC + GA4 Verification | Week 3 | SEO Exec | High | BLOCKED | W2-03,W2-08 |
 | SEO-W3-03 | Handover + Sign-off | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | W3-01,W3-02 |
@@ -34,7 +34,7 @@
 | TECH-005 — WebP delivery not active in sampled image | SEO-W2-05 |
 | TECH-006 — H1 missing on Teen / Book a Test / Learning System target pages | SEO-W2-02 |
 | TECH-007 — W3TC + Autoptimize ownership overlap risk | SEO-W2-06 |
-| TECH-008 — W1-02 found 0 internal 4xx and 0 redirect chains; preserve clean baseline/regression policy | SEO-W2-04 |
+| TECH-008 — W1-02 found 0 internal 3xx/4xx/5xx and 0 redirect chains; no remediation baseline, re-open only on regression | SEO-W2-04 baseline no-op / W3 re-crawl |
 | TECH-009 — robots.txt accepted baseline | SEO-W2-07 regression |
 | TECH-010 — WordPress canonical accepted baseline; all 4 targets self-canonical in W1-02 | SEO-W2-07 regression |
 
