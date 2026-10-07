@@ -8,7 +8,7 @@
 
 | Field | Value |
 |---|---|
-| Audit date | 2026-09-23 live baseline |
+| Audit date | 2026-09-23 live baseline; W1-01 access/measurement baseline completed 2026-10-07 |
 | Production URL | https://www.ipaenglish.com/ |
 | Canonical host | https://www.ipaenglish.com |
 | Screaming Frog version | |
@@ -16,10 +16,24 @@
 | Crawl start URL | https://www.ipaenglish.com/ |
 | Sitemap URL | https://www.ipaenglish.com/wp-sitemap.xml |
 | Total URLs crawled | |
-| GSC property | Domain property ipaenglish.com preferred; business-owned Google account required |
-| GA4 property | Business-owned property required; live tag not yet verified |
+| GSC property | Production GSC access/setup owner-confirmed complete on 2026-10-07; no verification token stored in repo |
+| GA4 property | Production GA4 property/data stream owner-confirmed configured and accessible on 2026-10-07; runtime verification remains part of later measurement QA |
 | SEO Exec | |
 | Dev / Tech Exec | |
+
+### 1.1 W1-01 Access & Measurement Baseline — completed 2026-10-07
+
+| Surface | Result | Evidence / Notes | Owner / Next Action |
+|---|---|---|---|
+| Production canonical origin | Verified (public runtime) | `http://ipaenglish.com/` -> HTTPS (308), `https://ipaenglish.com/` -> `https://www.ipaenglish.com/` (301), canonical production URL returns 200 | SEO Exec: retain `https://www.ipaenglish.com` as production canonical origin |
+| robots.txt | Verified (public runtime) | `/robots.txt` returns 200 and contains a Sitemap directive referencing `/wp-sitemap.xml` | No access action required for W1-01; re-verify after sitemap work |
+| WordPress Admin | Confirmed (owner-confirmed) | Authenticated WordPress administration access is available for the project | No W1-01 blocker; verify specific plugin/permalink capability only when a later implementation task requires it |
+| Google Search Console | Confirmed (owner-confirmed) | Production GSC setup/access is confirmed complete by the project owner | Maintain access; submit/monitor the sitemap after TECH-001 is fixed |
+| GA4 property / Web Data Stream | Confirmed (owner-confirmed) | Production GA4 setup/access is confirmed complete by the project owner. The earlier 2026-10-06 public HTML check predates this confirmation and is retained only as dated baseline evidence | Keep runtime/event verification in the dedicated measurement QA task; do not add a duplicate GA4 implementation owner |
+| Production deployment / hosting | Confirmed (owner-confirmed) | VPS access via SSH; Nginx present; production WordPress path `/srv/app/IPAEnglish`; deployment is performed on the VPS and exposed through Caddy; source code and database are backed up by system timer | No W1-01 blocker; discover server-specific details only when a later technical fix requires them |
+| Domain / DNS control | Confirmed (owner-confirmed) | Domain/DNS is managed in Squarespace | Use Squarespace only when DNS changes or DNS-based verification are required |
+
+**W1-01 execution status:** `DONE`. Public runtime baseline is captured and the remaining private surfaces were owner-confirmed on 2026-10-07. No credentials, verification tokens, or server secrets are recorded in this repository. SEO-W1-02 is the next execution task.
 
 ## 2. Baseline checks
 
@@ -30,8 +44,8 @@
 | robots.txt reachable | Yes | Dev / Tech | Accepted | Returns 200 and references /wp-sitemap.xml |
 | XML sitemap reachable | Body present but wrong HTTP status | Dev / Tech | Open | /wp-sitemap.xml returns XML with HTTP 404; must return 200 |
 | Sitemap submitted to GSC | Not verified | SEO | Open | Submit only after sitemap endpoint returns 200 |
-| GSC property verified | Not publicly verifiable | SEO | Open | Business-owned account to own property; verify in Week 1 |
-| GA4 receiving traffic | Not verified | SEO | Open | No executable GA4/gtag tag detected in sampled live HTML |
+| GSC property verified | Owner-confirmed | SEO | Accepted | Production GSC setup/access confirmed complete on 2026-10-07; sitemap submission remains dependent on TECH-001 |
+| GA4 receiving traffic | Owner-confirmed setup; runtime QA pending | SEO | Open | GA4 setup/access is confirmed complete; runtime/event verification remains tracked separately and should not rely on the pre-setup 2026-10-06 HTML sample |
 | Image WebP/compression active | No active WebP delivery detected | Dev / Tech | Open | Sample JPG returns image/jpeg even with WebP Accept header |
 | Cache active | Yes | Dev / Tech | Accepted | W3 Total Cache page marker present; Autoptimize serves optimized CSS/JS assets |
 
@@ -82,12 +96,12 @@ Allowed status values: Open, In Progress, Fixed, Accepted, Deferred, Not Applica
 
 | Item | Status | Evidence / Notes |
 |---|---|---|
-| GSC property verified | | |
+| GSC property verified | Done (owner-confirmed) | Production GSC setup/access confirmed complete on 2026-10-07 |
 | Sitemap submitted | | |
 | Sitemap received/processing | | |
 | Target URL inspection completed where useful | | |
-| GA4 production traffic received | | |
-| Target landing pages visible in GA4 | | |
+| GA4 production traffic received | Setup/access done; runtime verification pending | Owner-confirmed production GA4 setup is complete; verify Realtime/events in the dedicated measurement QA step |
+| Target landing pages visible in GA4 | Setup/access done; runtime verification pending | Confirm target-page traffic/events during final QA |
 
 ## 7. Deferred / next actions
 
