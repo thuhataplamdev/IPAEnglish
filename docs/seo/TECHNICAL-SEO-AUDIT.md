@@ -8,14 +8,14 @@
 
 | Field | Value |
 |---|---|
-| Audit date | 2026-09-23 live baseline; W1-01 access/measurement baseline completed 2026-10-07 |
+| Audit date | 2026-09-23 live baseline; W1-01 completed 2026-10-07; official W1-02 crawl completed 2026-10-07 |
 | Production URL | https://www.ipaenglish.com/ |
 | Canonical host | https://www.ipaenglish.com |
-| Screaming Frog version | |
-| Crawl mode | Spider / List / Sitemap-assisted |
+| Screaming Frog version | 24.3 |
+| Crawl mode | Spider / standard HTML crawl |
 | Crawl start URL | https://www.ipaenglish.com/ |
 | Sitemap URL | https://www.ipaenglish.com/wp-sitemap.xml |
-| Total URLs crawled | |
+| Total URLs crawled | 154 response rows including external checks; 142 internal resources; 26 internal HTML pages |
 | GSC property | Production GSC access/setup owner-confirmed complete on 2026-10-07; no verification token stored in repo |
 | GA4 property | Production GA4 property/data stream owner-confirmed configured and accessible on 2026-10-07; runtime verification remains part of later measurement QA |
 | SEO Exec | |
@@ -33,7 +33,29 @@
 | Production deployment / hosting | Confirmed (owner-confirmed) | VPS access via SSH; Nginx present; production WordPress path `/srv/app/IPAEnglish`; deployment is performed on the VPS and exposed through Caddy; source code and database are backed up by system timer | No W1-01 blocker; discover server-specific details only when a later technical fix requires them |
 | Domain / DNS control | Confirmed (owner-confirmed) | Domain/DNS is managed in Squarespace | Use Squarespace only when DNS changes or DNS-based verification are required |
 
-**W1-01 execution status:** `DONE`. Public runtime baseline is captured and the remaining private surfaces were owner-confirmed on 2026-10-07. No credentials, verification tokens, or server secrets are recorded in this repository. SEO-W1-02 is the next execution task.
+**W1-01 execution status:** `DONE`. Public runtime baseline is captured and the remaining private surfaces were owner-confirmed on 2026-10-07. No credentials, verification tokens, or server secrets are recorded in this repository. SEO-W1-02 was completed on 2026-10-07; SEO-W1-03 is the next execution task.
+
+### 1.2 W1-02 Initial Screaming Frog Crawl — completed 2026-10-07
+
+The official Screaming Frog SEO Spider 24.3 baseline is complete. The direct exports are authoritative; the earlier fallback crawl is retained only as an independent cross-check.
+
+| Item | Official result | Notes |
+|---|---|---|
+| Evidence path | `docs/seo/evidence/w1-02/screaming-frog-2026-10-07/` | `raw/` contains direct Screaming Frog exports; `derived/` contains deterministic issue slices |
+| Start URL / host | `https://www.ipaenglish.com/` / `https://www.ipaenglish.com` | Spider / standard HTML crawl; no authenticated areas |
+| User-Agent / limit | `Screaming Frog SEO Spider/24.3`; 500-URL free-mode limit | Reuse comparable settings for W3 |
+| Crawl volume | 154 response rows; 142 internal resources; 26 internal HTML pages | External checks excluded from internal totals |
+| Four target URLs | Present, HTTP 200, Indexable, self-canonical | All four required Vietnamese targets captured |
+| Internal response codes | 0 internal 3xx; 0 internal 4xx; 0 internal 5xx | No actionable internal broken URL in this baseline |
+| Redirect signal | 2 external redirects; 0 redirect chains | Google Maps 301; Messenger 302 |
+| Title signal | 0 missing; 26 duplicate-title rows / 12 groups; 20 under 30 chars; 0 over 60 chars | Duplicate groups are primarily EN/VI pairs; W1-03 decides actionability |
+| Meta Description signal | 26/26 HTML pages missing; 0 duplicate non-empty descriptions | Includes all four target URLs |
+| H1 signal | 18/26 missing; 2 multiple | Teen, Book a Test and Learning System targets are missing H1 |
+| Image ALT signal | 12/15 unique images missing/empty ALT text across 50 inlink occurrences | 0 images missing the ALT attribute itself |
+| Image size signal | 2 unique images over 100 kB across 4 inlink occurrences | Candidates for W2-05 |
+| Directives / canonical | 0 noindex; 0 HTML pages missing canonical | All four targets are self-canonical |
+
+**W1-02 status:** `DONE`. Runtime log confirms Screaming Frog 24.3, explicit EULA acceptance in the temporary runtime after operator consent, and successful headless crawl/export. No licence key, RPM, EULA config, verification token, or credential is stored in the repository. SEO-W1-03 is now `READY`.
 
 ## 2. Baseline checks
 
@@ -56,15 +78,15 @@ Use one row per actionable issue or issue group.
 | ID | Category | Severity | URL / Pattern | Finding | Recommended Action | Owner | Status | Verification |
 |---|---|---|---|---|---|---|---|---|
 | TECH-001 | Sitemap status | High | /wp-sitemap.xml | Native sitemap returns XML body with HTTP 404 | Fix routing/status so the native sitemap returns HTTP 200; keep WordPress core as sole sitemap owner | Dev / Tech | Open | Recheck HTTP status and XML after fix |
-| TECH-002 | Meta Description | Medium | 4 target Vietnamese URLs | No Meta Description detected in sampled live HTML | Add one version-controlled description output/override per target URL | SEO + Dev / Tech | Open | Re-crawl and inspect rendered head |
+| TECH-002 | Meta Description | Medium | 4 target Vietnamese URLs / sitewide sampled HTML | Official W1-02 crawl found Meta Description missing on all 26 crawled HTML pages, including all four targets | Add one controlled description output per target URL; broader sitewide work remains outside the four-page priority unless separately approved | SEO + Dev / Tech | Open | Re-crawl Meta Description report |
 | TECH-003 | Title/localization | Medium | Vietnamese target URLs | Sampled /vi/ pages still use generic English document titles such as Book a Test - IPA English and Learning System - IPA English | Add controlled Vietnamese title overrides for the target pages | SEO + Dev / Tech | Open | Re-crawl title report |
 | TECH-004 | GA4 | High | Sitewide | GA4 execution tag not verified in sampled live HTML | Configure/verify business-owned GA4 property and production tag | SEO | Open | Realtime/DebugView + rendered HTML/network check |
 | TECH-005 | Image delivery | Medium | Sitewide / target pages | No active WebP delivery detected on sampled JPG | Enable one image compression/WebP path and verify quality | Dev / Tech | Open | Request same image with WebP-capable client |
-| TECH-006 | H1 | Medium | /vi/book-a-test/, /vi/learning-system/ | Public rendering shows section-level heading first; dedicated H1 should be confirmed by crawl | Add/fix one descriptive H1 if Screaming Frog confirms missing H1 | SEO | Open | Screaming Frog H1 report |
+| TECH-006 | H1 | Medium | /vi/global-english-for-teen-achievers/, /vi/book-a-test/, /vi/learning-system/ | Official W1-02 crawl confirms all three target pages are missing H1; `/vi/` has one H1 (`Học Viện Anh Ngữ IPA`) | Add one descriptive Vietnamese H1 to each missing-H1 target while preserving heading hierarchy | SEO | Open | Re-crawl H1 report |
 | TECH-007 | Cache ownership | Medium | Sitewide | W3 Total Cache and Autoptimize both active | W3TC = page/browser cache; Autoptimize = CSS/JS optimization only; remove overlapping transforms | Dev / Tech | In Progress | Verify page marker/assets and regression test |
-| TECH-008 | 404/redirect policy | Medium | Audit findings | URL-specific list pending Screaming Frog crawl | Fix broken internal links directly; 301 only for clear 1:1 moved/replaced URLs; no blanket Home redirects | Dev / Tech | Open | Re-crawl response codes/chains |
+| TECH-008 | 404/redirect policy | Medium | Public crawl baseline | Official W1-02 crawl found 0 internal 4xx, 0 internal 3xx and 0 redirect chains; two redirects observed are external (Google Maps/Messenger) | Preserve clean internal-link baseline; apply 301 only for future clear 1:1 moved/replaced URLs; no blanket Home redirects | Dev / Tech | Accepted | W3 re-crawl response codes/chains |
 | TECH-009 | Robots | Low | /robots.txt | Reachable and points to native sitemap | Keep current basic policy; re-verify after sitemap fix | Dev / Tech | Accepted | 200 response + sitemap directive |
-| TECH-010 | Canonical | Low | 4 target URLs | One WordPress canonical detected on sampled pages | Keep WordPress core as sole canonical emitter; do not add a second canonical from custom metadata layer | Dev / Tech | Accepted | Re-crawl canonical count |
+| TECH-010 | Canonical | Low | 4 target URLs | Official W1-02 crawl confirms all four target URLs are Indexable and self-canonical; 0 crawled HTML pages are missing a canonical | Keep WordPress core as sole canonical emitter; do not add a second canonical from custom metadata layer | Dev / Tech | Accepted | W3 re-crawl canonical count |
 
 Allowed status values: Open, In Progress, Fixed, Accepted, Deferred, Not Applicable.
 
@@ -72,25 +94,25 @@ Allowed status values: Open, In Progress, Fixed, Accepted, Deferred, Not Applica
 
 | Target URL | Primary Intent | Current Title | Current Description | H1/H2 Issue | ALT Issue | Content/Sapo Note | Final Status |
 |---|---|---|---|---|---|---|---|
-| https://www.ipaenglish.com/vi/ | Local English center | IPA English - Study English in Hưng Yên | Missing in sampled HTML | Local/service H1 support to review | Priority images need descriptive ALT review | Add Ecopark/Văn Giang/Hưng Yên service context naturally | Open |
-| https://www.ipaenglish.com/vi/global-english-for-teen-achievers/ | Teen/student English course | Global English for Teen Achievers - IPA English | Missing in sampled HTML | Vietnamese H1 exists; H2s should support academic + communication benefits | Review course images | Strengthen 11-18, academic + daily communication, small class, British teacher evidence | Open |
-| https://www.ipaenglish.com/vi/book-a-test/ | Free English placement test | Book a Test - IPA English | Missing in sampled HTML | Confirm/add one Vietnamese H1 | Review form/hero imagery | Clarify free placement test, 24h contact, Ecopark | Open |
-| https://www.ipaenglish.com/vi/learning-system/ | IPA learning method | Learning System - IPA English | Missing in sampled HTML | Confirm/add one Vietnamese H1 | Review system imagery | Align copy with communication + academic learning-method queries | Open |
+| https://www.ipaenglish.com/vi/ | Local English center | IPA English – Study English in Hưng Yên | Missing in official crawl | One H1 present: `Học Viện Anh Ngữ IPA`; review H2 support | Priority images need descriptive ALT review | Add Ecopark/Văn Giang/Hưng Yên service context naturally | Open |
+| https://www.ipaenglish.com/vi/global-english-for-teen-achievers/ | Teen/student English course | Global English for Teen Achievers – IPA English | Missing in official crawl | H1 missing in official crawl; add one Vietnamese H1 and review H2 support | Review course images | Strengthen 11-18, academic + daily communication, small class, British teacher evidence | Open |
+| https://www.ipaenglish.com/vi/book-a-test/ | Free English placement test | Book a Test – IPA English | Missing in official crawl | H1 missing in official crawl; add one Vietnamese H1 | Review form/hero imagery | Clarify free placement test, 24h contact, Ecopark | Open |
+| https://www.ipaenglish.com/vi/learning-system/ | IPA learning method | Learning System – IPA English | Missing in official crawl | H1 missing in official crawl; add one Vietnamese H1 | Review system imagery | Align copy with communication + academic learning-method queries | Open |
 
 ## 5. Re-crawl verification
 
 | Metric / Finding | Before | After | Result | Notes |
 |---|---:|---:|---|---|
-| Internal 404s | | | | |
-| Redirect chains | | | | |
-| Missing Titles | | | | |
-| Duplicate Titles | | | | |
-| Missing Meta Descriptions | | | | |
-| Duplicate Meta Descriptions | | | | |
-| Missing H1 | | | | |
-| Images missing ALT | | | | |
-| Oversized target images | | | | |
-| Target URLs blocked/noindex | | | | |
+| Internal 404s | 0 | | | Official W1-02 internal baseline |
+| Redirect chains | 0 | | | Two external redirects observed, no chain |
+| Missing Titles | 0 | | | 26 HTML title rows |
+| Duplicate Titles | 26 rows / 12 groups | | | Primarily English/Vietnamese pairs; triage in W1-03 |
+| Missing Meta Descriptions | 26 | | | 26/26 crawled HTML pages |
+| Duplicate Meta Descriptions | 0 | | | No non-empty descriptions exist in baseline |
+| Missing H1 | 18 | | | Includes Teen, Book a Test and Learning System targets |
+| Images missing ALT | 12 unique / 50 inlink occurrences | | | Missing/empty ALT text; ALT attribute itself present |
+| Oversized target images | 2 unique >100 kB / 4 inlink occurrences | | | Candidate set from Screaming Frog image report |
+| Target URLs blocked/noindex | 0 | | | All four targets are HTTP 200, Indexable and self-canonical |
 
 ## 6. GSC / GA4 handover
 
@@ -111,7 +133,7 @@ Allowed status values: Open, In Progress, Fixed, Accepted, Deferred, Not Applica
 
 ## 8. Final sign-off
 
-- [ ] Initial crawl completed.
+- [x] Initial crawl completed.
 - [ ] Technical issues assigned and status updated.
 - [ ] Re-crawl completed.
 - [ ] GSC and sitemap verified/submitted.

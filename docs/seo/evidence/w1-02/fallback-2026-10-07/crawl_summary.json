@@ -1,0 +1,30 @@
+{
+  "tool": "Python requests + stdlib HTMLParser fallback (NOT Screaming Frog)",
+  "date": "2026-10-07",
+  "start_url": "https://www.ipaenglish.com/",
+  "canonical_host": "https://www.ipaenglish.com",
+  "user_agent": "IPAEnglish-SEO-Baseline/1.0",
+  "mode": "HTML-only",
+  "max_urls": 500,
+  "urls_requested": 27,
+  "html_urls": 26,
+  "4xx": 0,
+  "5xx": 0,
+  "redirect_hops": 0,
+  "missing_titles": 0,
+  "duplicate_titles": 26,
+  "missing_meta_descriptions": 26,
+  "duplicate_meta_descriptions": 0,
+  "missing_h1": 18,
+  "multiple_h1": 2,
+  "noindex": 0,
+  "images_found": 180,
+  "images_missing_alt": 50,
+  "targets_present": {
+    "https://www.ipaenglish.com/vi/": true,
+    "https://www.ipaenglish.com/vi/global-english-for-teen-achievers/": true,
+    "https://www.ipaenglish.com/vi/book-a-test/": true,
+    "https://www.ipaenglish.com/vi/learning-system/": true
+  },
+  "elapsed_seconds": 15.74
+}

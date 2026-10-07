@@ -1,0 +1,10 @@
+{
+  "start_url": "https://www.ipaenglish.com/",
+  "canonical_host": "https://www.ipaenglish.com",
+  "user_agent": "IPAEnglish-SEO-Baseline/1.0",
+  "mode": "HTML-only",
+  "max_urls": 500,
+  "images": true,
+  "authenticated_areas": false,
+  "external_links_in_internal_totals": false
+}

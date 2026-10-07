@@ -1,0 +1,72 @@
+{
+  "tool": "Screaming Frog SEO Spider",
+  "version": "24.3",
+  "date": "2026-10-07",
+  "start_url": "https://www.ipaenglish.com/",
+  "mode": "Spider / HTML-only standard crawler",
+  "user_agent": "Screaming Frog SEO Spider/24.3",
+  "crawl_limit": 500,
+  "internal_resources": 142,
+  "internal_html": 26,
+  "internal_3xx": 0,
+  "internal_4xx": 0,
+  "internal_5xx": 0,
+  "all_discovered_3xx": 2,
+  "all_discovered_4xx": 0,
+  "redirect_chains": 0,
+  "missing_titles": 0,
+  "duplicate_title_rows": 26,
+  "duplicate_title_groups": 12,
+  "titles_under_30_chars": 20,
+  "titles_over_60_chars": 0,
+  "missing_meta_descriptions": 26,
+  "duplicate_meta_rows": 0,
+  "missing_h1": 18,
+  "multiple_h1": 2,
+  "unique_images": 15,
+  "images_missing_alt_text_unique": 12,
+  "images_missing_alt_attribute_unique": 0,
+  "image_missing_alt_text_inlink_rows": 50,
+  "images_over_100kb_unique": 2,
+  "images_over_100kb_inlink_rows": 4,
+  "noindex_rows": 0,
+  "html_missing_canonical": 0,
+  "targets": {
+    "https://www.ipaenglish.com/vi/": {
+      "present": true,
+      "status": "200",
+      "indexability": "Indexable",
+      "title": "IPA English – Study English in Hưng Yên",
+      "meta_description": "",
+      "h1": "Học Viện Anh Ngữ IPA",
+      "canonical": "https://www.ipaenglish.com/vi/"
+    },
+    "https://www.ipaenglish.com/vi/global-english-for-teen-achievers/": {
+      "present": true,
+      "status": "200",
+      "indexability": "Indexable",
+      "title": "Global English for Teen Achievers – IPA English",
+      "meta_description": "",
+      "h1": "",
+      "canonical": "https://www.ipaenglish.com/vi/global-english-for-teen-achievers/"
+    },
+    "https://www.ipaenglish.com/vi/book-a-test/": {
+      "present": true,
+      "status": "200",
+      "indexability": "Indexable",
+      "title": "Book a Test – IPA English",
+      "meta_description": "",
+      "h1": "",
+      "canonical": "https://www.ipaenglish.com/vi/book-a-test/"
+    },
+    "https://www.ipaenglish.com/vi/learning-system/": {
+      "present": true,
+      "status": "200",
+      "indexability": "Indexable",
+      "title": "Learning System – IPA English",
+      "meta_description": "",
+      "h1": "",
+      "canonical": "https://www.ipaenglish.com/vi/learning-system/"
+    }
+  }
+}
