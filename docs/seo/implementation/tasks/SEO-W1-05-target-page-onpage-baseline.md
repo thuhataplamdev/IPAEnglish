@@ -3,6 +3,8 @@
 **Timing:** Week 1 — Day 4–5  
 **Owner:** SEO Exec  
 **Priority:** High
+**Execution date:** 2026-10-07
+**Execution result:** DONE
 
 ## Objective
 
@@ -31,18 +33,37 @@ Ghi lại trạng thái trước thay đổi cho 4 target URLs để Week 2 có 
 
 ## Known baseline cues
 
-- Meta Description đang thiếu trên sampled target pages.
-- `/vi/book-a-test/` và `/vi/learning-system/` cần xác nhận dedicated H1.
-- Một số Vietnamese target titles đang là generic English titles.
-- Canonical hiện sampled là một WordPress canonical; không thêm renderer thứ hai.
+- Meta Description thiếu trên cả 4 target pages.
+- `/vi/` có một H1 (`Học Viện Anh Ngữ IPA`); Teen, Book a Test và Learning System đều thiếu H1.
+- Teen, Book a Test và Learning System hiện dùng H2 làm heading chính của nội dung.
+- Một số Vietnamese target titles vẫn là generic English titles.
+- Cả 4 target pages đều HTTP 200, Indexable trong W1-02 và self-canonical; không thêm canonical renderer thứ hai.
+- Runtime capture xác nhận language switch từ bản Vietnamese sang English counterpart tương ứng.
 
 ## Evidence format
 
 Mỗi URL có row trong `TECHNICAL-SEO-AUDIT.md` và mapping tương ứng trong `KEYWORD-MAP.md`.
 
+Retained W1-05 evidence:
+
+- `docs/seo/evidence/w1-05/runtime-2026-10-07/README.md`
+- `docs/seo/evidence/w1-05/runtime-2026-10-07/html-manifest.csv`
+- `docs/seo/evidence/w1-05/runtime-2026-10-07/target-page-baseline.csv`
+- `docs/seo/evidence/w1-05/runtime-2026-10-07/images-alt.csv`
+- `docs/seo/evidence/w1-05/runtime-2026-10-07/target-link-matrix.csv`
+
+The public HTML bodies are represented by exact byte length + SHA-256 in the manifest and by retained structured SEO/runtime extracts. No authentication material, cookies or private headers are stored.
+
+## Execution notes
+
+- Direct requests to all 4 target URLs returned HTTP 200 with no redirect chain.
+- Runtime title/meta/canonical/H1/H2 values match the official W1-02 Screaming Frog baseline where fields overlap.
+- Browser-JavaScript title mutation was not separately observed because a browser renderer was not available; the public runtime/server HTML title is retained and no discrepancy with Screaming Frog was found.
+- W1-04 keyword finalization remains separate and still gates W2-01/W2-02; W1-05 only freezes the before-state.
+
 ## Definition of Done
 
-- [ ] All 4 pages captured.
-- [ ] HTML/runtime evidence retained.
-- [ ] Baseline values entered into Keyword Map/Audit.
-- [ ] Any unknown is explicit, not guessed.
+- [x] All 4 pages captured.
+- [x] HTML/runtime evidence retained.
+- [x] Baseline values entered into Keyword Map/Audit.
+- [x] Any unknown is explicit, not guessed.

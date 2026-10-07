@@ -10,7 +10,7 @@
 | SEO-W1-02 | Initial Screaming Frog Crawl | Week 1 | SEO Exec | High | DONE | W1-01 complete; official Screaming Frog 24.3 evidence captured 2026-10-07 |
 | SEO-W1-03 | Technical Audit Triage & Backlog | Week 1 | SEO Exec + Dev/Tech | High | DONE | W1-02 complete; triage finalized 2026-10-07 |
 | SEO-W1-04 | Keyword Validation & Final Mapping | Week 1 | SEO Exec + Business | High | BASELINE_RESOLVED | W1-01; revalidate with GSC if available |
-| SEO-W1-05 | Target-page On-page Baseline | Week 1 | SEO Exec | High | READY | W1-02/W1-04 recommended |
+| SEO-W1-05 | Target-page On-page Baseline | Week 1 | SEO Exec | High | DONE | W1-02 complete; runtime + on-page before-state captured 2026-10-07; W1-04 still gates W2-01/W2-02 |
 | SEO-W2-01 | Title + Meta Description Implementation | Week 2 | SEO Exec + Dev/Tech | Medium | OPEN | W1-04,W1-05 |
 | SEO-W2-02 | H1/H2/ALT/Existing Copy Optimization | Week 2 | SEO Exec | Medium | OPEN | W1-04,W1-05 |
 | SEO-W2-03 | Fix Native Sitemap HTTP 200 + Submit GSC | Week 2 | Dev/Tech + SEO | High | READY | W1-03 complete |
