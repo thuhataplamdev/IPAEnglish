@@ -4,7 +4,7 @@
 **Owner:** SEO Exec  
 **Priority:** High  
 **Dependencies:** SEO-W2-03, SEO-W2-08
-**Current status:** IN_PROGRESS — authenticated GSC and GA4 production reception are verified. The user opened all four target URLs for QA, but the GA4 reporting API has not processed those paths yet; target-page visibility remains the final acceptance item.
+**Current status:** DONE — authenticated GSC, GA4 production reception, duplicate-page-view regression sampling, and all four target-page visibility checks are complete as of 2026-10-08.
 
 ## Objective
 
@@ -50,18 +50,21 @@ Google indexing/ranking growth **không** phải điều kiện bàn giao tức 
 - GA4 current-day report for 2026-10-07 shows 7 sessions and 7 active users.
 - Current-day event report shows exactly 7 `session_start`, 7 `first_visit`, and 7 `page_view` events across 7 users. This sampled ratio shows no duplicate `page_view` signal in the currently observed traffic.
 - Public Google tag `GT-NB9W8HJ3` resolves to GA4 destination `G-M1DEWC95TY`.
-- After the user opened all four target URLs for QA, immediate GA4 page/landing-page reports still contain only `/` with 7 sessions / 7 page views. Exact `pagePath` checks for `/vi/`, `/vi/global-english-for-teen-achievers/`, `/vi/book-a-test/`, and `/vi/learning-system/` currently return 0, consistent with GA4 reporting latency rather than a connectivity failure.
+- Follow-up authenticated GA4 reporting for 2026-10-07 through 2026-10-08 now identifies all four target paths:
+  - `/vi/learning-system/` — 7 page views, 2 sessions, 1 active user.
+  - `/vi/global-english-for-teen-achievers/` — 4 page views, 1 session, 1 active user.
+  - `/vi/` — 3 page views, 1 session, 1 active user.
+  - `/vi/book-a-test/` — 2 page views, 1 session, 1 active user.
+- The GA4 landing-page report does not need to list all four paths because `landingPage` represents only the first page of a session; target-page acceptance is satisfied by the page-path report.
 
-### Remaining acceptance item
+### Closure
 
-- Re-query GA4 after reporting latency and capture the four target paths once they become available.
-
-Do not promote this task to `DONE` until the four target URLs are observable in GA4. The browser visits have already been performed; the remaining blocker is GA4 report processing latency, not GA4 connectivity or missing QA traffic.
+GA4 reporting latency cleared on 2026-10-08 and all four target paths became observable in authenticated reporting. W3-02 now satisfies its immediate measurement handover acceptance criteria; indexing/ranking growth remains outside the instant handover gate.
 
 ## Definition of Done
 
 - [x] GSC evidence captured (authenticated property + sitemap + URL Inspection + search baseline).
 - [x] Refreshed authenticated GSC sitemap state captured.
 - [x] GA4 Realtime/production traffic captured via current-day GA4 API evidence.
-- [ ] Target pages identifiable in GA4.
-- [x] Audit handover section updated with current verified/pending state.
+- [x] Target pages identifiable in GA4.
+- [x] Audit handover section updated with final verified state.

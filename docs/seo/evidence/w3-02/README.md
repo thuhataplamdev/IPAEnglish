@@ -1,6 +1,6 @@
 # SEO-W3-02 Evidence — Final GSC + GA4 Verification
 
-Date: 2026-10-07
+Closure date: 2026-10-08
 
 ## Verified
 
@@ -22,10 +22,13 @@ Date: 2026-10-07
 - Current-day GA4 events: 7 `session_start`, 7 `first_visit`, 7 `page_view`.
 - Current sample therefore shows one `page_view` per session/user and no duplicate-page-view signal.
 - Public Google tag `GT-NB9W8HJ3` resolves to destination `G-M1DEWC95TY`.
-- The user opened all four target URLs for QA. Immediate current-day landing-page/page reports still contain only `/`; exact `pagePath` queries for all four target paths currently return 0, indicating the QA visits have not yet propagated into GA4 reporting.
+- After reporting latency cleared, authenticated GA4 page reporting for 2026-10-07 through 2026-10-08 shows all four target paths:
+  - `/vi/learning-system/` — 7 page views, 2 sessions, 1 active user.
+  - `/vi/global-english-for-teen-achievers/` — 4 page views, 1 session, 1 active user.
+  - `/vi/` — 3 page views, 1 session, 1 active user.
+  - `/vi/book-a-test/` — 2 page views, 1 session, 1 active user.
+- The landing-page breakdown is not expected to list every traversed target page because GA4 `landingPage` is session-entry scoped; page-path visibility is the relevant acceptance evidence here.
 
-## Pending before W3-02 can be Done
+## Closure
 
-- Re-query GA4 after processing latency and capture all four target paths once they appear in authenticated reporting.
-
-Search Console and GA4 reception are authenticated. QA visits to all four target pages have been completed; the only remaining acceptance gap is GA4 reporting latency for those paths.
+Search Console and GA4 handover evidence are now complete for W3-02. The four target paths are visible in authenticated GA4 reporting, so the task is `DONE` as of 2026-10-08.

@@ -1,5 +1,5 @@
 SEO-W3-02 authenticated GA4 verification
-Date: 2026-10-07
+Closure date: 2026-10-08
 
 Mapping
 - Site: https://www.ipaenglish.com/
@@ -22,8 +22,18 @@ Interpretation
 - GA4 production reception is confirmed.
 - Current event ratios show no duplicate page_view signal in this sample.
 - The user opened all four target Vietnamese URLs in a real JS-capable browser for QA.
-- Immediate authenticated GA4 page/landing-page reports still show only /; exact pagePath checks for all four target paths currently return 0.
-- Final acceptance step: re-query after GA4 reporting latency and capture the four target paths once processed.
+Follow-up GA4 API evidence (2026-10-07 through 2026-10-08)
+- Page report now exposes all four target paths:
+  - /vi/learning-system/ = 7 page views, 2 sessions, 1 active user
+  - /vi/global-english-for-teen-achievers/ = 4 page views, 1 session, 1 active user
+  - /vi/ = 3 page views, 1 session, 1 active user
+  - /vi/book-a-test/ = 2 page views, 1 session, 1 active user
+- Landing-page report does not list all four target paths because landingPage is session-entry scoped; pages visited after the entry page remain visible in the page report instead.
+
+Closure
+- GA4 reporting latency has cleared for the QA visits.
+- All four target pages are identifiable in authenticated GA4 reporting.
+- SEO-W3-02 GA4 acceptance is satisfied.
 
 Headless QA note
 - Local Chromium headless was attempted but crashed because of the workspace GPU/DBus environment; no result from that attempt is used as evidence.

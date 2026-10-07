@@ -17,7 +17,7 @@
 | Sitemap URL | https://www.ipaenglish.com/wp-sitemap.xml |
 | Total URLs crawled | 154 response rows including external checks; 142 internal resources; 26 internal HTML pages |
 | GSC property | Production GSC access/setup owner-confirmed complete on 2026-10-07; no verification token stored in repo |
-| GA4 property | Production GA4 property/data stream owner-confirmed configured and accessible on 2026-10-07; runtime verification remains part of later measurement QA |
+| GA4 property | `IPAEnglish` (`properties/557611190`) linked to `https://www.ipaenglish.com/`; authenticated production reception and four-target page-path verification completed 2026-10-08 |
 | SEO Exec | |
 | Dev / Tech Exec | |
 
@@ -90,7 +90,7 @@ Use one row per actionable issue or issue group.
 | TECH-001 | Sitemap status | High | /wp-sitemap.xml | Native sitemap returned XML body with HTTP 404 due to the WordPress 7.1 sitemap status regression | Official WordPress 7.1.1 sitemap status fix backported while keeping WordPress core as sole sitemap owner | Dev / Tech | Fixed | HTTP 200 + application/xml verified; sitemap index and all four child sitemaps parse; robots directive retained |
 | TECH-002 | Meta Description | Medium | 4 target Vietnamese URLs / sitewide sampled HTML | Official W1-02 crawl found Meta Description missing on all 26 crawled HTML pages, including all four targets | Add one controlled description output per target URL; broader sitewide work remains outside the four-page priority unless separately approved | SEO + Dev / Tech | Open | Re-crawl Meta Description report |
 | TECH-003 | Title/localization | Medium | Vietnamese target URLs | Sampled /vi/ pages still use generic English document titles such as Book a Test - IPA English and Learning System - IPA English | Add controlled Vietnamese title overrides for the target pages | SEO + Dev / Tech | Open | Re-crawl title report |
-| TECH-004 | GA4 | High | Sitewide | Production GA4 setup and verification are owner-confirmed complete | Treat implementation as resolved; do not add another tag owner; retain final regression verification in W3 | SEO + Dev / Tech | Fixed | Final W3 Realtime/network confirmation + duplicate page_view check |
+| TECH-004 | GA4 | High | Sitewide | Production GA4 setup and verification are owner-confirmed complete | Treat implementation as resolved; do not add another tag owner; retain final regression verification in W3 | SEO + Dev / Tech | Fixed | W3-02 authenticated verification complete: production traffic received, sampled duplicate-page-view check clean, and all four target paths visible in GA4 page reporting |
 | TECH-005 | Image delivery | Medium | Target/high-impact images + future uploads | Baseline had no active WebP negotiation; eligible target-page JPEG/PNG assets are now served through one controlled server-owned WebP path | Keep MU-plugin generation + Caddy negotiation as the single owner; originals remain fallback and full historical library migration stays out of scope | Dev / Tech | Fixed | 4/4 target pages HTTP 200; 54 unique image URLs had 0 broken responses; 51 unique referenced upload JPEG/PNG URLs passed modern WebP + original fallback checks; sampled PSNR 30.40–42.30 dB with dimensions preserved |
 | TECH-006 | H1 | Medium | /vi/global-english-for-teen-achievers/, /vi/book-a-test/, /vi/learning-system/ | Official W1-02 crawl confirms all three target pages are missing H1; `/vi/` has one H1 (`Học Viện Anh Ngữ IPA`) | Add one descriptive Vietnamese H1 to each missing-H1 target while preserving heading hierarchy | SEO | Open | Re-crawl H1 report |
 | TECH-007 | Cache ownership | Medium | Sitewide | W3 Total Cache and Autoptimize were both active with stale ownership assumptions: W3TC page cache/minify were already OFF, W3TC browser-cache compression flags were ON while Caddy actually compressed responses, and Autoptimize optimized logged-in editors/admins | Keep W3TC page cache/minify OFF; keep W3TC browser-cache module enabled without compression; Autoptimize owns public HTML/CSS/JS optimization but bypasses logged-in editors/admins; Caddy is the sole runtime compression owner | Dev / Tech | Fixed | Selected settings captured before/after; caches purged; 4/4 target pages, login/account shells, booking form markup and EN/VI language output regression-tested; sampled Autoptimize asset still HTTP 200 with Caddy `zstd`; 12-request equivalent performance sample showed no material public-speed claim (overall median TTFB ~0.804s before vs ~0.813s after) |
@@ -135,7 +135,7 @@ W1-05 runtime evidence was captured on 2026-10-07 and cross-checked against the 
 | Sitemap received/processing | Done — downloaded, not pending | GSC Wizard reports `wp-sitemap.xml` with `isPending=false`, last downloaded 2026-10-07, 0 warnings and 0 errors; 44 submitted URLs / 0 indexed currently. Indexing growth is not an immediate acceptance gate |
 | Target URL inspection completed where useful | Done — 4/4 PASS | All four target URLs return `Submitted and indexed`, robots allowed, indexing allowed and successful Google fetch in URL Inspection |
 | GA4 production traffic received | Done — authenticated | GSC Wizard links the site to `IPAEnglish` (`properties/557611190`). Current-day GA4 shows 7 sessions / 7 users and exactly 7 `session_start`, 7 `first_visit`, 7 `page_view`; no duplicate-page-view signal in the current sample |
-| Target landing pages visible in GA4 | Pending reporting latency | User opened all four target URLs for QA. Immediate GA4 page/landing-page reports still show only `/`, and exact path queries for the four targets return 0. Re-query after GA4 processes the visits before sign-off |
+| Target pages visible in GA4 | Done — 4/4 page paths | Follow-up GA4 page report for 2026-10-07 through 2026-10-08 shows `/vi/learning-system/` 7 views, `/vi/global-english-for-teen-achievers/` 4, `/vi/` 3, and `/vi/book-a-test/` 2. Landing-page reporting is not required to list every traversed page because it records session entry pages only |
 
 ## 7. Deferred / next actions
 
@@ -154,7 +154,7 @@ W1-05 runtime evidence was captured on 2026-10-07 and cross-checked against the 
 - [x] Technical issues assigned and status updated.
 - [ ] Re-crawl completed.
 - [x] GSC and sitemap verified/submitted.
-- [ ] GA4 verified.
+- [x] GA4 verified.
 - [ ] Keyword Map finalized.
 - [ ] 3-5 target URLs verified after on-page changes.
 - [x] Deferred items documented.
