@@ -1,0 +1,27 @@
+SEO-W2-07 redirect evidence
+Date: 2026-10-07
+
+BEFORE
+http://ipaenglish.com/
+  308 Caddy -> https://ipaenglish.com/
+  301 WordPress -> https://www.ipaenglish.com/
+  redirects=2
+https://ipaenglish.com/
+  301 WordPress -> https://www.ipaenglish.com/
+  redirects=1
+http://www.ipaenglish.com/
+  308 Caddy -> https://www.ipaenglish.com/
+  redirects=1
+
+AFTER
+For / and each target path:
+- http://www.ipaenglish.com/... -> https://www.ipaenglish.com/... : redirects=1, final HTTP 200
+- http://ipaenglish.com/... -> https://www.ipaenglish.com/... : redirects=1, final HTTP 200
+- https://ipaenglish.com/... -> https://www.ipaenglish.com/... : redirects=1, final HTTP 200
+- https://www.ipaenglish.com/... : redirects=0, HTTP 200
+
+Target paths tested:
+/vi/
+/vi/global-english-for-teen-achievers/
+/vi/book-a-test/
+/vi/learning-system/

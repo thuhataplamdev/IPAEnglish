@@ -1,0 +1,26 @@
+SEO-W2-07 runtime regression evidence
+Date: 2026-10-07
+
+robots.txt
+HTTP 200
+User-agent: *
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+Sitemap: https://www.ipaenglish.com/wp-sitemap.xml
+
+Target canonical checks
+/vi/                                      HTTP 200 | canonical_count=1 | https://www.ipaenglish.com/vi/ | canonical HTTP 200
+/vi/global-english-for-teen-achievers/   HTTP 200 | canonical_count=1 | https://www.ipaenglish.com/vi/global-english-for-teen-achievers/ | canonical HTTP 200
+/vi/book-a-test/                         HTTP 200 | canonical_count=1 | https://www.ipaenglish.com/vi/book-a-test/ | canonical HTTP 200
+/vi/learning-system/                     HTTP 200 | canonical_count=1 | https://www.ipaenglish.com/vi/learning-system/ | canonical HTTP 200
+
+Sample public render assets after reload
+CSS 200 https://www.ipaenglish.com/wp-content/plugins/masterstudy-lms-learning-management-system/_core/assets/vendors/bootstrap.min.css
+JS  200 https://www.ipaenglish.com/wp-includes/js/jquery/jquery.min.js
+IMG 200 https://www.ipaenglish.com/wp-content/uploads/2024/08/36AA30E1-0DC1-4CC5-836E-1A10FE7F747B-e1723601218764.png
+
+Caddy
+Config validation before install: Valid configuration
+Full config validation after install: Valid configuration
+Service after reload: active
+Backup: /root/backups/ipaenglish/w2-07-20261007-165540/
