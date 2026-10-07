@@ -38,14 +38,25 @@
 | 19 | phương pháp học tiếng Anh giao tiếp | Primary | Informational/commercial | https://www.ipaenglish.com/vi/learning-system/ | P2 | Matches interpersonal/communication system |
 | 20 | phương pháp học tiếng Anh học thuật | Long-tail | Informational/commercial | https://www.ipaenglish.com/vi/learning-system/ | P2 | Matches academic writing/presentation method |
 
-## 3. On-page implementation map
+## 3. W1-05 target-page before-state baseline
+
+Captured on 2026-10-07 from the official W1-02 Screaming Frog baseline plus a fresh public runtime HTML capture. Detailed evidence is retained under `docs/seo/evidence/w1-05/runtime-2026-10-07/`.
+
+| Target URL | Current Title | Current Meta Description | Current H1 / H2 | Current ALT baseline | Existing opening/context | Internal navigation / language switch | Baseline Status |
+|---|---|---|---|---|---|---|---|
+| https://www.ipaenglish.com/vi/ | IPA English – Study English in Hưng Yên | Missing (0) | H1: `Học Viện Anh Ngữ IPA`; H2: `Tin tức mới nhất`, `Giá trị cốt lõi`, `Đánh giá của Học Viên` | 2/7 image occurrences have missing/empty ALT | Opening copy explains the 11–18 offer, academic English and daily communication; local Ecopark/Văn Giang context is not prominent in the sampled opening copy | Links to Teen, Learning System and Book a Test; `Tiếng Việt` stays on `/vi/`, `English` switches to `/` | Captured |
+| https://www.ipaenglish.com/vi/global-english-for-teen-achievers/ | Global English for Teen Achievers – IPA English | Missing (0) | H1 missing; H2: `Tiếng Anh toàn cầu dành cho thanh thiếu niên` | 4/9 image occurrences have missing/empty ALT | Opening copy explicitly covers ages 11–18, academic English and daily communication | Links to Home, Learning System and Book a Test; English switch goes to `/global-english-for-teen-achievers/` | Captured |
+| https://www.ipaenglish.com/vi/book-a-test/ | Book a Test – IPA English | Missing (0) | H1 missing; H2: `Đặt lịch kiểm tra trình độ miễn phí` | 2/8 image occurrences have missing/empty ALT | Opening copy clearly states the free placement test and contact within 24 hours; Ecopark is not stated in the sampled opening copy | Links to Home, Teen and Learning System; English switch goes to `/book-a-test/` | Captured |
+| https://www.ipaenglish.com/vi/learning-system/ | Learning System – IPA English | Missing (0) | H1 missing; H2: `Hệ thống học thuật` | 3/8 image occurrences have missing/empty ALT | Opening copy explains the IPA framework, interpretive skills and communication-focused learning sequence | Links to Home, Teen and Book a Test; English switch goes to `/learning-system/` | Captured |
+
+### 3.1 Week 2 implementation direction
 
 | Target URL | Final Meta Title | Final Meta Description | Final H1 | H2 Changes | ALT Changes | Sapo / Existing Copy Changes | Status |
 |---|---|---|---|---|---|---|---|
-| https://www.ipaenglish.com/vi/ | To optimize in Week 2 | To optimize in Week 2 | Keep Học Viện Anh Ngữ IPA; review local keyword support | Add local/service context where natural | Add meaningful ALT to priority images | Add concise Ecopark/Văn Giang/Hưng Yên service context without keyword stuffing | Planned |
-| https://www.ipaenglish.com/vi/global-english-for-teen-achievers/ | To optimize in Week 2 | To optimize in Week 2 | Keep Vietnamese teen-course H1 | Align H2s with academic + communication benefits | Add descriptive ALT to course images | Strengthen 11-18, academic English, communication, small-class differentiators | Planned |
-| https://www.ipaenglish.com/vi/book-a-test/ | To optimize in Week 2 | To optimize in Week 2 | Add one clear H1 for free English placement test if crawl confirms none | Keep form/supporting sections subordinate | Add ALT where relevant | Clarify free placement test, response within 24h, Ecopark location | Planned |
-| https://www.ipaenglish.com/vi/learning-system/ | To optimize in Week 2 | To optimize in Week 2 | Add/confirm one clear H1 for the IPA learning system | Keep method sections descriptive | Add ALT to system illustrations | Explain communication + academic method in Vietnamese search language | Planned |
+| https://www.ipaenglish.com/vi/ | To optimize in Week 2 | To optimize in Week 2 | Keep `Học Viện Anh Ngữ IPA`; review local keyword support | Add local/service context where natural | Add meaningful ALT to priority content images | Add concise Ecopark/Văn Giang/Hưng Yên service context without keyword stuffing | Planned after W1-04 |
+| https://www.ipaenglish.com/vi/global-english-for-teen-achievers/ | To optimize in Week 2 | To optimize in Week 2 | Add one clear Vietnamese H1; current teen-course heading is H2, not H1 | Align H2s with academic + communication benefits | Add descriptive ALT to course images | Strengthen 11–18, academic English, communication, small-class differentiators | Planned after W1-04 |
+| https://www.ipaenglish.com/vi/book-a-test/ | To optimize in Week 2 | To optimize in Week 2 | Add one clear H1 for the free English placement test; missing H1 is confirmed | Keep form/supporting sections subordinate | Add ALT to hero/content imagery | Clarify free placement test, response within 24h and Ecopark location | Planned after W1-04 |
+| https://www.ipaenglish.com/vi/learning-system/ | To optimize in Week 2 | To optimize in Week 2 | Add one clear H1 for the IPA learning system; missing H1 is confirmed | Keep method sections descriptive | Add ALT to system/student illustrations | Explain communication + academic method in Vietnamese search language | Planned after W1-04 |
 
 ## 4. Mapping rules
 
@@ -64,4 +75,5 @@
 - [x] Maximum 20-keyword baseline resolved.
 - [x] Search intent grouping resolved.
 - [x] Keyword-to-URL mapping resolved.
+- [x] W1-05 target-page before-state captured on 2026-10-07.
 - [ ] Final Meta Title/Description copy to be completed in Week 2 after GSC/Screaming Frog validation.
