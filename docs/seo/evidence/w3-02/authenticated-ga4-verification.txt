@@ -1,0 +1,29 @@
+SEO-W3-02 authenticated GA4 verification
+Date: 2026-10-07
+
+Mapping
+- Site: https://www.ipaenglish.com/
+- GA4 property: IPAEnglish (properties/557611190)
+- linkedSiteUrls includes https://www.ipaenglish.com/
+- Public Google tag: GT-NB9W8HJ3
+- Resolved GA4 destination from public gtag loader: G-M1DEWC95TY
+
+Current-day GA4 API evidence (2026-10-07)
+- Sessions: 7
+- Active users: 7
+- Landing pages: / = 7 sessions, 7 active users
+- Page report: / = 7 page views, 7 sessions, 7 active users
+- Events:
+  - first_visit = 7
+  - page_view = 7
+  - session_start = 7
+
+Interpretation
+- GA4 production reception is confirmed.
+- Current event ratios show no duplicate page_view signal in this sample.
+- The user opened all four target Vietnamese URLs in a real JS-capable browser for QA.
+- Immediate authenticated GA4 page/landing-page reports still show only /; exact pagePath checks for all four target paths currently return 0.
+- Final acceptance step: re-query after GA4 reporting latency and capture the four target paths once processed.
+
+Headless QA note
+- Local Chromium headless was attempted but crashed because of the workspace GPU/DBus environment; no result from that attempt is used as evidence.

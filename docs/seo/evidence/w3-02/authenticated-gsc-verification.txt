@@ -1,0 +1,30 @@
+SEO-W3-02 authenticated GSC verification
+Date: 2026-10-07
+Property: https://www.ipaenglish.com/
+Also connected: sc-domain:ipaenglish.com
+
+SITEMAP
+URL: https://www.ipaenglish.com/wp-sitemap.xml
+lastSubmitted: 2026-10-07T07:37:10.574Z
+isPending: false
+isSitemapsIndex: true
+lastDownloaded: 2026-10-07T07:37:12.545Z
+warnings: 0
+errors: 0
+web submitted: 44
+web indexed: 0
+
+URL INSPECTION
+https://www.ipaenglish.com/vi/ | PASS | Submitted and indexed | robots ALLOWED | indexing ALLOWED | fetch SUCCESSFUL | crawled as MOBILE
+https://www.ipaenglish.com/vi/global-english-for-teen-achievers/ | PASS | Submitted and indexed | robots ALLOWED | indexing ALLOWED | fetch SUCCESSFUL | crawled as MOBILE
+https://www.ipaenglish.com/vi/book-a-test/ | PASS | Submitted and indexed | robots ALLOWED | indexing ALLOWED | fetch SUCCESSFUL | crawled as MOBILE
+https://www.ipaenglish.com/vi/learning-system/ | PASS | Submitted and indexed | robots ALLOWED | indexing ALLOWED | fetch SUCCESSFUL | crawled as MOBILE
+
+SEARCH PERFORMANCE BASELINE
+Settled through: 2026-10-04
+Last 28 days: 0 clicks, 0 impressions, 0 CTR, 0 average position
+Top pages: no rows in the settled range
+
+GA4 CONNECTOR STATE
+Google Analytics OAuth is connected. GSC Wizard reads GA4 property IPAEnglish (properties/557611190), and linkedSiteUrls includes https://www.ipaenglish.com/.
+Authenticated GA4 production reception is confirmed separately in authenticated-ga4-verification.txt. W3-02 remains IN_PROGRESS only because the four QA target-path visits have not yet propagated into GA4 page/landing-page reporting.

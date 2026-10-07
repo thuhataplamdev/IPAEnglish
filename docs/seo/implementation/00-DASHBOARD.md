@@ -20,7 +20,7 @@
 | SEO-W2-07 | Robots / HTTPS / Canonical Regression | Week 2 | Dev/Tech | Low | DONE | Robots + canonical regression passed 2026-10-07; Caddy apex normalization corrected so tested noncanonical host/scheme variants converge to HTTPS `www` in one redirect; 4/4 target canonicals remain single/self/200 |
 | SEO-W2-08 | GA4 Production Setup / Verification | Week 2 | SEO Exec + Dev/Tech | High | DONE_OWNER_CONFIRMED | W1-01 complete; owner confirmed GA4 done; W3 final regression remains |
 | SEO-W3-01 | Final Re-crawl + Before/After QA | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | Remaining: W2-01,W2-02; W2-03,W2-05,W2-06,W2-07,W2-08 satisfied and W2-04 baseline no-op |
-| SEO-W3-02 | Final GSC + GA4 Verification | Week 3 | SEO Exec | High | READY | W2-03 and W2-08 complete; verify refreshed GSC sitemap fetch/processing state and final GA4 runtime in W3 |
+| SEO-W3-02 | Final GSC + GA4 Verification | Week 3 | SEO Exec | High | IN_PROGRESS | Authenticated GSC + GA4 reception verified (7 sessions / 7 users / 7 page_view, no duplicate signal). User opened all 4 target URLs for QA; only GA4 reporting latency remains before those paths can be captured |
 | SEO-W3-03 | Handover + Sign-off | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | W3-01,W3-02 |
 
 ## Current audit mapping

@@ -130,12 +130,12 @@ W1-05 runtime evidence was captured on 2026-10-07 and cross-checked against the 
 
 | Item | Status | Evidence / Notes |
 |---|---|---|
-| GSC property verified | Done (owner-confirmed) | Production GSC setup/access confirmed complete on 2026-10-07 |
+| GSC property verified | Done — authenticated | GSC Wizard confirms readable connected properties `https://www.ipaenglish.com/` and `sc-domain:ipaenglish.com` on 2026-10-07 |
 | Sitemap submitted | Done — 2026-10-07 | Owner-provided GSC screenshot confirms `Đã gửi sơ đồ trang web thành công` for `wp-sitemap.xml` |
-| Sitemap received/processing | Submitted; final fetch/processing status pending refresh | Immediately after submission, the GSC table still displayed the previous `Không thể tìm nạp` state; do not claim successful Google fetch until W3 re-check |
-| Target URL inspection completed where useful | | |
-| GA4 production traffic received | Setup/access done; runtime verification pending | Owner-confirmed production GA4 setup is complete; verify Realtime/events in the dedicated measurement QA step |
-| Target landing pages visible in GA4 | Setup/access done; runtime verification pending | Confirm target-page traffic/events during final QA |
+| Sitemap received/processing | Done — downloaded, not pending | GSC Wizard reports `wp-sitemap.xml` with `isPending=false`, last downloaded 2026-10-07, 0 warnings and 0 errors; 44 submitted URLs / 0 indexed currently. Indexing growth is not an immediate acceptance gate |
+| Target URL inspection completed where useful | Done — 4/4 PASS | All four target URLs return `Submitted and indexed`, robots allowed, indexing allowed and successful Google fetch in URL Inspection |
+| GA4 production traffic received | Done — authenticated | GSC Wizard links the site to `IPAEnglish` (`properties/557611190`). Current-day GA4 shows 7 sessions / 7 users and exactly 7 `session_start`, 7 `first_visit`, 7 `page_view`; no duplicate-page-view signal in the current sample |
+| Target landing pages visible in GA4 | Pending reporting latency | User opened all four target URLs for QA. Immediate GA4 page/landing-page reports still show only `/`, and exact path queries for the four targets return 0. Re-query after GA4 processes the visits before sign-off |
 
 ## 7. Deferred / next actions
 

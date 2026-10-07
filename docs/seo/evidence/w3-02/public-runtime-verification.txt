@@ -1,0 +1,26 @@
+SEO-W3-02 public/runtime verification — 2026-10-07
+
+SITEMAP
+- https://www.ipaenglish.com/wp-sitemap.xml
+- HTTP/2 200
+- Content-Type: application/xml; charset=UTF-8
+- XML parse: OK
+- Public child sitemap count: 4
+
+TARGET PAGE TAG CHECK
+For each of:
+- https://www.ipaenglish.com/vi/
+- https://www.ipaenglish.com/vi/global-english-for-teen-achievers/
+- https://www.ipaenglish.com/vi/book-a-test/
+- https://www.ipaenglish.com/vi/learning-system/
+
+Observed per page:
+- HTTP status: 200
+- googletagmanager.com/gtag/js loader count: 1
+- Google-tag config call count: 1
+- Google tag ID: GT-NB9W8HJ3
+- GTM container loader count: 0
+- Explicit page_view literal in Site Kit bootstrap: 0
+
+INTERPRETATION
+This verifies a single sampled public implementation path through Google Site Kit. It does not by itself prove GA4 Realtime receipt or current GSC fetch/processing state.
