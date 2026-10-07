@@ -1,0 +1,7 @@
+@webp {
+    header Accept *image/webp*
+    path *.jpg *.jpeg *.png
+    file {path}.webp
+}
+rewrite @webp {path}.webp
+header /wp-content/uploads/* Vary Accept
