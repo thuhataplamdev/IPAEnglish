@@ -1,0 +1,27 @@
+SEO-W2-03 production deployment verification — 2026-10-07
+
+Pre-deploy protection
+- Database backup completed successfully and gzip/SHA-256 verification passed.
+- Pre-deploy source archive completed successfully and gzip/SHA-256 verification passed.
+- Dedicated rollback copies of the two replaced WordPress core files were created before deployment.
+
+Deployed upstream WordPress 7.1.1 backport files
+- wp-includes/class-wp.php
+  SHA-256: 1c161a1be1cd87ef14eb91d978e0a4737da15750f2b47c260d4b9358bc37de6e
+- wp-includes/sitemaps/class-wp-sitemaps.php
+  SHA-256: dd6adacc4ac3290f865e037a486910c9e07e2b5a45d530861aab53dd57ad4763
+
+Post-deploy validation
+- Both deployed files: PHP lint passed.
+- File ownership/mode preserved as www-data:www-data / 0644.
+- WordPress object cache flush: OK.
+- W3 Total Cache flush: OK.
+- /wp-sitemap.xml: HTTP 200, application/xml; charset=UTF-8.
+- Sitemap index XML parse: OK.
+- Sitemap index contains 4 child sitemap URLs, all HTTPS on www.ipaenglish.com.
+- All 4 child sitemaps: HTTP 200, XML content type, XML parse OK.
+- /robots.txt still references https://www.ipaenglish.com/wp-sitemap.xml.
+
+GSC acceptance
+- Google Search Console accepted the `wp-sitemap.xml` submission on 2026-10-07.
+- Final Google fetch/processing/indexing status is intentionally deferred to Week 3 verification.

@@ -1,0 +1,8 @@
+HTTP/2 200 
+alt-svc: h3=":443"; ma=2592000
+content-type: text/plain; charset=utf-8
+link: <https://www.ipaenglish.com/wp-json/>; rel="https://api.w.org/"
+server: Caddy
+content-length: 119
+date: Wed, 07 Oct 2026 07:25:30 GMT
+

@@ -30,7 +30,7 @@
 | WordPress Admin | Confirmed (owner-confirmed) | Authenticated WordPress administration access is available for the project | No W1-01 blocker; verify specific plugin/permalink capability only when a later implementation task requires it |
 | Google Search Console | Confirmed (owner-confirmed) | Production GSC setup/access is confirmed complete by the project owner | Maintain access; submit/monitor the sitemap after TECH-001 is fixed |
 | GA4 property / Web Data Stream | Confirmed (owner-confirmed) | Production GA4 setup/access is confirmed complete by the project owner. The earlier 2026-10-06 public HTML check predates this confirmation and is retained only as dated baseline evidence | Keep runtime/event verification in the dedicated measurement QA task; do not add a duplicate GA4 implementation owner |
-| Production deployment / hosting | Confirmed (owner-confirmed) | VPS access via SSH; Nginx present; production WordPress path `/srv/app/IPAEnglish`; deployment is performed on the VPS and exposed through Caddy; source code and database are backed up by system timer | No W1-01 blocker; discover server-specific details only when a later technical fix requires them |
+| Production deployment / hosting | Confirmed (owner-confirmed) | VPS access via SSH; Nginx present; production WordPress path `/srv/apps/IPAEnglish`; deployment is performed on the VPS and exposed through Caddy; source code and database are backed up by system timer | No W1-01 blocker; discover server-specific details only when a later technical fix requires them |
 | Domain / DNS control | Confirmed (owner-confirmed) | Domain/DNS is managed in Squarespace | Use Squarespace only when DNS changes or DNS-based verification are required |
 
 **W1-01 execution status:** `DONE`. Public runtime baseline is captured and the remaining private surfaces were owner-confirmed on 2026-10-07. No credentials, verification tokens, or server secrets are recorded in this repository. SEO-W1-02 was completed on 2026-10-07; SEO-W1-03 is the next execution task.
@@ -74,9 +74,9 @@ The W1-02 crawl findings were grouped by root cause and mapped to bounded Week 2
 | HTTPS active | Yes | Dev / Tech | Accepted | Production serves HTTPS |
 | Canonical host behavior | Apex -> www 301 | Dev / Tech | Accepted | https://ipaenglish.com/ redirects to https://www.ipaenglish.com/ |
 | robots.txt reachable | Yes | Dev / Tech | Accepted | Returns 200 and references /wp-sitemap.xml |
-| XML sitemap reachable | Body present but wrong HTTP status | Dev / Tech | Open | /wp-sitemap.xml returns XML with HTTP 404; must return 200 |
-| Sitemap submitted to GSC | Not verified | SEO | Open | Submit only after sitemap endpoint returns 200 |
-| GSC property verified | Owner-confirmed | SEO | Accepted | Production GSC setup/access confirmed complete on 2026-10-07; sitemap submission remains dependent on TECH-001 |
+| XML sitemap reachable | Yes | Dev / Tech | Fixed | /wp-sitemap.xml returns HTTP 200 with application/xml after the official WordPress 7.1.1 sitemap-status fix was backported; XML and all four child sitemaps verified |
+| Sitemap submitted to GSC | Submitted successfully 2026-10-07 | SEO | Fixed | GSC UI confirmed `Đã gửi sơ đồ trang web thành công`; final Google fetch/processing status remains a W3 verification item |
+| GSC property verified | Owner-confirmed | SEO | Accepted | Production GSC setup/access confirmed complete on 2026-10-07; TECH-001 runtime fix and sitemap submission are complete; refreshed Google fetch/processing status remains for W3 |
 | GA4 receiving traffic | Owner-confirmed complete | SEO | Fixed | Project owner confirmed production GA4 setup/verification complete; retain final W3 regression confirmation without adding a duplicate tag owner |
 | Image WebP/compression active | No active WebP delivery detected | Dev / Tech | Open | Sample JPG returns image/jpeg even with WebP Accept header |
 | Cache active | Yes | Dev / Tech | Accepted | W3 Total Cache page marker present; Autoptimize serves optimized CSS/JS assets |
@@ -87,7 +87,7 @@ Use one row per actionable issue or issue group.
 
 | ID | Category | Severity | URL / Pattern | Finding | Recommended Action | Owner | Status | Verification |
 |---|---|---|---|---|---|---|---|---|
-| TECH-001 | Sitemap status | High | /wp-sitemap.xml | Native sitemap returns XML body with HTTP 404 | Fix routing/status so the native sitemap returns HTTP 200; keep WordPress core as sole sitemap owner | Dev / Tech | Open | Recheck HTTP status and XML after fix |
+| TECH-001 | Sitemap status | High | /wp-sitemap.xml | Native sitemap returned XML body with HTTP 404 due to the WordPress 7.1 sitemap status regression | Official WordPress 7.1.1 sitemap status fix backported while keeping WordPress core as sole sitemap owner | Dev / Tech | Fixed | HTTP 200 + application/xml verified; sitemap index and all four child sitemaps parse; robots directive retained |
 | TECH-002 | Meta Description | Medium | 4 target Vietnamese URLs / sitewide sampled HTML | Official W1-02 crawl found Meta Description missing on all 26 crawled HTML pages, including all four targets | Add one controlled description output per target URL; broader sitewide work remains outside the four-page priority unless separately approved | SEO + Dev / Tech | Open | Re-crawl Meta Description report |
 | TECH-003 | Title/localization | Medium | Vietnamese target URLs | Sampled /vi/ pages still use generic English document titles such as Book a Test - IPA English and Learning System - IPA English | Add controlled Vietnamese title overrides for the target pages | SEO + Dev / Tech | Open | Re-crawl title report |
 | TECH-004 | GA4 | High | Sitewide | Production GA4 setup and verification are owner-confirmed complete | Treat implementation as resolved; do not add another tag owner; retain final regression verification in W3 | SEO + Dev / Tech | Fixed | Final W3 Realtime/network confirmation + duplicate page_view check |
@@ -131,8 +131,8 @@ W1-05 runtime evidence was captured on 2026-10-07 and cross-checked against the 
 | Item | Status | Evidence / Notes |
 |---|---|---|
 | GSC property verified | Done (owner-confirmed) | Production GSC setup/access confirmed complete on 2026-10-07 |
-| Sitemap submitted | | |
-| Sitemap received/processing | | |
+| Sitemap submitted | Done — 2026-10-07 | Owner-provided GSC screenshot confirms `Đã gửi sơ đồ trang web thành công` for `wp-sitemap.xml` |
+| Sitemap received/processing | Submitted; final fetch/processing status pending refresh | Immediately after submission, the GSC table still displayed the previous `Không thể tìm nạp` state; do not claim successful Google fetch until W3 re-check |
 | Target URL inspection completed where useful | | |
 | GA4 production traffic received | Setup/access done; runtime verification pending | Owner-confirmed production GA4 setup is complete; verify Realtime/events in the dedicated measurement QA step |
 | Target landing pages visible in GA4 | Setup/access done; runtime verification pending | Confirm target-page traffic/events during final QA |
@@ -152,7 +152,7 @@ W1-05 runtime evidence was captured on 2026-10-07 and cross-checked against the 
 - [x] Initial crawl completed.
 - [x] Technical issues assigned and status updated.
 - [ ] Re-crawl completed.
-- [ ] GSC and sitemap verified/submitted.
+- [x] GSC and sitemap verified/submitted.
 - [ ] GA4 verified.
 - [ ] Keyword Map finalized.
 - [ ] 3-5 target URLs verified after on-page changes.
