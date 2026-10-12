@@ -14,13 +14,13 @@
 | SEO-W2-01 | Title + Meta Description Implementation | Week 2 | SEO Exec + Dev/Tech | Medium | OPEN | W1-04,W1-05 |
 | SEO-W2-02 | H1/H2/ALT/Existing Copy Optimization | Week 2 | SEO Exec | Medium | OPEN | W1-04,W1-05 |
 | SEO-W2-03 | Fix Native Sitemap HTTP 200 + Submit GSC | Week 2 | Dev/Tech + SEO | High | DONE | TECH-001 runtime fixed; public sitemap + 4 public child sitemaps verified HTTP 200/XML; robots retained; GSC submission accepted 2026-10-07; final Google fetch/processing status moves to W3 |
-| SEO-W2-04 | Broken Links / 404 / 301 Remediation | Week 2 | Dev/Tech | Medium | NOT_APPLICABLE_BASELINE | W1-03: no internal 3xx/4xx/5xx or redirect chains |
+| SEO-W2-04 | Broken Links / 404 / 301 Remediation | Week 2 | Dev/Tech | Medium | DONE | W1-02 baseline was clean; GSC regression triggered bounded 2026-10-12 index-hygiene remediation. Utility/demo/feed/author sitemap noise removed/noindexed, obsolete LMS category kept proper 404, canonical redirects retained direct, runtime evidence captured, cleaned sitemap re-submitted |
 | SEO-W2-05 | Image Compression / WebP | Week 2 | Dev/Tech | Medium | DONE | TECH-005 fixed 2026-10-07; single server-owned WebP path deployed; 56/56 target-page variants generated; sampled aggregate weight -68.0%; modern/fallback and 4-page image regression passed |
 | SEO-W2-06 | Cache Ownership + Basic Performance | Week 2 | Dev/Tech | Medium | DONE | TECH-007 fixed 2026-10-07; W3TC page cache/minify remain OFF, W3TC compression flags disabled, Autoptimize owns public HTML/CSS/JS and bypasses logged-in editors/admins, Caddy owns zstd/gzip; runtime + equivalent before/after evidence captured |
 | SEO-W2-07 | Robots / HTTPS / Canonical Regression | Week 2 | Dev/Tech | Low | DONE | Robots + canonical regression passed 2026-10-07; Caddy apex normalization corrected so tested noncanonical host/scheme variants converge to HTTPS `www` in one redirect; 4/4 target canonicals remain single/self/200 |
 | SEO-W2-08 | GA4 Production Setup / Verification | Week 2 | SEO Exec + Dev/Tech | High | DONE_OWNER_CONFIRMED | W1-01 complete; owner confirmed GA4 done; W3 final regression remains |
-| SEO-W3-01 | Final Re-crawl + Before/After QA | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | Remaining: W2-01,W2-02; W2-03,W2-05,W2-06,W2-07,W2-08 satisfied and W2-04 baseline no-op |
-| SEO-W3-02 | Final GSC + GA4 Verification | Week 3 | SEO Exec | High | DONE | Authenticated GSC complete; GA4 property `properties/557611190` receives production traffic with no duplicate-page-view signal in the sampled baseline; 2026-10-07→2026-10-08 reporting now shows all 4 target paths |
+| SEO-W3-01 | Final Re-crawl + Before/After QA | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | Remaining: W2-01,W2-02; W2-03,W2-04,W2-05,W2-06,W2-07,W2-08 satisfied |
+| SEO-W3-02 | Final GSC + GA4 Verification | Week 3 | SEO Exec | High | DONE | Measurement verification completed 2026-10-08. Fresh 2026-10-12 GSC inspection found `/vi/book-a-test/` `Crawled - currently not indexed`; runtime robots/canonical/fetch signals remain healthy, so recovery is routed to W2-01/W2-02 while the other 3 target URLs remain indexed |
 | SEO-W3-03 | Handover + Sign-off | Week 3 | SEO Exec + Dev/Tech | High | BLOCKED | W3-01 remaining; W3-02 satisfied 2026-10-08 |
 
 ## Current audit mapping
@@ -34,7 +34,7 @@
 | TECH-005 — WebP delivery not active in sampled image | SEO-W2-05 |
 | TECH-006 — H1 missing on Teen / Book a Test / Learning System target pages | SEO-W2-02 |
 | TECH-007 — W3TC + Autoptimize ownership overlap risk | SEO-W2-06 |
-| TECH-008 — W1-02 found 0 internal 3xx/4xx/5xx and 0 redirect chains; no remediation baseline, re-open only on regression | SEO-W2-04 baseline no-op / W3 re-crawl |
+| TECH-008 — GSC regression: intentional redirects + obsolete 404 + duplicate/feed + utility/demo/account index noise | SEO-W2-04 DONE 2026-10-12; W3 re-crawl confirms sitewide |
 | TECH-009 — robots.txt accepted baseline | SEO-W2-07 regression |
 | TECH-010 — WordPress canonical accepted baseline; all 4 targets self-canonical in W1-02 | SEO-W2-07 regression |
 
