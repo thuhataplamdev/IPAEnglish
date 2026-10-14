@@ -1,0 +1,277 @@
+<?php
+/**
+ * IPA English on-page SEO integration.
+ *
+ * Keeps page-level title/description, heading hierarchy and informative image
+ * alternative text in one small child-theme integration. Canonical/hreflang
+ * ownership remains with WordPress/TranslatePress.
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+add_action( 'init', 'ipaenglish_enable_page_excerpt_support' );
+function ipaenglish_enable_page_excerpt_support() {
+	add_post_type_support( 'page', 'excerpt' );
+}
+
+/**
+ * Resolve request path and language without depending on TranslatePress internals.
+ *
+ * @return array{path:string,language:string}
+ */
+function ipaenglish_onpage_request_context() {
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+	$path        = wp_parse_url( $request_uri, PHP_URL_PATH );
+	$path        = is_string( $path ) ? trim( rawurldecode( $path ), '/' ) : '';
+	$path        = '' === $path ? '/' : '/' . $path . '/';
+	$is_vi       = 0 === strpos( $path, '/vi/' );
+
+	if ( $is_vi ) {
+		$path = preg_replace( '#^/vi(?=/|$)#', '', $path );
+		$path = is_string( $path ) && '' !== $path ? $path : '/';
+	}
+
+	return array(
+		'path'     => $path,
+		'language' => $is_vi ? 'vi' : 'en',
+	);
+}
+
+/**
+ * Approved page-level SEO copy for the 11 search-facing landing pages.
+ *
+ * @return array<string,array<string,array<string,string>>>
+ */
+function ipaenglish_onpage_seo_map() {
+	return array(
+		'/' => array(
+			'en' => array(
+				'title' => 'English Center in Ecopark | IPA English',
+				'description' => 'IPA English is an English center in Ecopark for students aged 11-18, focusing on communication, Cambridge-aligned academic English, and small classes.',
+			),
+			'vi' => array(
+				'title' => 'Trung tâm tiếng Anh Ecopark | IPA English',
+				'description' => 'IPA English là trung tâm tiếng Anh tại Ecopark uy tín, giúp học sinh phát triển giao tiếp, học thuật và tự tin sử dụng tiếng Anh trong môi trường quốc tế.',
+			),
+		),
+		'/book-a-test/' => array(
+			'en' => array(
+				'title' => 'Free English Placement Test | IPA English',
+				'description' => 'Book a free English placement test at IPA English to assess current proficiency and receive guidance on a suitable learning pathway.',
+			),
+			'vi' => array(
+				'title' => 'Kiểm tra trình độ tiếng Anh miễn phí | IPA English',
+				'description' => 'Đăng ký kiểm tra trình độ tiếng Anh miễn phí tại IPA English để đánh giá năng lực hiện tại và nhận tư vấn lộ trình học phù hợp cho học sinh.',
+			),
+		),
+		'/communicative-english-for-adults/' => array(
+			'en' => array(
+				'title' => 'Communicative English for Adults | IPA English',
+				'description' => 'Explore Communicative English for Adults at IPA English, designed to build practical speaking, listening and confidence for real-world English communication.',
+			),
+			'vi' => array(
+				'title' => 'Tiếng Anh giao tiếp cho người lớn | IPA English',
+				'description' => 'Khóa tiếng Anh giao tiếp cho người lớn tại IPA English giúp phát triển kỹ năng nghe, nói và sự tự tin khi sử dụng tiếng Anh trong tình huống thực tế.',
+			),
+		),
+		'/contact-us/' => array(
+			'en' => array(
+				'title' => 'Contact Our English Center in Ecopark | IPA English',
+				'description' => 'Contact IPA English in Ecopark for information about courses, placement tests and learning pathways. Find our address, phone number and contact details.',
+			),
+			'vi' => array(
+				'title' => 'Liên hệ trung tâm tiếng Anh Ecopark | IPA English',
+				'description' => 'Liên hệ IPA English tại Ecopark để tìm hiểu khóa học, kiểm tra trình độ và lộ trình phù hợp. Xem địa chỉ, số điện thoại và thông tin liên hệ.',
+			),
+		),
+		'/core-values/' => array(
+			'en' => array(
+				'title' => 'Core Values & Learning Philosophy | IPA English',
+				'description' => 'Discover the core values that guide IPA English: integrity, excellence in education, holistic development, growth mindset and commitment to community.',
+			),
+			'vi' => array(
+				'title' => 'Giá trị cốt lõi & triết lý giáo dục | IPA English',
+				'description' => 'Khám phá các giá trị cốt lõi của IPA English: chính trực, chất lượng giáo dục, phát triển toàn diện, tư duy phát triển và cam kết với cộng đồng.',
+			),
+		),
+		'/courses/' => array(
+			'en' => array(
+				'title' => 'English Courses & Learning Programs | IPA English',
+				'description' => 'Explore English courses at IPA English for learners with different goals, including communication, academic skills and structured learning pathways.',
+			),
+			'vi' => array(
+				'title' => 'Khóa học tiếng Anh tại Ecopark | IPA English',
+				'description' => 'Khám phá các khóa học tiếng Anh tại IPA English với lộ trình phù hợp, tập trung vào giao tiếp, kỹ năng học thuật và phát triển năng lực tiếng Anh.',
+			),
+		),
+		'/faq/' => array(
+			'en' => array(
+				'title' => 'International School English FAQ | IPA English',
+				'description' => 'Find answers to common questions about English for international school students, learning pathways, academic skills, and IPA English programs.',
+			),
+			'vi' => array(
+				'title' => 'Tiếng Anh trường quốc tế: Giải đáp thường gặp | IPA English',
+				'description' => 'Giải đáp các câu hỏi thường gặp về tiếng Anh trường quốc tế, môi trường học quốc tế, lộ trình học và chương trình tiếng Anh tại IPA English.',
+			),
+		),
+		'/founders/' => array(
+			'en' => array(
+				'title' => 'Meet the Founders | IPA English Ecopark',
+				'description' => 'Meet the founders of IPA English, Kristin Thảo Lê-Evans and Tony Evans, and learn about their experience, roles and approach to English education.',
+			),
+			'vi' => array(
+				'title' => 'Nhà sáng lập IPA English tại Ecopark',
+				'description' => 'Tìm hiểu về hai nhà sáng lập IPA English, Kristin Thảo Lê-Evans và Tony Evans, cùng kinh nghiệm, vai trò và định hướng giáo dục tiếng Anh của họ.',
+			),
+		),
+		'/global-english-for-teen-achievers/' => array(
+			'en' => array(
+				'title' => 'English Communication for Teenagers | IPA English',
+				'description' => 'English communication course for students aged 11-18 with international teachers, small classes, and a focus on confidence and academic skills.',
+			),
+			'vi' => array(
+				'title' => 'Tiếng Anh giao tiếp cho học sinh | IPA English',
+				'description' => 'Khóa học tiếng Anh giao tiếp cho học sinh 11-18 tuổi với giáo viên nước ngoài, lớp học nhỏ, giúp học sinh tự tin giao tiếp và phát triển kỹ năng tiếng Anh.',
+			),
+		),
+		'/learning-system/' => array(
+			'en' => array(
+				'title' => 'Academic English Learning System | IPA English',
+				'description' => 'Explore IPA English’s academic English learning system, combining Cambridge-aligned study methods, presentation skills, and critical thinking development.',
+			),
+			'vi' => array(
+				'title' => 'Tiếng Anh học thuật & phương pháp học | IPA English',
+				'description' => 'Khám phá hệ thống tiếng Anh học thuật chuẩn Cambridge tại IPA English với phương pháp học hiệu quả, phát triển tư duy và kỹ năng thuyết trình tiếng Anh.',
+			),
+		),
+		'/testimonials/' => array(
+			'en' => array(
+				'title' => 'Student Testimonials & Reviews | IPA English',
+				'description' => 'Read student testimonials about learning with IPA English and teacher Tony, including experiences from students developing their English skills and confidence.',
+			),
+			'vi' => array(
+				'title' => 'Đánh giá của học viên | IPA English',
+				'description' => 'Đọc đánh giá của học viên về quá trình học tại IPA English và cùng thầy Tony, với những chia sẻ về kỹ năng tiếng Anh và sự tự tin khi sử dụng tiếng Anh.',
+			),
+		),
+	);
+}
+
+/**
+ * Get SEO data for the current public request.
+ *
+ * @return array<string,string>|null
+ */
+function ipaenglish_get_custom_seo_data() {
+	$context = ipaenglish_onpage_request_context();
+	$pages   = ipaenglish_onpage_seo_map();
+
+	if ( ! isset( $pages[ $context['path'] ][ $context['language'] ] ) ) {
+		return null;
+	}
+
+	return $pages[ $context['path'] ][ $context['language'] ];
+}
+
+add_filter( 'pre_get_document_title', 'ipaenglish_custom_seo_title' );
+function ipaenglish_custom_seo_title( $title ) {
+	if ( is_admin() || is_feed() ) {
+		return $title;
+	}
+
+	$seo = ipaenglish_get_custom_seo_data();
+
+	return ! empty( $seo['title'] ) ? $seo['title'] : $title;
+}
+
+add_action( 'wp_head', 'ipaenglish_render_custom_meta_description', 1 );
+function ipaenglish_render_custom_meta_description() {
+	if ( is_admin() || is_feed() || ! is_singular( 'page' ) ) {
+		return;
+	}
+
+	$seo = ipaenglish_get_custom_seo_data();
+
+	if ( empty( $seo['description'] ) ) {
+		return;
+	}
+
+	echo '<meta name="description" content="' . esc_attr( wp_strip_all_tags( $seo['description'] ) ) . '">' . "\n";
+}
+
+/**
+ * Upgrade existing visible headings to a single page H1 without rewriting page copy.
+ * Elementor output reaches this filter after widget rendering on these pages.
+ *
+ * @param string $content Rendered page content.
+ * @return string
+ */
+add_filter( 'the_content', 'ipaenglish_fix_landing_page_heading_hierarchy', 100 );
+function ipaenglish_fix_landing_page_heading_hierarchy( $content ) {
+	if ( is_admin() || ! is_singular( 'page' ) || ! is_string( $content ) || '' === $content ) {
+		return $content;
+	}
+
+	$context = ipaenglish_onpage_request_context();
+	$path    = $context['path'];
+
+	$promotions = array(
+		'/contact-us/'   => array( 'tag' => 'h3', 'text' => 'Contact' ),
+		'/core-values/'  => array( 'tag' => 'h2', 'text' => 'Core(?:&nbsp;|\x{00A0}|\s)+Values' ),
+		'/faq/'          => array( 'tag' => 'h2', 'text' => 'FAQ' ),
+		'/testimonials/' => array( 'tag' => 'h2', 'text' => 'Testimonials for teacher Tony' ),
+	);
+
+	if ( isset( $promotions[ $path ] ) ) {
+		$heading = $promotions[ $path ];
+		$pattern = '#<' . $heading['tag'] . '([^>]*)>(\s*' . $heading['text'] . '\s*)</' . $heading['tag'] . '>#iu';
+		$content = preg_replace( $pattern, '<h1$1>$2</h1>', $content, 1 );
+	}
+
+	if ( '/communicative-english-for-adults/' === $path && false === stripos( $content, '<h1' ) ) {
+		$heading = 'vi' === $context['language'] ? 'Tiếng Anh giao tiếp cho người lớn' : 'Communicative English for Adults';
+		$content = '<div class="ipaenglish-seo-page-heading"><div class="container"><h1>' . esc_html( $heading ) . '</h1></div></div>' . $content;
+	}
+
+	if ( '/founders/' === $path ) {
+		$content = preg_replace( '#<h1([^>]*)>#i', '<h2$1>', $content );
+		$content = preg_replace( '#</h1>#i', '</h2>', $content );
+		$heading = 'vi' === $context['language'] ? 'Nhà sáng lập IPA English' : 'Founders of IPA English';
+		$content = '<div class="ipaenglish-seo-page-heading"><div class="container"><h1>' . esc_html( $heading ) . '</h1></div></div>' . $content;
+	}
+
+	return $content;
+}
+
+/**
+ * Language-aware ALT text for informative WordPress media used on search pages.
+ * Decorative language flags, icons and slider placeholders intentionally retain alt="".
+ *
+ * @param array<string,string> $attr       Image attributes.
+ * @param WP_Post              $attachment Attachment object.
+ * @return array<string,string>
+ */
+add_filter( 'wp_get_attachment_image_attributes', 'ipaenglish_onpage_attachment_alt', 20, 2 );
+function ipaenglish_onpage_attachment_alt( $attr, $attachment ) {
+	$context = ipaenglish_onpage_request_context();
+	$is_vi   = 'vi' === $context['language'];
+	$alts    = array(
+		12252 => array( 'en' => 'Students working together during an English study session', 'vi' => 'Học sinh cùng học và thực hành tiếng Anh' ),
+		12297 => array( 'en' => 'IPA English founders Kristin Thảo Lê-Evans and Tony Evans', 'vi' => 'Hai nhà sáng lập IPA English Kristin Thảo Lê-Evans và Tony Evans' ),
+		12299 => array( 'en' => 'IPA English teacher training session', 'vi' => 'Buổi đào tạo giáo viên tại IPA English' ),
+		12232 => array( 'en' => 'Student presenting in front of a projector during an English lesson', 'vi' => 'Học sinh thuyết trình trước máy chiếu trong giờ học tiếng Anh' ),
+		12350 => array( 'en' => 'Tony Evans, founder and Director of Studies at IPA English', 'vi' => 'Tony Evans, nhà sáng lập và Giám đốc Học thuật IPA English' ),
+		12410 => array( 'en' => 'Students practicing English together in class', 'vi' => 'Học sinh cùng thực hành tiếng Anh trong lớp' ),
+		12525 => array( 'en' => 'Kristin Thảo Lê-Evans, co-founder and Director of Operations at IPA English', 'vi' => 'Kristin Thảo Lê-Evans, đồng sáng lập và Giám đốc Vận hành IPA English' ),
+		12804 => array( 'en' => 'IPA English Academy', 'vi' => 'Học viện Anh ngữ IPA' ),
+		13062 => array( 'en' => 'Tony Evans, founder and Director of Studies at IPA English', 'vi' => 'Tony Evans, nhà sáng lập và Giám đốc Học thuật IPA English' ),
+		13482 => array( 'en' => 'English learning pathway at IPA English from input to practical tasks', 'vi' => 'Lộ trình học tiếng Anh tại IPA English từ đầu vào đến nhiệm vụ thực hành' ),
+	);
+	$id      = isset( $attachment->ID ) ? (int) $attachment->ID : 0;
+
+	if ( isset( $alts[ $id ] ) ) {
+		$attr['alt'] = $alts[ $id ][ $is_vi ? 'vi' : 'en' ];
+	}
+
+	return $attr;
+}

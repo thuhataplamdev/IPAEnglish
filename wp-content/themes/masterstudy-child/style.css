@@ -350,3 +350,14 @@ a.woocommerce-LoopProduct-link.woocommerce-loop-product__link {
         max-height: 31px !important;
     }
 }
+
+/* Semantic page heading added for landing pages that lacked a page-level H1. */
+.ipaenglish-seo-page-heading {
+    padding: 28px 0 8px;
+}
+
+.ipaenglish-seo-page-heading h1 {
+    margin: 0;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.15;
+}

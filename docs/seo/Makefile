@@ -6,4 +6,5 @@ test:
 		implementation.test_task_pack.SeoImplementationTaskPackTest.test_every_dashboard_task_has_exactly_one_file \
 		implementation.test_task_pack.SeoImplementationTaskPackTest.test_w1_03_contains_all_baseline_findings \
 		implementation.test_index_hygiene.SeoIndexHygieneContractTest \
+		implementation.test_onpage_remediation.SeoOnPageRemediationContractTest \
 		-v
