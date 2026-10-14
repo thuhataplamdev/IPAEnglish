@@ -200,6 +200,86 @@ function ipaenglish_render_custom_meta_description() {
 }
 
 /**
+ * Return the canonical public URL for the current request without allowing
+ * TranslatePress to apply the active language a second time.
+ *
+ * @return string
+ */
+function ipaenglish_onpage_current_url() {
+	$base        = untrailingslashit( (string) get_option( 'home' ) );
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+	$path        = wp_parse_url( $request_uri, PHP_URL_PATH );
+	$path        = is_string( $path ) && '' !== $path ? '/' . ltrim( $path, '/' ) : '/';
+
+	return esc_url_raw( $base . $path );
+}
+
+/**
+ * Add share metadata and conservative WebPage structured data using only facts
+ * already present in the approved title/description map.
+ */
+add_action( 'wp_head', 'ipaenglish_render_social_and_structured_metadata', 2 );
+function ipaenglish_render_social_and_structured_metadata() {
+	if ( is_admin() || is_feed() || ! is_singular( 'page' ) ) {
+		return;
+	}
+
+	$seo = ipaenglish_get_custom_seo_data();
+
+	if ( empty( $seo['title'] ) || empty( $seo['description'] ) ) {
+		return;
+	}
+
+	$context   = ipaenglish_onpage_request_context();
+	$url       = ipaenglish_onpage_current_url();
+	$site_url  = trailingslashit( (string) get_option( 'home' ) );
+	$image_url = wp_get_attachment_image_url( 12804, 'full' );
+	$locale    = 'vi' === $context['language'] ? 'vi_VN' : 'en_US';
+	$language  = 'vi' === $context['language'] ? 'vi-VN' : 'en-US';
+
+	echo '<meta property="og:type" content="website">' . "\n";
+	echo '<meta property="og:site_name" content="IPA English">' . "\n";
+	echo '<meta property="og:locale" content="' . esc_attr( $locale ) . '">' . "\n";
+	echo '<meta property="og:title" content="' . esc_attr( $seo['title'] ) . '">' . "\n";
+	echo '<meta property="og:description" content="' . esc_attr( $seo['description'] ) . '">' . "\n";
+	echo '<meta property="og:url" content="' . esc_url( $url ) . '">' . "\n";
+	echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+	echo '<meta name="twitter:title" content="' . esc_attr( $seo['title'] ) . '">' . "\n";
+	echo '<meta name="twitter:description" content="' . esc_attr( $seo['description'] ) . '">' . "\n";
+
+	if ( is_string( $image_url ) && '' !== $image_url ) {
+		echo '<meta property="og:image" content="' . esc_url( $image_url ) . '">' . "\n";
+		echo '<meta property="og:image:alt" content="IPA English Academy">' . "\n";
+		echo '<meta name="twitter:image" content="' . esc_url( $image_url ) . '">' . "\n";
+	}
+
+	$schema = array(
+		'@context'    => 'https://schema.org',
+		'@type'       => 'WebPage',
+		'@id'         => $url . '#webpage',
+		'url'         => $url,
+		'name'        => $seo['title'],
+		'description' => $seo['description'],
+		'inLanguage'  => $language,
+		'isPartOf'     => array(
+			'@type' => 'WebSite',
+			'@id'   => $site_url . '#website',
+			'url'   => $site_url,
+			'name'  => 'IPA English',
+		),
+	);
+
+	if ( is_string( $image_url ) && '' !== $image_url ) {
+		$schema['primaryImageOfPage'] = array(
+			'@type' => 'ImageObject',
+			'url'   => $image_url,
+		);
+	}
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}
+
+/**
  * Upgrade existing visible headings to a single page H1 without rewriting page copy.
  * Elementor output reaches this filter after widget rendering on these pages.
  *
@@ -247,19 +327,14 @@ function ipaenglish_fix_landing_page_heading_hierarchy( $content ) {
  * Language-aware ALT text for informative WordPress media used on search pages.
  * Decorative language flags, icons and slider placeholders intentionally retain alt="".
  *
- * @param array<string,string> $attr       Image attributes.
- * @param WP_Post              $attachment Attachment object.
- * @return array<string,string>
+ * @return array<int,array<string,string>>
  */
-add_filter( 'wp_get_attachment_image_attributes', 'ipaenglish_onpage_attachment_alt', 20, 2 );
-function ipaenglish_onpage_attachment_alt( $attr, $attachment ) {
-	$context = ipaenglish_onpage_request_context();
-	$is_vi   = 'vi' === $context['language'];
-	$alts    = array(
+function ipaenglish_onpage_image_alt_map() {
+	return array(
+		12232 => array( 'en' => 'Student presenting in front of a projector during an English lesson', 'vi' => 'Học sinh thuyết trình trước máy chiếu trong giờ học tiếng Anh' ),
 		12252 => array( 'en' => 'Students working together during an English study session', 'vi' => 'Học sinh cùng học và thực hành tiếng Anh' ),
 		12297 => array( 'en' => 'IPA English founders Kristin Thảo Lê-Evans and Tony Evans', 'vi' => 'Hai nhà sáng lập IPA English Kristin Thảo Lê-Evans và Tony Evans' ),
 		12299 => array( 'en' => 'IPA English teacher training session', 'vi' => 'Buổi đào tạo giáo viên tại IPA English' ),
-		12232 => array( 'en' => 'Student presenting in front of a projector during an English lesson', 'vi' => 'Học sinh thuyết trình trước máy chiếu trong giờ học tiếng Anh' ),
 		12350 => array( 'en' => 'Tony Evans, founder and Director of Studies at IPA English', 'vi' => 'Tony Evans, nhà sáng lập và Giám đốc Học thuật IPA English' ),
 		12410 => array( 'en' => 'Students practicing English together in class', 'vi' => 'Học sinh cùng thực hành tiếng Anh trong lớp' ),
 		12525 => array( 'en' => 'Kristin Thảo Lê-Evans, co-founder and Director of Operations at IPA English', 'vi' => 'Kristin Thảo Lê-Evans, đồng sáng lập và Giám đốc Vận hành IPA English' ),
@@ -267,11 +342,80 @@ function ipaenglish_onpage_attachment_alt( $attr, $attachment ) {
 		13062 => array( 'en' => 'Tony Evans, founder and Director of Studies at IPA English', 'vi' => 'Tony Evans, nhà sáng lập và Giám đốc Học thuật IPA English' ),
 		13482 => array( 'en' => 'English learning pathway at IPA English from input to practical tasks', 'vi' => 'Lộ trình học tiếng Anh tại IPA English từ đầu vào đến nhiệm vụ thực hành' ),
 	);
+}
+
+/**
+ * Apply ALT text when WordPress renders an attachment through its media helpers.
+ *
+ * @param array<string,string> $attr       Image attributes.
+ * @param WP_Post              $attachment Attachment object.
+ * @return array<string,string>
+ */
+add_filter( 'wp_get_attachment_image_attributes', 'ipaenglish_onpage_attachment_alt', 20, 2 );
+function ipaenglish_onpage_attachment_alt( $attr, $attachment ) {
+	$context = ipaenglish_onpage_request_context();
+	$alts    = ipaenglish_onpage_image_alt_map();
 	$id      = isset( $attachment->ID ) ? (int) $attachment->ID : 0;
 
-	if ( isset( $alts[ $id ] ) ) {
-		$attr['alt'] = $alts[ $id ][ $is_vi ? 'vi' : 'en' ];
+	if ( isset( $alts[ $id ][ $context['language'] ] ) ) {
+		$attr['alt'] = $alts[ $id ][ $context['language'] ];
 	}
 
 	return $attr;
+}
+
+/**
+ * Elementor and footer templates can emit raw <img> tags instead of calling
+ * wp_get_attachment_image(). Buffer only the 22 approved landing responses and
+ * fill ALT text for known informative wp-image-* IDs in the final HTML.
+ */
+add_action( 'template_redirect', 'ipaenglish_start_onpage_html_buffer', 99 );
+function ipaenglish_start_onpage_html_buffer() {
+	if ( is_admin() || is_feed() || wp_doing_ajax() || ! is_singular( 'page' ) || null === ipaenglish_get_custom_seo_data() ) {
+		return;
+	}
+
+	ob_start( 'ipaenglish_filter_rendered_onpage_html' );
+}
+
+/**
+ * Complete rendered-page ALT coverage and localize two untranslated Vietnamese H1s.
+ *
+ * @param string $html Full rendered HTML.
+ * @return string
+ */
+function ipaenglish_filter_rendered_onpage_html( $html ) {
+	if ( ! is_string( $html ) || '' === $html || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
+		return $html;
+	}
+
+	$context   = ipaenglish_onpage_request_context();
+	$alts      = ipaenglish_onpage_image_alt_map();
+	$processor = new WP_HTML_Tag_Processor( $html );
+
+	while ( $processor->next_tag( 'IMG' ) ) {
+		$class = (string) $processor->get_attribute( 'class' );
+
+		if ( ! preg_match( '/(?:^|\s)wp-image-(\d+)(?:\s|$)/', $class, $matches ) ) {
+			continue;
+		}
+
+		$id = (int) $matches[1];
+
+		if ( isset( $alts[ $id ][ $context['language'] ] ) ) {
+			$processor->set_attribute( 'alt', $alts[ $id ][ $context['language'] ] );
+		}
+	}
+
+	$html = $processor->get_updated_html();
+
+	if ( 'vi' === $context['language'] ) {
+		if ( '/core-values/' === $context['path'] ) {
+			$html = preg_replace( '#(<h1\b[^>]*>)\s*Core Values\s*(</h1>)#iu', '$1Giá trị cốt lõi$2', $html, 1 );
+		} elseif ( '/courses/' === $context['path'] ) {
+			$html = preg_replace( '#(<h1\b[^>]*>)\s*Courses\s*(</h1>)#iu', '$1Khóa học tiếng Anh$2', $html, 1 );
+		}
+	}
+
+	return $html;
 }
