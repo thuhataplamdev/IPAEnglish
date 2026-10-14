@@ -303,9 +303,15 @@ function ipaenglish_fix_landing_page_heading_hierarchy( $content ) {
 	);
 
 	if ( isset( $promotions[ $path ] ) ) {
-		$heading = $promotions[ $path ];
-		$pattern = '#<' . $heading['tag'] . '([^>]*)>(\s*' . $heading['text'] . '\s*)</' . $heading['tag'] . '>#iu';
-		$content = preg_replace( $pattern, '<h1$1>$2</h1>', $content, 1 );
+		$heading     = $promotions[ $path ];
+		$pattern     = '#<' . $heading['tag'] . '([^>]*)>(\s*' . $heading['text'] . '\s*)</' . $heading['tag'] . '>#iu';
+		$replacement = '<h1$1>$2</h1>';
+
+		if ( 'vi' === $context['language'] && '/core-values/' === $path ) {
+			$replacement = '<h1$1>Giá trị cốt lõi</h1>';
+		}
+
+		$content = preg_replace( $pattern, $replacement, $content, 1 );
 	}
 
 	if ( '/communicative-english-for-adults/' === $path && false === stripos( $content, '<h1' ) ) {
@@ -321,6 +327,37 @@ function ipaenglish_fix_landing_page_heading_hierarchy( $content ) {
 	}
 
 	return $content;
+}
+
+/**
+ * Localize the Courses page title at the WordPress title layer. The course archive
+ * heading is rendered outside the page content, so this avoids output-buffer order
+ * dependencies while remaining scoped to the Vietnamese Courses request.
+ *
+ * @param string $title   Current title.
+ * @param int    $post_id Post ID.
+ * @return string
+ */
+add_filter( 'the_title', 'ipaenglish_localize_vietnamese_courses_title', 20, 2 );
+function ipaenglish_localize_vietnamese_courses_title( $title, $post_id ) {
+	if ( is_admin() ) {
+		return $title;
+	}
+
+	$context = ipaenglish_onpage_request_context();
+
+	if ( 'vi' !== $context['language'] || '/courses/' !== $context['path'] ) {
+		return $title;
+	}
+
+	static $courses_page_id = null;
+
+	if ( null === $courses_page_id ) {
+		$courses_page    = get_page_by_path( 'courses', OBJECT, 'page' );
+		$courses_page_id = $courses_page instanceof WP_Post ? (int) $courses_page->ID : 0;
+	}
+
+	return $courses_page_id > 0 && (int) $post_id === $courses_page_id ? 'Khóa học tiếng Anh' : $title;
 }
 
 /**
@@ -407,15 +444,5 @@ function ipaenglish_filter_rendered_onpage_html( $html ) {
 		}
 	}
 
-	$html = $processor->get_updated_html();
-
-	if ( 'vi' === $context['language'] ) {
-		if ( '/core-values/' === $context['path'] ) {
-			$html = preg_replace( '#(<h1\b[^>]*>)\s*Core Values\s*(</h1>)#iu', '$1Giá trị cốt lõi$2', $html, 1 );
-		} elseif ( '/courses/' === $context['path'] ) {
-			$html = preg_replace( '#(<h1\b[^>]*>)\s*Courses\s*(</h1>)#iu', '$1Khóa học tiếng Anh$2', $html, 1 );
-		}
-	}
-
-	return $html;
+	return $processor->get_updated_html();
 }
