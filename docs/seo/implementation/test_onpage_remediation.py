@@ -29,8 +29,8 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
         ]
         for path in paths:
             self.assertIn(f"'{path}' => array(", self.source)
-        self.assertEqual(22, self.source.count("'description' =>"))
-        self.assertEqual(22, self.source.count("'title' =>"))
+        self.assertEqual(22, len(re.findall(r"'description' => '[^']+'", self.source)))
+        self.assertEqual(22, len(re.findall(r"'title' => '[^']+'", self.source)))
 
     def test_metadata_copy_stays_within_reviewed_length_ranges(self):
         titles = re.findall(r"'title' => '([^']+)'", self.source)
@@ -62,6 +62,28 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
             self.assertRegex(self.source, rf"\b{attachment_id}\s*=>")
         self.assertNotRegex(self.source, r"\b13221\s*=>")
         self.assertIn("Decorative language flags, icons and slider placeholders intentionally retain alt=\"\"", self.source)
+
+    def test_rendered_html_covers_elementor_and_footer_image_alt(self):
+        self.assertIn("ipaenglish_start_onpage_html_buffer", self.source)
+        self.assertIn("WP_HTML_Tag_Processor", self.source)
+        self.assertIn("wp-image-", self.source)
+        self.assertIn("preg_match", self.source)
+        self.assertIn("set_attribute( 'alt'", self.source)
+
+    def test_social_and_structured_metadata_are_rendered_for_landing_pages(self):
+        self.assertIn("ipaenglish_render_social_and_structured_metadata", self.source)
+        self.assertIn('property=\"og:title\"', self.source)
+        self.assertIn('property=\"og:description\"', self.source)
+        self.assertIn('property=\"og:image\"', self.source)
+        self.assertIn('name=\"twitter:card\"', self.source)
+        self.assertIn('type=\"application/ld+json\"', self.source)
+        self.assertIn("'@type'       => 'WebPage'", self.source)
+
+    def test_vietnamese_h1_localization_covers_remaining_english_labels(self):
+        self.assertIn("Giá trị cốt lõi", self.source)
+        self.assertIn("Khóa học tiếng Anh", self.source)
+        self.assertIn("'/core-values/' === $context['path']", self.source)
+        self.assertIn("'/courses/' === $context['path']", self.source)
 
 
 if __name__ == "__main__":
