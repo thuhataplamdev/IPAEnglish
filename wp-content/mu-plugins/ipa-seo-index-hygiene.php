@@ -2,7 +2,7 @@
 /**
  * Plugin Name: IPA English SEO Index Hygiene
  * Description: Keeps utility/demo URLs out of XML sitemaps and adds noindex signals where indexing has no search value.
- * Version: 1.1.0
+ * Version: 1.1.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -111,8 +111,16 @@ function ipaenglish_seo_translated_urls( $url ) {
 
 	add_filter( 'trp_add_language_to_home_url_check_for_admin', '__return_false' );
 
+	$absolute_home = method_exists( $url_converter, 'get_abs_home' ) ? $url_converter->get_abs_home() : get_option( 'home' );
+	$is_home_url    = untrailingslashit( (string) $url ) === untrailingslashit( (string) $absolute_home );
+
 	foreach ( $languages as $language ) {
-		$translated_url = $url_converter->get_url_for_language( $language, $url, '' );
+		if ( $is_home_url && method_exists( $url_converter, 'get_url_slug' ) ) {
+			$language_slug = $url_converter->get_url_slug( $language );
+			$translated_url = trailingslashit( (string) $absolute_home ) . ( '' !== $language_slug ? trailingslashit( $language_slug ) : '' );
+		} else {
+			$translated_url = $url_converter->get_url_for_language( $language, $url, '' );
+		}
 
 		if ( is_string( $translated_url ) && '' !== $translated_url ) {
 			$urls[] = $translated_url;
@@ -324,6 +332,49 @@ function ipaenglish_seo_request_language_slug() {
 }
 
 /**
+ * Build an absolute public URL without TranslatePress re-applying the current
+ * request language through WordPress' home_url filter.
+ *
+ * @param string $path Optional public path.
+ * @return string
+ */
+function ipaenglish_seo_absolute_home_url( $path = '' ) {
+	$base = '';
+
+	if ( class_exists( 'TRP_Translate_Press' ) ) {
+		$trp           = TRP_Translate_Press::get_trp_instance();
+		$url_converter = $trp->get_component( 'url_converter' );
+
+		if ( $url_converter && method_exists( $url_converter, 'get_abs_home' ) ) {
+			$base = (string) $url_converter->get_abs_home();
+		}
+	}
+
+	if ( '' === $base ) {
+		$base = (string) get_option( 'home' );
+	}
+
+	return esc_url_raw( trailingslashit( $base ) . ltrim( (string) $path, '/' ) );
+}
+
+/**
+ * Remove one leading language slug from a permalink path before rebuilding a
+ * language-specific canonical target. This makes redirect generation idempotent.
+ *
+ * @param string $path URL path.
+ * @return string
+ */
+function ipaenglish_seo_path_without_language_slug( $path ) {
+	$segments = explode( '/', trim( rawurldecode( (string) $path ), '/' ) );
+
+	if ( ! empty( $segments[0] ) && preg_match( '/^[a-z]{2}(?:-[a-z]{2})?$/i', $segments[0] ) ) {
+		array_shift( $segments );
+	}
+
+	return implode( '/', $segments );
+}
+
+/**
  * Identify non-tracking query parameters.
  *
  * @return string[]
@@ -469,8 +520,8 @@ function ipaenglish_seo_canonical_redirects() {
 	$language_slug = ipaenglish_seo_request_language_slug();
 
 	if ( 0 === strpos( $path, 'stm_lms_course_category/' ) && ! preg_match( '#/feed/?$#', $path ) ) {
-		$target_path = '/' . ( '' !== $language_slug ? $language_slug . '/' : '' ) . 'courses/';
-		wp_safe_redirect( home_url( $target_path ), 301 );
+		$target_path = ( '' !== $language_slug ? $language_slug . '/' : '' ) . 'courses/';
+		wp_safe_redirect( ipaenglish_seo_absolute_home_url( $target_path ), 301 );
 		exit;
 	}
 
@@ -488,10 +539,11 @@ function ipaenglish_seo_canonical_redirects() {
 			$target = get_permalink( $post );
 
 			if ( is_string( $target ) && '' !== $target ) {
-				if ( '' !== $language_slug ) {
-					$target_path = wp_parse_url( $target, PHP_URL_PATH );
-					$target      = home_url( '/' . $language_slug . '/' . ltrim( (string) $target_path, '/' ) );
-				}
+				$target_path = wp_parse_url( $target, PHP_URL_PATH );
+				$target_path = ipaenglish_seo_path_without_language_slug( (string) $target_path );
+				$target      = ipaenglish_seo_absolute_home_url(
+					( '' !== $language_slug ? $language_slug . '/' : '' ) . $target_path
+				);
 
 				wp_safe_redirect( $target, 301 );
 				exit;
