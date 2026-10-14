@@ -322,6 +322,12 @@ function ipaenglish_fix_landing_page_heading_hierarchy( $content ) {
 	if ( '/founders/' === $path ) {
 		$content = preg_replace( '#<h1([^>]*)>#i', '<h2$1>', $content );
 		$content = preg_replace( '#</h1>#i', '</h2>', $content );
+		$content = preg_replace(
+			'#<h2([^>]*)>\s*(Founders|Người(?:&nbsp;|\x{00A0}|\s)+Sáng(?:&nbsp;|\x{00A0}|\s)+Lập)\s*</h2>#iu',
+			'<p$1>$2</p>',
+			$content,
+			1
+		);
 		$heading = 'vi' === $context['language'] ? 'Nhà sáng lập IPA English' : 'Founders of IPA English';
 		$content = '<div class="ipaenglish-seo-page-heading"><div class="container"><h1>' . esc_html( $heading ) . '</h1></div></div>' . $content;
 	}
@@ -375,8 +381,8 @@ function ipaenglish_onpage_supporting_copy_map() {
 }
 
 /**
- * Language-aware ALT text for informative WordPress media used on search pages.
- * Decorative language flags, icons and slider placeholders intentionally retain alt="".
+ * Language-aware ALT text for informative WordPress media used across public pages.
+ * Decorative language flags intentionally retain alt="" and role="presentation".
  *
  * @return array<int,array<string,string>>
  */
@@ -391,6 +397,7 @@ function ipaenglish_onpage_image_alt_map() {
 		12525 => array( 'en' => 'Kristin Thảo Lê-Evans, co-founder and Director of Operations at IPA English', 'vi' => 'Kristin Thảo Lê-Evans, đồng sáng lập và Giám đốc Vận hành IPA English' ),
 		12804 => array( 'en' => 'IPA English Academy', 'vi' => 'Học viện Anh ngữ IPA' ),
 		13062 => array( 'en' => 'Tony Evans, founder and Director of Studies at IPA English', 'vi' => 'Tony Evans, nhà sáng lập và Giám đốc Học thuật IPA English' ),
+		13221 => array( 'en' => 'English course options at IPA English', 'vi' => 'Các lựa chọn khóa học tiếng Anh tại IPA English' ),
 		13482 => array( 'en' => 'English learning pathway at IPA English from input to practical tasks', 'vi' => 'Lộ trình học tiếng Anh tại IPA English từ đầu vào đến nhiệm vụ thực hành' ),
 	);
 }
@@ -417,12 +424,12 @@ function ipaenglish_onpage_attachment_alt( $attr, $attachment ) {
 
 /**
  * Elementor and footer templates can emit raw <img> tags instead of calling
- * wp_get_attachment_image(). Buffer only the 22 approved landing responses and
- * fill ALT text for known informative wp-image-* IDs in the final HTML.
+ * wp_get_attachment_image(). Buffer public frontend responses and fill ALT text
+ * for known informative wp-image-* IDs. Non-HTML responses are returned intact.
  */
 add_action( 'template_redirect', 'ipaenglish_start_onpage_html_buffer', 99 );
 function ipaenglish_start_onpage_html_buffer() {
-	if ( is_admin() || is_feed() || wp_doing_ajax() || ! is_singular( 'page' ) || null === ipaenglish_get_custom_seo_data() ) {
+	if ( is_admin() || is_feed() || wp_doing_ajax() ) {
 		return;
 	}
 
@@ -436,7 +443,12 @@ function ipaenglish_start_onpage_html_buffer() {
  * @return string
  */
 function ipaenglish_filter_rendered_onpage_html( $html ) {
-	if ( ! is_string( $html ) || '' === $html || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
+	if (
+		! is_string( $html ) ||
+		'' === $html ||
+		false === stripos( $html, '<html' ) ||
+		! class_exists( 'WP_HTML_Tag_Processor' )
+	) {
 		return $html;
 	}
 
@@ -446,15 +458,26 @@ function ipaenglish_filter_rendered_onpage_html( $html ) {
 
 	while ( $processor->next_tag( 'IMG' ) ) {
 		$class = (string) $processor->get_attribute( 'class' );
+		$src   = (string) $processor->get_attribute( 'src' );
+		$alt   = (string) $processor->get_attribute( 'alt' );
+		$title = (string) $processor->get_attribute( 'title' );
 
-		if ( ! preg_match( '/(?:^|\s)wp-image-(\d+)(?:\s|$)/', $class, $matches ) ) {
-			continue;
+		if ( preg_match( '/(?:^|\s)wp-image-(\d+)(?:\s|$)/', $class, $matches ) ) {
+			$id = (int) $matches[1];
+
+			if ( isset( $alts[ $id ][ $context['language'] ] ) ) {
+				$processor->set_attribute( 'alt', $alts[ $id ][ $context['language'] ] );
+				continue;
+			}
 		}
 
-		$id = (int) $matches[1];
-
-		if ( isset( $alts[ $id ][ $context['language'] ] ) ) {
-			$processor->set_attribute( 'alt', $alts[ $id ][ $context['language'] ] );
+		if (
+			'' === trim( $alt ) &&
+			false !== strpos( $class, 'rev-slidebg' ) &&
+			false !== strpos( $src, '/revslider/sr6/assets/assets/dummy.png' ) &&
+			'' !== trim( $title )
+		) {
+			$processor->set_attribute( 'alt', $title );
 		}
 	}
 

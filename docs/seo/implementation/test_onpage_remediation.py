@@ -60,18 +60,27 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
         self.assertIn("ipaenglish_fix_landing_page_heading_hierarchy", self.source)
         self.assertIn("preg_replace( '#<h1([^>]*)>#i', '<h2$1>'", self.source)
 
+    def test_founders_legacy_page_heading_is_demoted_without_touching_profile_h2s(self):
+        self.assertIn("Founders|Người(?:&nbsp;|\\x{00A0}|\\s)+Sáng", self.source)
+        self.assertIn("'<p$1>$2</p>'", self.source)
+        self.assertIn("'Founders of IPA English'", self.source)
+        self.assertIn("'Nhà sáng lập IPA English'", self.source)
+
     def test_informative_media_have_language_aware_alt_copy(self):
-        for attachment_id in (12232, 12252, 12297, 12299, 12350, 12410, 12525, 12804, 13062, 13482):
+        for attachment_id in (12232, 12252, 12297, 12299, 12350, 12410, 12525, 12804, 13062, 13221, 13482):
             self.assertRegex(self.source, rf"\b{attachment_id}\s*=>")
-        self.assertNotRegex(self.source, r"\b13221\s*=>")
-        self.assertIn("Decorative language flags, icons and slider placeholders intentionally retain alt=\"\"", self.source)
+        self.assertIn("Decorative language flags intentionally retain alt=\"\"", self.source)
 
     def test_rendered_html_covers_elementor_and_footer_image_alt(self):
         self.assertIn("ipaenglish_start_onpage_html_buffer", self.source)
+        self.assertIn("false === stripos( $html, '<html' )", self.source)
+        self.assertNotIn("null === ipaenglish_get_custom_seo_data()", self.source)
         self.assertIn("WP_HTML_Tag_Processor", self.source)
         self.assertIn("wp-image-", self.source)
         self.assertIn("preg_match", self.source)
         self.assertIn("set_attribute( 'alt'", self.source)
+        self.assertIn("/revslider/sr6/assets/assets/dummy.png", self.source)
+        self.assertIn("$processor->set_attribute( 'alt', $title )", self.source)
 
     def test_social_and_structured_metadata_are_rendered_for_landing_pages(self):
         self.assertIn("ipaenglish_render_social_and_structured_metadata", self.source)
