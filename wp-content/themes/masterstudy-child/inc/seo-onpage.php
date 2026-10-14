@@ -330,6 +330,34 @@ function ipaenglish_fix_landing_page_heading_hierarchy( $content ) {
 }
 
 /**
+ * Localize the MasterStudy LMS courses archive H1 at its translation source.
+ *
+ * TranslatePress/W3TC can wrap the final HTML in their own output buffers, so
+ * rewriting this LMS-owned heading after rendering is not reliable. The LMS
+ * template emits the label through esc_html_e(), making gettext the narrowest
+ * server-rendered hook for this exact string and text domain.
+ *
+ * @param string $translation Translated text.
+ * @param string $text        Original text.
+ * @param string $domain      Text domain.
+ * @return string
+ */
+add_filter( 'gettext', 'ipaenglish_localize_lms_courses_heading', 999, 3 );
+function ipaenglish_localize_lms_courses_heading( $translation, $text, $domain ) {
+	if ( is_admin() || 'Courses' !== $text || 'masterstudy-lms-learning-management-system' !== $domain ) {
+		return $translation;
+	}
+
+	$context = ipaenglish_onpage_request_context();
+
+	if ( 'vi' !== $context['language'] || '/courses/' !== $context['path'] ) {
+		return $translation;
+	}
+
+	return 'Khóa học tiếng Anh';
+}
+
+/**
  * Supporting copy for the four English landing pages whose rendered body was
  * still below 300 words after structural remediation. Copy is intentionally
  * limited to claims already present in the page, approved metadata or linked
@@ -402,7 +430,7 @@ function ipaenglish_start_onpage_html_buffer() {
 }
 
 /**
- * Complete rendered-page ALT coverage and localize two untranslated Vietnamese H1s.
+ * Complete rendered-page ALT coverage and append scoped English supporting copy.
  *
  * @param string $html Full rendered HTML.
  * @return string
@@ -431,15 +459,6 @@ function ipaenglish_filter_rendered_onpage_html( $html ) {
 	}
 
 	$html = $processor->get_updated_html();
-
-	if ( 'vi' === $context['language'] && '/courses/' === $context['path'] ) {
-		$html = preg_replace(
-			'#(<div class="courses_filters__title">\s*<h1\b[^>]*>)\s*Courses\s*(</h1>)#iu',
-			'$1Khóa học tiếng Anh$2',
-			$html,
-			1
-		);
-	}
 
 	if ( 'en' === $context['language'] ) {
 		$supporting_copy = ipaenglish_onpage_supporting_copy_map();
