@@ -93,6 +93,22 @@ function trp_stop_redirect_on_robots_txt( $allow_redirect, $needed_language, $cu
 add_filter( 'trp_allow_language_redirect', 'trp_stop_redirect_on_robots_txt', 10, 3 );
 
 /**
+ * Keep the canonical, unprefixed WordPress REST URL accessible when the default
+ * language uses a subdirectory. REST requests must not redirect to themselves.
+ */
+function trp_stop_redirect_on_unprefixed_rest_request( $allow_redirect, $needed_language, $current_page_url ) {
+    $trp           = TRP_Translate_Press::get_trp_instance();
+    $url_converter = $trp->get_component( 'url_converter' );
+
+    if ( $url_converter->is_unprefixed_rest_request_on_subdirectory_install() ) {
+        return false;
+    }
+
+    return $allow_redirect;
+}
+add_filter( 'trp_allow_language_redirect', 'trp_stop_redirect_on_unprefixed_rest_request', 10, 3 );
+
+/**
  * Don't have html inside menu title tags. Some themes just put in the title the content of the link without striping HTML
  */
 add_filter( 'nav_menu_link_attributes', 'trp_remove_html_from_menu_title', 10, 3);
@@ -270,8 +286,17 @@ function trp_do_not_translate_dk_pdf($translate, $output){
 
 add_filter( 'trp_skip_gettext_processing', 'trp_invoices_for_woocommerce_strip_gettext_from_pdf', 10, 4 );
 function trp_invoices_for_woocommerce_strip_gettext_from_pdf( $bool, $translation, $text, $domain ){
+    if ( !isset( $_GET['wc-ajax'] ) || $_GET['wc-ajax'] != 'checkout' ) {
+        return $bool;
+    }
 
-    if ( isset( $_GET['wc-ajax'] ) && $_GET['wc-ajax'] == "checkout" && class_exists( '\BEWPI_Invoice' ) && ((trim( $domain ) === 'woocommerce-pdf-invoice') || ( $text == 'Cash on delivery' && trim($domain) == 'woocommerce') ) ) {
+    $domain = trim( $domain );
+    $is_invoice_string = (
+        $domain === 'woocommerce-pdf-invoice' ||
+        ( $text == 'Cash on delivery' && $domain == 'woocommerce' )
+    );
+
+    if ( $is_invoice_string && class_exists( '\BEWPI_Invoice' ) ) {
         return true;
     }
     return $bool;
@@ -356,7 +381,17 @@ function trp_woocommerce_pdf_catalog_compatibility_dont_translate_pdf( $bool, $o
 
 add_filter( 'trp_skip_gettext_processing', 'trp_woo_strip_gettext_from_yith_pdf', 10, 4 );
 function trp_woo_strip_gettext_from_yith_pdf( $bool, $translation, $text, $domain ){
-    if ( isset( $_GET['wc-ajax'] ) && $_GET['wc-ajax'] == 'checkout' && class_exists( 'YITH_Checkout_Addon' ) && ((trim( $domain ) === 'yith-woocommerce-pdf-invoice') || ( $text == 'N/A' && trim($domain) == 'woocommerce') ) ){
+    if ( !isset( $_GET['wc-ajax'] ) || $_GET['wc-ajax'] != 'checkout' ) {
+        return $bool;
+    }
+
+    $domain = trim( $domain );
+    $is_invoice_string = (
+        $domain === 'yith-woocommerce-pdf-invoice' ||
+        ( $text == 'N/A' && $domain == 'woocommerce' )
+    );
+
+    if ( $is_invoice_string && class_exists( 'YITH_Checkout_Addon' ) ) {
         return true;
     }
     return $bool;
@@ -785,6 +820,22 @@ function trp_strip_request_metadata_keys( $metadata ){
         }
     }
     return $metadata;
+}
+
+/**
+ * Let Hummingbird start its page-cache buffer before TranslatePress.
+ *
+ * Both normally start at init priority 0, but TranslatePress registers first.
+ * Buffers are processed in reverse order, so Hummingbird would cache the page
+ * before it is translated and before #TRPLINKPROCESSED markers are removed.
+ */
+add_filter( 'trp_start_output_buffer_priority', 'trp_hummingbird_compatibility' );
+function trp_hummingbird_compatibility( $priority ){
+    if ( defined( 'WPHB_VERSION' ) && (int) $priority === 0 ) {
+        return 1;
+    }
+
+    return $priority;
 }
 
 /**
@@ -2249,6 +2300,7 @@ add_filter( 'trp_needed_language', 'trp_page_builders_compatibility_with_subdire
 function trp_page_builders_compatibility_with_subdirectory_for_default_language( $needed_language, $lang_from_url, $settings, $trp) {
     if ( ( ( isset( $_GET['action'] ) && $_GET['action'] === 'elementor' ) || isset( $_GET['elementor-preview'] ) ) //Elementor
         || trp_divi_is_builder_request() //Divi 4 & 5. Divi 4 appended PageSpeed=off to the builder URL, Divi 5 no longer does, so don't rely on it
+        || trp_is_breakdance_builder_request() //Breakdance builder shell (?breakdance=builder) and canvas iframe (breakdance_iframe=true)
         || ( ( isset( $_GET['vc_action'] ) && $_GET['vc_action'] === 'vc_inline' ) || ( isset( $_GET['vc_editable'] ) && $_GET['vc_editable'] === 'true' ) ) ) { //WPBakery
         $needed_language = $settings['default-language'];
     }
@@ -3401,6 +3453,141 @@ add_filter( 'locale', 'trp_breakdance_builder_respect_user_locale', 100000 );
 add_filter( 'plugin_locale', 'trp_breakdance_builder_respect_user_locale', 100000 );
 
 /**
+ * Convert a URL of this site to its default-language version, collapsing repeated language slugs.
+ *
+ * Breakdance builds the "Edit Global Styles" (browse mode) admin bar link with
+ * home_url( $_SERVER['REQUEST_URI'] ). On a secondary-language page the request URI already carries
+ * the language slug and TRP_Url_Converter::add_language_to_home_url() prepends it once more, so the
+ * browseModeOpenUrl and returnUrl parameters end up as https://example.com/en/en/page/ .
+ * TRP_Url_Converter::get_url_for_language() replaces a single language slug, so drop the duplicated
+ * leading slugs first and let it handle the remaining one (including translated slugs from SEO Pack).
+ *
+ * @param string $url Absolute URL of this site.
+ *
+ * @return string The URL in the default language.
+ */
+function trp_breakdance_url_to_default_language( $url ) {
+    $trp           = TRP_Translate_Press::get_trp_instance();
+    $url_converter = $trp->get_component( 'url_converter' );
+    $settings      = $trp->get_component( 'settings' )->get_settings();
+
+    if ( empty( $url ) || ! $url_converter || empty( $settings['default-language'] ) ) {
+        return $url;
+    }
+
+    $language_slugs = array();
+    foreach ( (array) $settings['translation-languages'] as $language_code ) {
+        $language_slugs[] = $url_converter->get_url_slug( $language_code, false );
+    }
+
+    $url_obj  = new \TranslatePress\Uri( $url );
+    $abs_home = wp_parse_url( $url_converter->get_abs_home() );
+
+    // Only URLs of this site carry TranslatePress language slugs.
+    if ( $url_obj->getHost() && ! empty( $abs_home['host'] ) && strcasecmp( strval( $url_obj->getHost() ), $abs_home['host'] ) !== 0 ) {
+        return $url;
+    }
+
+    $original_path = strval( $url_obj->getPath() );
+    $home_path     = isset( $abs_home['path'] ) ? trim( strval( $abs_home['path'] ), '/' ) : '';
+    $path          = trim( $original_path, '/' );
+
+    if ( $home_path !== '' && strpos( $path, $home_path ) === 0 ) {
+        $path = trim( substr( $path, strlen( $home_path ) ), '/' );
+    }
+
+    $segments = ( $path === '' ) ? array() : explode( '/', $path );
+
+    // A URL never legitimately starts with two language slugs. Keep the last one so
+    // get_url_for_language() still knows which language the rest of the path is in.
+    while ( count( $segments ) >= 2 && in_array( $segments[0], $language_slugs, true ) && in_array( $segments[1], $language_slugs, true ) ) {
+        array_shift( $segments );
+    }
+
+    $new_path = '/' . ltrim( $home_path . '/' . implode( '/', $segments ), '/' );
+    if ( $new_path !== '/' && substr( $original_path, -1 ) === '/' ) {
+        $new_path .= '/';
+    }
+    $url_obj->setPath( $new_path );
+
+    return $url_converter->get_url_for_language( $settings['default-language'], $url_obj->getUri(), '' );
+}
+
+/**
+ * Redirect Breakdance Builder requests opened on a secondary language URL to the default language.
+ *
+ * Admin Bar → Breakdance → "Edit Global Styles" on a secondary-language page links to the builder on
+ * that language ( https://example.com/en/?breakdance=builder&mode=browse&browseModeOpenUrl=... ), so the
+ * builder canvas renders the translated page and edits made there are saved into the original
+ * content, mixing languages. The browseModeOpenUrl and returnUrl parameters also carry a doubled
+ * language slug ( /en/en/page/ ), which resolves to a 404 in the canvas and when leaving the builder.
+ *
+ * Applies to the builder shell (?breakdance=builder) and the canvas iframe (breakdance_iframe=true).
+ * Hooked before TRP_Language_Switcher::redirect_to_correct_language() so we don't redirect twice.
+ */
+add_action( 'template_redirect', 'trp_breakdance_builder_redirect_to_default_language', 10 );
+function trp_breakdance_builder_redirect_to_default_language() {
+    if ( is_admin() || ! defined( '__BREAKDANCE_VERSION' ) || ! trp_is_breakdance_builder_request() ) {
+        return;
+    }
+
+    $trp           = TRP_Translate_Press::get_trp_instance();
+    $url_converter = $trp->get_component( 'url_converter' );
+    if ( ! $url_converter ) {
+        return;
+    }
+
+    $current_url  = $url_converter->cur_page_url();
+    $redirect_url = trp_breakdance_url_to_default_language( $current_url );
+    $redirect     = ( $redirect_url !== $current_url );
+
+    // Browse mode: the page opened in the canvas and the page returned to when closing the builder.
+    foreach ( array( 'browseModeOpenUrl', 'returnUrl' ) as $param ) {
+        if ( empty( $_GET[ $param ] ) ) {
+            continue;
+        }
+        $original_value  = esc_url_raw( wp_unslash( $_GET[ $param ] ) ); /* phpcs:ignore WordPress.Security.NonceVerification.Recommended */
+        $converted_value = trp_breakdance_url_to_default_language( $original_value );
+        if ( $converted_value !== $original_value ) {
+            $redirect_url = add_query_arg( $param, rawurlencode( $converted_value ), $redirect_url );
+            $redirect     = true;
+        }
+    }
+
+    if ( $redirect ) {
+        $status = apply_filters( 'trp_redirect_status', 302, 'breakdance_builder_redirect_to_default_language' );
+        wp_safe_redirect( $redirect_url, $status );
+        exit;
+    }
+}
+
+/**
+ * Disable the automatic language detection redirect script inside the Breakdance canvas.
+ * Otherwise it would send the canvas back to the visitor's preferred language,
+ * bouncing against the redirect to the default language above.
+ */
+add_filter( 'trp_ald_enqueue_redirecting_script', 'trp_breakdance_builder_disable_ald_redirect' );
+function trp_breakdance_builder_disable_ald_redirect( $enqueue_redirecting_script ) {
+    if ( trp_is_breakdance_builder_request() ) {
+        return false;
+    }
+    return $enqueue_redirecting_script;
+}
+
+/**
+ * Hide the floating language switcher inside the Breakdance canvas, so the canvas can't be switched
+ * to a secondary language while editing.
+ */
+add_filter( 'trp_floating_ls_html', 'trp_breakdance_builder_disable_language_switcher' );
+add_filter( 'trp_floater_ls_html_v2', 'trp_breakdance_builder_disable_language_switcher' );
+function trp_breakdance_builder_disable_language_switcher( $html ) {
+    if ( trp_is_breakdance_builder_request() ) {
+        return '';
+    }
+    return $html;
+}
+
+/**
  * Remove Woodmart Layouts' template overrides when TranslatePress editors are active.
  *
  * Woodmart's Layouts module (woodmart_layout CPT) hooks `template_include` at
@@ -3525,7 +3712,17 @@ function trp_divi_wrap_module_with_post_id($output, $render_slug, $module) {
 /**
  * Compatibility with redirect plugins when SEO Pack rewrites REQUEST_URI for translated slugs.
  */
-add_filter( 'rank_math/redirection/pre_search', 'trp_rank_math_use_original_request_uri_for_redirections', 9, 3 );
+add_action( 'plugins_loaded', 'trp_register_rank_math_seo_pack_compatibility', 20 );
+function trp_register_rank_math_seo_pack_compatibility() {
+    if ( ! defined( 'TRP_IN_SP_PLUGIN_VERSION' ) || ! class_exists( 'RankMath', false ) ) {
+        return;
+    }
+
+    add_filter( 'rank_math/redirection/pre_search', 'trp_rank_math_use_original_request_uri_for_redirections', 9, 3 );
+    add_filter( 'rank_math/redirection/add_redirect_header', 'trp_guard_rank_math_redirect', PHP_INT_MAX );
+    add_filter( 'request', 'trp_rank_math_category_redirect_language', 9 );
+}
+
 function trp_rank_math_use_original_request_uri_for_redirections( $check, $uri, $full_uri ) {
     if ( ! is_null( $check ) ) {
         return $check;
@@ -3557,6 +3754,84 @@ function trp_rank_math_use_original_request_uri_for_redirections( $check, $uri, 
     }
 
     return $redirection ?: $check;
+}
+
+/**
+ * Rank Math calls this filter immediately before wp_redirect(), after resolving its target.
+ * Leave its header preference unchanged; only guard this redirect attempt.
+ */
+function trp_guard_rank_math_redirect( $add_header ) {
+    if ( ! empty( trp_get_original_request_uri() ) ) {
+        add_filter( 'wp_redirect', 'trp_prevent_rank_math_self_redirect', PHP_INT_MAX );
+    }
+
+    return $add_header;
+}
+
+/**
+ * Cancel a Rank Math self-redirect using the visitor URL preserved before URI rewriting.
+ */
+function trp_prevent_rank_math_self_redirect( $location ) {
+    remove_filter( 'wp_redirect', 'trp_prevent_rank_math_self_redirect', PHP_INT_MAX );
+
+    if ( ! is_string( $location ) || $location === '' ) {
+        return $location;
+    }
+
+    // A form submission can legitimately redirect to the same URL for a new GET request.
+    if ( isset( $_SERVER['REQUEST_METHOD'] ) && ! in_array( $_SERVER['REQUEST_METHOD'], array( 'GET', 'HEAD' ), true ) ) {
+        return $location;
+    }
+
+    // The translated-slug cache preserves the visitor URL before SEO Pack rewrites REQUEST_URI.
+    $trp = TRP_Translate_Press::get_trp_instance();
+    $current_url = $trp->get_component( 'url_converter' )->cur_page_url();
+    $target = wp_parse_url( WP_Http::make_absolute_url( $location, $current_url ) );
+    $current = wp_parse_url( $current_url );
+
+    if ( ! is_array( $target ) || ! is_array( $current ) ) {
+        return $location;
+    }
+
+    $normalize_url = static function ( $url ) {
+        $url['scheme'] = strtolower( isset( $url['scheme'] ) ? $url['scheme'] : '' );
+        $url['host'] = strtolower( isset( $url['host'] ) ? $url['host'] : '' );
+        $url['port'] = isset( $url['port'] ) ? $url['port'] : ( $url['scheme'] === 'https' ? 443 : 80 );
+        $url['path'] = isset( $url['path'] ) && $url['path'] !== '' ? $url['path'] : '/';
+        ksort( $url );
+        return $url;
+    };
+
+    return $normalize_url( $target ) === $normalize_url( $current ) ? false : $location;
+}
+
+/**
+ * Rank Math strips the category base during request parsing, before its redirect module.
+ */
+function trp_rank_math_category_redirect_language( $query_vars ) {
+    global $TRP_LANGUAGE;
+
+    if ( ! isset( $query_vars['rank_math_category_redirect'] ) || ! is_string( $query_vars['rank_math_category_redirect'] ) || empty( $TRP_LANGUAGE ) ) {
+        return $query_vars;
+    }
+
+    $trp = TRP_Translate_Press::get_trp_instance();
+    $settings = $trp->get_component( 'settings' )->get_settings();
+    if ( $TRP_LANGUAGE === $settings['default-language'] ) {
+        return $query_vars;
+    }
+
+    $category_url = trailingslashit( get_option( 'home' ) ) . user_trailingslashit( $query_vars['rank_math_category_redirect'], 'category' );
+    add_filter( 'wp_redirect', function ( $location ) use ( $category_url, $TRP_LANGUAGE ) {
+        if ( $location !== $category_url ) {
+            return $location;
+        }
+
+        $trp = TRP_Translate_Press::get_trp_instance();
+        return $trp->get_component( 'url_converter' )->get_url_for_language( $TRP_LANGUAGE, $location, '' );
+    } );
+
+    return $query_vars;
 }
 
 /**

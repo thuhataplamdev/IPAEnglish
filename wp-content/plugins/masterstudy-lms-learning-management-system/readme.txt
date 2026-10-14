@@ -5,7 +5,7 @@ Tags: lms, course, elearning, education, learning management system
 Requires at least: 4.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.7.48
+Stable tag: 3.7.54
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -167,11 +167,15 @@ Improve your students' learning journey with our [Course Player](https://stylemi
 - Gutenberg blocks available to build LMS pages easily
 - Content security
 - Advanced analytics
+- LMS Migration
 
 For more details, please visit [our website](https://stylemixthemes.com/wordpress-lms-plugin/).
 
 **MasterStudy Premium Plugin Features**
 
+- [**Lesson Notes**](https://stylemixthemes.com/wordpress-lms-plugin/addons/lesson-notes/): Take notes right inside the lesson and build a study guide as you go.
+- [**Notifications**](https://stylemixthemes.com/wordpress-lms-plugin/addons/notifications/): Keep students and instructors informed with timely on-site and browser push notifications.
+- [**Calendar**](https://stylemixthemes.com/wordpress-lms-plugin/addons/calendar/): A clear schedule for every course, so learners always know what's coming next.
 - [**AI Lab**](https://stylemixthemes.com/wordpress-lms-plugin/addons/ai-lab/): Empowers you to generate complete courses, lessons, quizzes, and assignments with rich content and visuals from a single prompt.
 - [**Subscriptions**](https://stylemixthemes.com/wordpress-lms-plugin/addons/subscriptions/): Offer recurring access to courses with automatic renewals.
 - [**Memberships**](https://stylemixthemes.com/wordpress-lms-plugin/addons/memberships/): Give students instant access to unlock selected courses, categories, or your entire site.
@@ -312,29 +316,53 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 It’s recommended to have a backup of your website before hitting the update button.
 
 == Changelog ==
-= 3.7.48 - 2026-09-04 =
-- **Fix:** Minor bugfixes
+= 3.7.54 - 2026-10-07
+- **New:** [LMS Migration tool](https://docs.stylemixthemes.com/masterstudy-lms/lms-settings/lms-migration).
 
-= 3.7.47 - 2026-09-02 =
-- **New:** Added a new Calendar addon [PRO].
-- **Update:** Added translations for LMS inner pages.
-- **Fix:** Fixed compatibility issues with WPML.
-- **Fix:** Fixed UI issues with buttons in the WPML admin dashboard.
+= 3.7.53 - 2026-10-06
+- **Fix:** Added Quizzes and AI Lab strings for translation.
+- **Fix:** Fixed an error in User Account → Gradebook when an instructor has no available courses.
+- **Fix:** Fixed an issue where the Take Note button appeared to the right of embedded videos in lessons [PRO].
+- **Fix:** Fixed an issue where the "My Points" string was not translatable with WPML String Translation [PRO].
+- **Fix:** Stripe cards that require 3D Secure (SCA) now work for one-time course purchases. Payments are processed via PaymentIntents instead of the legacy Charges API.
+- **Fix:** Fixed an authenticated (Contributor+) Stored Cross-Site Scripting vulnerability in the admin Payouts list and payout edit screen.
+- **Fix:** Restricted creating and editing Payouts to administrators and protected payout data from modification by lower-privileged users.
 
-= 3.7.46 - 2026-08-28 =
-- **Fix:** Minor bugfixes
+= 3.7.52 - 2026-09-23 =
+- **Fix:** Fixed LMS Form Builder custom fields not being available in Email Manager registration templates [PRO].
+- **Fix:** Fixed the Group Course student limit setting not being applied correctly [PRO].
+- **Fix:** Fixed formatted Quiz Builder answers being marked as incorrect in Fill in the Gap and Keywords questions.
+- **Fix:** Fixed Course Builder notice dismissal interfering with other admin notices, including TranslatePress notices.
 
-= 3.7.45 - 2026-08-26 =
-- **New**: Added a new Notifications addon[PRO].
-- **Update:** Updated the design of the Single Bundle page [PRO].
-- **Fix:** Cancelling a course bundle via a WooCommerce order was not working correctly [PRO].
-- **Fix:** SCORM course progress could not be reset [PRO].
-- **Fix:** Randomized answer images were not displayed after Quiz retake.
+= 3.7.51 - 2026-09-21 =
+- **New:** Added Quick Links to the top admin bar for MasterStudy plugin pages.
+- **Fix:** Fixed PDF Lesson rendering issues for Latin characters when Arabic (RTL) text is present.
+- **Fix:** Fixed hover notification display for Instructors, Reviews, and Courses in the admin panel.
+- **Fix:** Fixed an issue where multiple-choice questions marked correct answers as incorrect when an answer contained a comma.
+- **Fix:** Fixed custom course status display in the user account.
+- **Fix:** Fixed an issue where Unlimited Attempts in quizzes always displayed 0 attempts.
+- **Fix:** Fixed student statistics not loading on public student profiles due to REST API authorization.
+- **Fix:** Fixed Composer autoloader warnings caused by unavailable AI Lab files in the PRO package [PRO].
+- **Fix:** Fixed the file upload instruction in account settings not being translatable.
+- **Fix:** Fixed HTML entities appearing in Course, Lesson, Assignment, Quiz, and Question titles in the admin dashboard.
+- **Fix:** Fixed the AI Lab quiz prompt placeholder not being translatable [PRO].
+- **Fix:** Fixed translations for trial duration and localized dates on the checkout and Thank You pages [PRO].
+- **Fix:** Fixed bulk orders not being deleted from the admin dashboard.
+- **Fix:** Fixed quiz pagination disappearing after retaking a quiz.
+- **Fix:** Fixed scrolling in the File Manager when selecting an image for a quiz question [PRO].
+- **Fix:** Fixed MasterStudy registration incorrectly depending on the WordPress `Anyone can register` setting.
+- **Fix:** Fixed Course Builder strings not being discoverable in WPML String Translation.
 
-= 3.7.44 - 2026-08-21 =
-- **Fix:** Minor bugfixes
-
-= 3.7.43 - 2026-08-19 =
-- **Fix:** Minor bugfixes
+= 3.7.50 - 2026-09-15 =
+- **Fix:** Added hardening and authorization fixes for reported issues.
+- **Fix:** Fixed instructor order status [PRO].
+- **Fix:** Fixed an `_load_textdomain_just_in_time` notices.
+- **Fix:** Fixed the Courses admin page not loading when the site language was set to Deutsch (Sie).
+- **Fix:** Fixed pagination in the Events Grid widget.
+- **Fix:** Fixed course statuses and levels not being applied or displayed correctly in Elementor widgets.
+- **Fix:** Fixed the Upcoming Course card display for instructors in the user account [PRO].
+- **Fix:** Fixed the Preview Video showing a “Video source is missing or invalid” error after changing the video source option.
+- **Fix:** Fixed the `Allow Instructors to Create Course Subscriptions` setting not being applied correctly [PRO].
+- **Fix:** Fixed course price information disappearing from the backend and frontend after updating a course.
 
 You can see all updates history in our [changelog documentation](https://docs.stylemixthemes.com/masterstudy-lms/changelog-free-version).

@@ -42,6 +42,24 @@ if ( ! function_exists( 'masterstudy_lms_user_session_limit_reached' ) ) {
 	}
 }
 
+if ( ! function_exists( 'masterstudy_lms_users_can_register' ) ) {
+	function masterstudy_lms_users_can_register(): bool {
+		$settings = get_option( 'stm_lms_settings', array() );
+
+		return empty( $settings['restrict_registration'] );
+	}
+}
+
+if ( ! function_exists( 'masterstudy_lms_user_can_write_course_progress' ) ) {
+	function masterstudy_lms_user_can_write_course_progress( int $user_id, int $course_id ): bool {
+		if ( empty( $user_id ) || empty( $course_id ) ) {
+			return false;
+		}
+
+		return ! empty( stm_lms_get_user_course( $user_id, $course_id, array( 'user_course_id' ) ) );
+	}
+}
+
 function stm_lms_str_replace_once( $str_pattern, $str_replacement, $string ) {
 	if ( strpos( $string, $str_pattern ) !== false ) {
 		$occurrence = strpos( $string, $str_pattern );
@@ -446,7 +464,11 @@ function masterstudy_get_image( $post_id, $lazyload = false, $class = null, $wid
 	}
 
 	$image_url = ( ! empty( $image_src ) ) ? $image_src[0] : '';
-	$image     = '<img src="' . esc_url( $image_url ?? '' ) . '" class="' . esc_attr( $class ?? '' ) . '">';
+	$image_alt = $thumbnail_id ? trim( (string) get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ) ) : '';
+	if ( '' === $image_alt ) {
+		$image_alt = wp_strip_all_tags( get_the_title( $post_id ) );
+	}
+	$image = '<img src="' . esc_url( $image_url ?? '' ) . '" class="' . esc_attr( $class ?? '' ) . '" alt="' . esc_attr( $image_alt ) . '">';
 
 	if ( $lazyload ) {
 		$image_wrapper  = '<div class="masterstudy-lazyload-image">';
@@ -526,6 +548,9 @@ function stm_lms_str_replace_first( $from, $to, $content ) {
 	return preg_replace( $from, $to, $content, 1 );
 }
 
+/**
+ * Applies the 'stm_lms_filter_output' filter. Does NOT escape - escape the result at the call site.
+ */
 function stm_lms_filtered_output( $data ) {
 	return apply_filters( 'stm_lms_filter_output', $data );
 }
@@ -1592,16 +1617,97 @@ function masterstudy_lms_admin_bar_settings_menu( $wp_admin_bar ) {
 		return;
 	}
 
+	$is_free_version = ! STM_LMS_Helpers::is_pro();
+
 	$wp_admin_bar->add_node(
 		array(
 			'id'    => 'lms-settings',
-			'title' => '<img src="' . STM_LMS_URL . 'assets/admin/icon.svg" /> ' . esc_html__( 'Settings', 'masterstudy-lms-learning-management-system' ),
+			'title' => '<img src="' . STM_LMS_URL . 'assets/admin/icon.svg" /> ' . esc_html__( 'MasterStudy', 'masterstudy-lms-learning-management-system' ),
 			'href'  => admin_url( 'admin.php?page=stm-lms-settings' ),
 			'meta'  => array(
-				'title' => esc_html__( 'Settings', 'masterstudy-lms-learning-management-system' ),
+				'class' => 'ms-lms-admin-menu',
+				'title' => esc_html__( 'MasterStudy', 'masterstudy-lms-learning-management-system' ),
 			),
 		)
 	);
+
+	$wp_admin_bar->add_node(
+		array(
+			'id'     => 'lms-settings-courses',
+			'parent' => 'lms-settings',
+			'title'  => esc_html__( 'Courses', 'masterstudy-lms-learning-management-system' ),
+			'href'   => admin_url( 'edit.php?post_type=stm-courses' ),
+			'meta'   => array(
+				'class' => 'ms-lms-admin-menu-item',
+			),
+		)
+	);
+
+	$wp_admin_bar->add_node(
+		array(
+			'id'     => 'lms-settings-add-new-course',
+			'parent' => 'lms-settings',
+			'title'  => esc_html__( 'Add New Course', 'masterstudy-lms-learning-management-system' ),
+			'href'   => admin_url( 'post-new.php?post_type=stm-courses' ),
+			'meta'   => array(
+				'class' => 'ms-lms-admin-menu-item',
+			),
+		)
+	);
+
+	$wp_admin_bar->add_node(
+		array(
+			'id'     => 'lms-settings-global-settings',
+			'parent' => 'lms-settings',
+			'title'  => esc_html__( 'Settings', 'masterstudy-lms-learning-management-system' ),
+			'href'   => admin_url( 'admin.php?page=stm-lms-settings' ),
+			'meta'   => array(
+				'class' => 'ms-lms-admin-menu-item',
+			),
+		)
+	);
+
+	$wp_admin_bar->add_node(
+		array(
+			'id'     => 'lms-settings-community',
+			'parent' => 'lms-settings',
+			'title'  => esc_html__( 'Community', 'masterstudy-lms-learning-management-system' ),
+			'href'   => 'https://www.facebook.com/groups/masterstudylms',
+			'meta'   => array(
+				'class'  => 'ms-lms-admin-menu-item',
+				'target' => '_blank',
+				'rel'    => 'noopener noreferrer',
+			),
+		)
+	);
+
+	$wp_admin_bar->add_node(
+		array(
+			'id'     => 'lms-settings-documentation',
+			'parent' => 'lms-settings',
+			'title'  => esc_html__( 'Documentation', 'masterstudy-lms-learning-management-system' ),
+			'href'   => 'https://docs.stylemixthemes.com/masterstudy-lms/',
+			'meta'   => array(
+				'class'  => 'ms-lms-admin-menu-item',
+				'target' => '_blank',
+				'rel'    => 'noopener noreferrer',
+			),
+		)
+	);
+
+	if ( $is_free_version ) {
+		$wp_admin_bar->add_node(
+			array(
+				'id'     => 'lms-settings-upgrade',
+				'parent' => 'lms-settings',
+				'title'  => esc_html__( 'Upgrade', 'masterstudy-lms-learning-management-system' ),
+				'href'   => admin_url( 'admin.php?page=stm-lms-go-pro' ),
+				'meta'   => array(
+					'class' => 'ms-lms-admin-menu-item ms-lms-admin-menu-item-upgrade',
+				),
+			)
+		);
+	}
 }
 add_action( 'admin_bar_menu', 'masterstudy_lms_admin_bar_settings_menu', 40 );
 
@@ -1782,83 +1888,75 @@ function masterstudy_lms_personal_data_display_options( $user_id ) {
 		'personal_fields'     => masterstudy_lms_personal_data_fields(),
 	);
 }
+function masterstudy_lms_normalize_levels_statuses_config( array $new_items, array $stored_items ): array {
+	$stored_ids_by_label = array();
+
+	foreach ( $stored_items as $stored_item ) {
+		$stored_label = trim( $stored_item['label'] ?? '' );
+		$stored_id    = sanitize_key( $stored_item['id'] ?? '' );
+
+		if ( '' !== $stored_label && '' !== $stored_id && ! isset( $stored_ids_by_label[ $stored_label ] ) ) {
+			$stored_ids_by_label[ $stored_label ] = $stored_id;
+		}
+	}
+
+	$merged_items = array();
+	$used_ids     = array();
+
+	foreach ( array_values( $new_items ) as $index => $item ) {
+		if ( ! is_array( $item ) ) {
+			continue;
+		}
+
+		$label = trim( $item['label'] ?? '' );
+
+		if ( '' === $label ) {
+			continue;
+		}
+
+		$item_id = sanitize_key( $item['id'] ?? '' );
+
+		if ( '' === $item_id && ! empty( $stored_items[ $index ]['id'] ) ) {
+			$item_id = sanitize_key( $stored_items[ $index ]['id'] );
+		}
+
+		if ( '' === $item_id && ! empty( $stored_ids_by_label[ $label ] ) ) {
+			$item_id = $stored_ids_by_label[ $label ];
+		}
+
+		if ( '' === $item_id || in_array( $item_id, $used_ids, true ) ) {
+			do {
+				$item_id = 'ms_lms_' . str_replace( '-', '_', wp_generate_uuid4() );
+			} while ( in_array( $item_id, $used_ids, true ) );
+		}
+
+		$item['id']    = $item_id;
+		$item['label'] = $label;
+
+		$merged_items[] = $item;
+		$used_ids[]     = $item_id;
+	}
+
+	return $merged_items;
+}
+
 // generate levels and statuses ids for nuxy
 function masterstudy_lms_generate_levels_statuses_ids( $settings, $id ) {
-	$levels     = STM_LMS_Options::get_option( 'course_levels_config' );
-	$new_levels = $settings['course_levels_config'] ?? array();
+	if ( isset( $settings['course_levels_config'] ) ) {
+		$levels     = STM_LMS_Options::get_option( 'course_levels_config' );
+		$levels     = is_array( $levels ) ? array_values( $levels ) : array();
+		$new_levels = is_array( $settings['course_levels_config'] ) ? $settings['course_levels_config'] : array();
 
-	$levels     = is_array( $levels ) ? $levels : array();
-	$new_levels = is_array( $new_levels ) ? $new_levels : array();
-
-	$existing_map = array();
-
-	foreach ( $levels as $level ) {
-		if ( ! empty( $level['label'] ) && ! empty( $level['id'] ) ) {
-			$existing_map[ $level['label'] ] = $level['id'];
-		}
+		$settings['course_levels_config'] = masterstudy_lms_normalize_levels_statuses_config( $new_levels, $levels );
 	}
 
-	$merged_levels = array();
+	if ( isset( $settings['course_statuses_config'] ) ) {
+		$statuses     = STM_LMS_Options::get_option( 'course_statuses_config' );
+		$statuses     = is_array( $statuses ) ? array_values( $statuses ) : array();
+		$new_statuses = is_array( $settings['course_statuses_config'] ) ? $settings['course_statuses_config'] : array();
 
-	foreach ( $new_levels as $level ) {
-
-		$label = trim( $level['label'] ?? '' );
-
-		if ( '' === $label ) {
-			continue;
-		}
-
-		if ( isset( $existing_map[ $label ] ) ) {
-			$new_id = $existing_map[ $label ];
-		} else {
-			$new_id = 'ms_lms_' . str_replace( '-', '_', wp_generate_uuid4() );
-		}
-
-		$level['id']    = $new_id;
-		$level['label'] = $label;
-
-		$merged_levels[] = $level;
+		$settings['course_statuses_config'] = masterstudy_lms_normalize_levels_statuses_config( $new_statuses, $statuses );
 	}
-
-	$settings['course_levels_config'] = $merged_levels;
-
-	$statuses     = STM_LMS_Options::get_option( 'course_statuses_config' );
-	$new_statuses = $settings['course_statuses_config'] ?? array();
-
-	$statuses     = is_array( $statuses ) ? $statuses : array();
-	$new_statuses = is_array( $new_statuses ) ? $new_statuses : array();
-
-	$existing_status_map = array();
-
-	foreach ( $statuses as $status ) {
-		if ( ! empty( $status['label'] ) && ! empty( $status['id'] ) ) {
-			$existing_status_map[ $status['label'] ] = $status['id'];
-		}
-	}
-
-	$merged_statuses = array();
-
-	foreach ( $new_statuses as $status ) {
-
-		$label = trim( $status['label'] ?? '' );
-
-		if ( '' === $label ) {
-			continue;
-		}
-
-		if ( isset( $existing_status_map[ $label ] ) ) {
-			$new_id = $existing_status_map[ $label ];
-		} else {
-			$new_id = 'ms_lms_' . str_replace( '-', '_', wp_generate_uuid4() );
-		}
-
-		$status['id']    = $new_id;
-		$status['label'] = $label;
-
-		$merged_statuses[] = $status;
-	}
-
-	$settings['course_statuses_config'] = $merged_statuses;
 
 	return $settings;
 }
@@ -1941,4 +2039,50 @@ function stm_lms_wpml_object_id_safe( $object_id, $type = 'post' ) {
 	$translated_id = apply_filters( 'wpml_object_id', $object_id, $type, true );
 
 	return ! empty( $translated_id ) ? (int) $translated_id : $object_id;
+}
+
+/**
+ * Quiz question type labels used in the React course builder (question menu, AI quiz form).
+ * Declared in PHP so translation tools find them, and passed to wp.i18n.
+ */
+function masterstudy_lms_quiz_question_types_translations() {
+	return array(
+		'Single choice'   => __( 'Single choice', 'masterstudy-lms-learning-management-system' ),
+		'Multiple choice' => __( 'Multiple choice', 'masterstudy-lms-learning-management-system' ),
+		'True-False'      => __( 'True-False', 'masterstudy-lms-learning-management-system' ),
+		'True / False'    => __( 'True / False', 'masterstudy-lms-learning-management-system' ),
+		'Matching'        => __( 'Matching', 'masterstudy-lms-learning-management-system' ),
+		'Item Match'      => __( 'Item Match', 'masterstudy-lms-learning-management-system' ),
+		'Image matching'  => __( 'Image matching', 'masterstudy-lms-learning-management-system' ),
+		'Image Matching'  => __( 'Image Matching', 'masterstudy-lms-learning-management-system' ),
+		'Image choice'    => __( 'Image choice', 'masterstudy-lms-learning-management-system' ),
+		'Image Choice'    => __( 'Image Choice', 'masterstudy-lms-learning-management-system' ),
+		'Keywords'        => __( 'Keywords', 'masterstudy-lms-learning-management-system' ),
+		'Fill in the gap' => __( 'Fill in the gap', 'masterstudy-lms-learning-management-system' ),
+		'Ordering'        => __( 'Ordering', 'masterstudy-lms-learning-management-system' ),
+		'Question Bank'   => __( 'Question Bank', 'masterstudy-lms-learning-management-system' ),
+	);
+}
+
+function masterstudy_lms_add_quiz_question_types_translations( $handle ) {
+	$locale_data = array();
+
+	foreach ( masterstudy_lms_quiz_question_types_translations() as $original => $translation ) {
+		if ( $original !== $translation ) {
+			$locale_data[ $original ] = array( $translation );
+		}
+	}
+
+	if ( empty( $locale_data ) ) {
+		return;
+	}
+
+	wp_add_inline_script(
+		$handle,
+		sprintf(
+			'wp.i18n.setLocaleData( %s, "masterstudy-lms-learning-management-system" );',
+			wp_json_encode( $locale_data )
+		),
+		'before'
+	);
 }

@@ -359,11 +359,15 @@ if ( ! class_exists( 'Redux_Extension_Users' ) ) {
 			$this->parent->options_class->default_values();
 			$this->parent_defaults = $this->parent->options_defaults;
 
+			$field_args = Redux_Users::$fields[ $this->parent->args['opt_name'] ] ?? array();
+
 			if ( empty( $this->meta ) ) {
 				// phpcs:ignore WordPress.Security.NonceVerification
 				$user       = isset( $_GET['user_id'] ) ? sanitize_text_field( wp_unslash( $_GET['user_id'] ) ) : get_current_user_id();
 				$this->meta = Redux_Users::get_user_meta( array( 'user' => $user ) );
 			}
+
+			$this->meta = $this->filter_registered_user_meta_keys( $this->meta, $field_args );
 
 			$data = wp_parse_args( $this->meta, $this->options_defaults );
 
@@ -1015,7 +1019,7 @@ if ( ! class_exists( 'Redux_Extension_Users' ) ) {
 
 			$field_args = Redux_Users::$fields[ $this->parent->args['opt_name'] ] ?? array();
 
-			foreach ( $_POST[ $this->parent->args['opt_name'] ] as $key => $value ) { // phpcs:ignore WordPress.Security
+			foreach ( Redux_Helpers::sanitize_array( wp_unslash( $_POST[ $this->parent->args['opt_name'] ] ) ) as $key => $value ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Sanitized with `Redux_Helpers::sanitize_array`.
 				$key = sanitize_text_field( wp_unslash( $key ) );
 
 				if ( ! isset( $field_args[ $key ] ) || $this->is_reserved_user_meta_key( $key ) ) {
@@ -1034,14 +1038,6 @@ if ( ! class_exists( 'Redux_Extension_Users' ) ) {
 
 					if ( ! $can_save ) {
 						continue;
-					}
-				}
-
-				if ( is_array( $value ) ) {
-					foreach ( $value as $k => $v ) {
-						if ( ! is_array( $v ) ) {
-							$value[ $k ] = sanitize_text_field( wp_unslash( $v ) );
-						}
 					}
 				}
 
@@ -1207,10 +1203,10 @@ if ( ! class_exists( 'Redux_Extension_Users' ) ) {
 		}
 
 		/**
-		 * Remove any submitted/saved keys that are not registered Redux user fields,
+		 * Remove any keys that are not registered Redux user fields,
 		 * or that target protected WordPress user meta.
 		 *
-		 * @param array $values     Values to save/delete.
+		 * @param array $values     Values to save/delete/merge.
 		 * @param array $field_args Registered Redux user fields.
 		 *
 		 * @return array

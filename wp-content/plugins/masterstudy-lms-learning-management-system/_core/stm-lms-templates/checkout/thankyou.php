@@ -66,7 +66,7 @@ if ( ! empty( $order_info ) ) :
 			),
 			'status'          => array(
 				'label' => esc_html__( 'Status', 'masterstudy-lms-learning-management-system' ),
-				'value' => ! empty( $subscription['status'] ) ? $subscription_status[ $subscription['status'] ] : '',
+				'value' => ! empty( $subscription['status'] ) ? ( $subscription_status[ $subscription['status'] ] ?? ucfirst( $subscription['status'] ) ) : '',
 			),
 		);
 		$course_id           = ! empty( $order_info['plan']['items'][0]['object_id'] )
@@ -243,8 +243,8 @@ if ( ! empty( $order_info ) ) :
 																<?php
 																if ( $is_trial && 1 === $i ) {
 																	printf(
-																		// translators: %s - trial period days
-																		esc_html__( 'Trial %s day(s)', 'masterstudy-lms-learning-management-system' ),
+																		/* translators: %s: Number of trial days. */
+																		esc_html( _n( 'Trial %s day', 'Trial %s days', $trial_period_days, 'masterstudy-lms-learning-management-system' ) ),
 																		esc_html( $trial_period_days )
 																	);
 																} else {
@@ -276,8 +276,7 @@ if ( ! empty( $order_info ) ) :
 																	$timestamp = strtotime( "$start_date +" . ( $i - 1 ) . " $interval" );
 																}
 
-																$date = gmdate( 'd F Y', $timestamp );
-																echo esc_html( STM_LMS_Helpers::format_date( $date )['date'] ?? $date );
+																echo esc_html( wp_date( get_option( 'date_format', 'Y-m-d' ), $timestamp, new DateTimeZone( 'UTC' ) ) );
 																?>
 
 															</span>
