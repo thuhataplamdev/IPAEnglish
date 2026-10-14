@@ -82,6 +82,14 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
         self.assertIn("/revslider/sr6/assets/assets/dummy.png", self.source)
         self.assertIn("$processor->set_attribute( 'alt', $title )", self.source)
 
+    def test_home_core_values_heading_is_a_crawlable_en_vi_internal_link(self):
+        self.assertIn("ipaenglish_link_home_core_values_heading", self.source)
+        self.assertIn("if ( '/' !== $context['path'] )", self.source)
+        self.assertIn("'Giá trị cốt lõi' : 'Core Values'", self.source)
+        self.assertIn("'/vi/core-values/' : '/core-values/'", self.source)
+        self.assertIn('class="ipaenglish-seo-core-values-link"', self.source)
+        self.assertIn("ipaenglish_link_home_core_values_heading( $html, $context )", self.source)
+
     def test_social_and_structured_metadata_are_rendered_for_landing_pages(self):
         self.assertIn("ipaenglish_render_social_and_structured_metadata", self.source)
         self.assertIn('property=\"og:title\"', self.source)

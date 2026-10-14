@@ -423,6 +423,33 @@ function ipaenglish_onpage_attachment_alt( $attr, $attachment ) {
 }
 
 /**
+ * Make the existing Core Values homepage heading a crawlable internal link.
+ *
+ * The current theme footer does not render through the registered secondary
+ * menu location, so the older menu-item fallback is not present in final HTML.
+ * Reusing the visible Elementor heading keeps the link contextual and avoids
+ * adding a second navigation element only for SEO.
+ *
+ * @param string                     $html    Full rendered HTML.
+ * @param array{path:string,language:string} $context Normalized request context.
+ * @return string
+ */
+function ipaenglish_link_home_core_values_heading( $html, $context ) {
+	if ( '/' !== $context['path'] ) {
+		return $html;
+	}
+
+	$is_vi       = 'vi' === $context['language'];
+	$label       = $is_vi ? 'Giá trị cốt lõi' : 'Core Values';
+	$base        = untrailingslashit( (string) get_option( 'home' ) );
+	$target      = $base . ( $is_vi ? '/vi/core-values/' : '/core-values/' );
+	$pattern     = '#<h2([^>]*)>\\s*' . preg_quote( $label, '#' ) . '\\s*</h2>#u';
+	$replacement = '<h2$1><a class="ipaenglish-seo-core-values-link" href="' . esc_url( $target ) . '">' . esc_html( $label ) . '</a></h2>';
+
+	return preg_replace( $pattern, $replacement, $html, 1 );
+}
+
+/**
  * Elementor and footer templates can emit raw <img> tags instead of calling
  * wp_get_attachment_image(). Buffer public frontend responses and fill ALT text
  * for known informative wp-image-* IDs. Non-HTML responses are returned intact.
@@ -482,6 +509,7 @@ function ipaenglish_filter_rendered_onpage_html( $html ) {
 	}
 
 	$html = $processor->get_updated_html();
+	$html = ipaenglish_link_home_core_values_heading( $html, $context );
 
 	if ( 'en' === $context['language'] ) {
 		$supporting_copy = ipaenglish_onpage_supporting_copy_map();
