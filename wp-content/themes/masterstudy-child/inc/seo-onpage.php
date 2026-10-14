@@ -364,19 +364,97 @@ function ipaenglish_localize_lms_courses_heading( $translation, $text, $domain )
 }
 
 /**
- * Supporting copy for the four English landing pages whose rendered body was
- * still below 300 words after structural remediation. Copy is intentionally
- * limited to claims already present in the page, approved metadata or linked
- * IPA English course pages.
+ * Supporting copy for the ten EN/VI landing-page variants that Screaming Frog
+ * still measured below 300 rendered words after structural remediation.
+ * Copy is intentionally limited to claims already present in the page,
+ * approved metadata or linked IPA English course pages.
  *
- * @return array<string,string>
+ * @return array<string,array<string,array{heading:string,paragraphs:array<int,string>}>>
  */
 function ipaenglish_onpage_supporting_copy_map() {
 	return array(
-		'/book-a-test/' => 'The free placement test helps IPA English understand a learner’s current English level before guidance is given on a suitable learning pathway. Complete the form with the learner’s grade, school and any known English level, and the IPA English team will contact you to arrange the test.',
-		'/communicative-english-for-adults/' => 'Communicative English for Adults is coming soon at IPA English. The program is being developed around practical speaking and listening for real-world communication, with a focus on building confidence when using English. Contact IPA English for current information about the course and guidance on available learning options while the program is being prepared. Because the course is not yet open, this page does not promise dates or enrollment availability; the team can confirm the latest status directly.',
-		'/contact-us/' => 'Contact IPA English for information about courses, placement tests and learning pathways. You can reach the team by phone or email, or visit the Ecopark location shown on this page. The contact details above are the direct way to ask about current programs and the next suitable step for a learner. This makes it easier to confirm current availability before visiting the academy.',
-		'/courses/' => 'Explore English learning options at IPA English for different goals, including communication and academic development. The Global English for Teen Achievers page provides program information for teenage learners, while Communicative English for Adults is marked as coming soon. Use the course pages for current program details or contact IPA English for guidance on a suitable learning pathway.',
+		'/book-a-test/' => array(
+			'en' => array(
+				'heading'    => 'Using the placement test to plan the next step',
+				'paragraphs' => array(
+					'The free placement test helps IPA English understand a learner’s current English level before guidance is given on a suitable learning pathway. Complete the form with the learner’s grade, school and any known English level, and the IPA English team will contact you to arrange the test.',
+					'The placement test is most useful when it is treated as one part of a wider conversation about the learner. Families can use the result to ask what skills need attention, which learning goals should come first and which available IPA English program is relevant to those goals. If a learner has previous study experience, school information or an existing English level, including that context in the form can make the follow-up discussion more specific. For current scheduling and course availability, the IPA English team can confirm the details directly after receiving the request.',
+				),
+			),
+			'vi' => array(
+				'heading'    => 'Dùng bài kiểm tra đầu vào để xác định bước tiếp theo',
+				'paragraphs' => array(
+					'Bài kiểm tra trình độ miễn phí giúp IPA English có thêm cơ sở để hiểu mức tiếng Anh hiện tại của người học trước khi trao đổi về lộ trình phù hợp. Trong biểu mẫu, gia đình có thể cung cấp các thông tin như khối lớp, trường đang học và trình độ tiếng Anh đã biết nếu có. Những dữ liệu này tạo thêm bối cảnh để kết quả kiểm tra được xem cùng với tình hình học tập thực tế của người học.',
+					'Sau khi gửi yêu cầu, gia đình có thể dùng kết quả kiểm tra để hỏi rõ kỹ năng nào cần ưu tiên, mục tiêu học tập nào nên đặt trước và chương trình nào đang phù hợp với nhu cầu đó. Bài kiểm tra không phải là lời hứa về một kết quả học tập cụ thể; đây là bước đầu để xác định điểm xuất phát rõ hơn. Lịch kiểm tra, tình trạng lớp và thông tin đăng ký hiện tại có thể được IPA English xác nhận trực tiếp khi liên hệ lại.',
+				),
+			),
+		),
+		'/communicative-english-for-adults/' => array(
+			'en' => array(
+				'heading'    => 'What this communication course is designed to support',
+				'paragraphs' => array(
+					'Communicative English for Adults is coming soon at IPA English. The program is being developed around practical speaking and listening for real-world communication, with a focus on building confidence when using English. Contact IPA English for current information about the course and guidance on available learning options while the program is being prepared. Because the course is not yet open, this page does not promise dates or enrollment availability; the team can confirm the latest status directly.',
+					'Because this program is still presented as coming soon, the most useful next step is to review the focus described on this page and contact IPA English for the latest status. Prospective learners can ask how speaking and listening practice will be approached, what communication goals the course is intended to support, and how the program may fit their current level. This keeps expectations tied to the published course information while giving adults a clear way to decide whether to wait for this program or discuss another currently available learning option with the team.',
+				),
+			),
+			'vi' => array(
+				'heading'    => 'Khóa học giao tiếp này hướng đến điều gì',
+				'paragraphs' => array(
+					'Khóa Tiếng Anh giao tiếp cho người lớn hiện được IPA English giới thiệu ở trạng thái sắp ra mắt. Nội dung công bố tập trung vào giao tiếp thực tế, đặc biệt là kỹ năng nghe, nói và sự tự tin khi sử dụng tiếng Anh trong những tình huống đời sống. Vì chương trình chưa được công bố là đã mở đăng ký, trang này không đưa ra ngày khai giảng hay cam kết về lịch học; người quan tâm nên xem đây là phần giới thiệu định hướng của khóa học.',
+					'Nếu đang cân nhắc chương trình, học viên có thể dùng các mục tiêu trên trang để chuẩn bị câu hỏi cụ thể trước khi liên hệ IPA English: mình muốn cải thiện tình huống giao tiếp nào, kỹ năng nghe hay nói đang là ưu tiên, và trình độ hiện tại cần được xác định ra sao. IPA English có thể xác nhận tình trạng mới nhất của khóa học và trao đổi về lựa chọn học tập đang có. Cách này giúp người học so sánh nhu cầu thực tế của mình với nội dung đã công bố thay vì dựa vào kỳ vọng chưa được xác nhận.',
+				),
+			),
+		),
+		'/contact-us/' => array(
+			'en' => array(
+				'heading'    => 'Preparing before you contact IPA English',
+				'paragraphs' => array(
+					'Contact IPA English for information about courses, placement tests and learning pathways. You can reach the team by phone or email, or visit the Ecopark location shown on this page. The contact details above are the direct way to ask about current programs and the next suitable step for a learner. This makes it easier to confirm current availability before visiting the academy.',
+					'Use the contact page to prepare the practical details you want to confirm before choosing a program: the learner’s current needs, age or school stage, the type of English support being considered, and whether a placement test is the appropriate next step. IPA English already publishes its phone, email and Ecopark location here, so families can use the channel that is most convenient for them. Asking these questions before a visit also helps keep the conversation focused on the learner’s situation rather than relying on a generic course recommendation.',
+				),
+			),
+			'vi' => array(
+				'heading'    => 'Chuẩn bị gì trước khi liên hệ IPA English',
+				'paragraphs' => array(
+					'Trang liên hệ là nơi phù hợp để gia đình kiểm tra các thông tin thực tế trước khi lựa chọn chương trình học. Khi liên hệ IPA English, phụ huynh có thể chuẩn bị trước nhu cầu hiện tại của người học, độ tuổi hoặc khối lớp, mục tiêu cần hỗ trợ và câu hỏi về việc có nên thực hiện bài kiểm tra trình độ hay không. Trang này đã cung cấp số điện thoại, email và địa điểm tại Ecopark để gia đình chọn cách liên hệ thuận tiện.',
+					'Việc trao đổi trước giúp cuộc tư vấn tập trung vào tình huống cụ thể của người học thay vì chỉ hỏi chung về một khóa học. Gia đình có thể dùng phần liên hệ để xác nhận chương trình đang có, cách đăng ký kiểm tra đầu vào và bước tiếp theo phù hợp với nhu cầu hiện tại. Nếu cần đến trực tiếp, thông tin trên trang cũng giúp kiểm tra địa điểm trước khi di chuyển và chủ động hơn khi sắp xếp thời gian trao đổi với IPA English.',
+				),
+			),
+		),
+		'/core-values/' => array(
+			'en' => array(
+				'heading'    => 'How the core values shape the learning approach',
+				'paragraphs' => array(
+					'IPA English presents its core values as the principles behind how the academy approaches education and its wider community. Integrity provides a basis for clear and responsible relationships, while excellence in education keeps attention on the quality of the learning experience. Holistic development recognises that progress is broader than a single score or language task.',
+					'The same page also highlights a growth mindset and commitment to community. Together, these ideas describe an environment where learners can keep developing their skills, respond constructively to challenge and take part in a learning community. These values are useful context for families comparing IPA English with other learning options because they explain the principles the academy says should guide its decisions and educational approach.',
+				),
+			),
+		),
+		'/courses/' => array(
+			'en' => array(
+				'heading'    => 'Choosing the right learning pathway',
+				'paragraphs' => array(
+					'Explore English learning options at IPA English for different goals, including communication and academic development. The Global English for Teen Achievers page provides program information for teenage learners, while Communicative English for Adults is marked as coming soon. Use the course pages for current program details or contact IPA English for guidance on a suitable learning pathway.',
+					'A useful way to compare the programs is to begin with the learner’s current goal rather than choosing only by course name. Some learners may be looking for stronger everyday communication, while others may need more structured academic English development. The individual course pages explain the audience and focus of the programs that IPA English currently presents online. Families can review those details first, then use the contact or placement-test pages when they need help matching a learner’s current level and priorities with the most relevant available pathway.',
+				),
+			),
+			'vi' => array(
+				'heading'    => 'Cách chọn lộ trình học phù hợp',
+				'paragraphs' => array(
+					'Trang khóa học giúp người học và gia đình nhìn tổng quan các lựa chọn tiếng Anh mà IPA English đang giới thiệu. Thay vì chọn chỉ theo tên khóa học, nên bắt đầu từ mục tiêu hiện tại: cần cải thiện giao tiếp, phát triển tiếng Anh học thuật hay tìm một lộ trình có cấu trúc phù hợp với giai đoạn học tập. Các trang chương trình riêng cung cấp thêm thông tin về nhóm người học và trọng tâm của từng lựa chọn.',
+					'Sau khi xem nội dung từng chương trình, gia đình có thể đối chiếu với trình độ hiện tại và ưu tiên của người học. Nếu chưa rõ nên bắt đầu từ đâu, trang kiểm tra trình độ và trang liên hệ là hai bước tiếp theo để có thêm thông tin trước khi quyết định. Với những chương trình được ghi là sắp ra mắt, IPA English có thể xác nhận tình trạng hiện tại trực tiếp. Cách tiếp cận này giúp việc chọn khóa học dựa trên nhu cầu và thông tin đang được công bố trên website.',
+				),
+			),
+		),
+		'/testimonials/' => array(
+			'en' => array(
+				'heading'    => 'How to use student testimonials when deciding',
+				'paragraphs' => array(
+					'The testimonials on this page are individual accounts of learning with IPA English and teacher Tony. They give prospective learners and families another type of context alongside course descriptions and academic information: what previous students chose to highlight about their own experience, the skills they worked on and the confidence they developed while using English.',
+					'Testimonials should be read as personal experiences rather than a promise that every learner will have the same outcome. A useful next step is to compare the themes in these reviews with the learner’s own goals, then review the relevant course or learning-system page for more structured information. Families who still have questions can contact IPA English or use the placement-test page to discuss the learner’s current level and possible next steps.',
+				),
+			),
+		),
 	);
 }
 
@@ -463,7 +541,7 @@ function ipaenglish_start_onpage_html_buffer() {
 }
 
 /**
- * Complete rendered-page ALT coverage and append scoped English supporting copy.
+ * Complete rendered-page ALT coverage and append scoped supporting copy.
  *
  * @param string $html Full rendered HTML.
  * @return string
@@ -510,17 +588,22 @@ function ipaenglish_filter_rendered_onpage_html( $html ) {
 	$html = $processor->get_updated_html();
 	$html = ipaenglish_link_home_core_values_heading( $html, $context );
 
-	if ( 'en' === $context['language'] ) {
-		$supporting_copy = ipaenglish_onpage_supporting_copy_map();
+	$supporting_copy = ipaenglish_onpage_supporting_copy_map();
 
-		if ( isset( $supporting_copy[ $context['path'] ] ) ) {
-			$section = '<section class="ipaenglish-seo-supporting-copy"><div class="container"><p>' . esc_html( $supporting_copy[ $context['path'] ] ) . '</p></div></section>';
+	if ( isset( $supporting_copy[ $context['path'] ][ $context['language'] ] ) ) {
+		$copy       = $supporting_copy[ $context['path'] ][ $context['language'] ];
+		$paragraphs = '';
 
-			if ( false !== stripos( $html, '<footer' ) ) {
-				$html = preg_replace( '#<footer\b#i', $section . '<footer', $html, 1 );
-			} elseif ( false !== stripos( $html, '</body>' ) ) {
-				$html = preg_replace( '#</body>#i', $section . '</body>', $html, 1 );
-			}
+		foreach ( $copy['paragraphs'] as $paragraph ) {
+			$paragraphs .= '<p>' . esc_html( $paragraph ) . '</p>';
+		}
+
+		$section = '<section class="ipaenglish-seo-supporting-copy"><div class="container"><h2>' . esc_html( $copy['heading'] ) . '</h2>' . $paragraphs . '</div></section>';
+
+		if ( false !== stripos( $html, '<footer' ) ) {
+			$html = preg_replace( '#<footer\b#i', $section . '<footer', $html, 1 );
+		} elseif ( false !== stripos( $html, '</body>' ) ) {
+			$html = preg_replace( '#</body>#i', $section . '</body>', $html, 1 );
 		}
 	}
 
