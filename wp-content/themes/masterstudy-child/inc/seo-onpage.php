@@ -330,34 +330,20 @@ function ipaenglish_fix_landing_page_heading_hierarchy( $content ) {
 }
 
 /**
- * Localize the Courses page title at the WordPress title layer. The course archive
- * heading is rendered outside the page content, so this avoids output-buffer order
- * dependencies while remaining scoped to the Vietnamese Courses request.
+ * Supporting copy for the four English landing pages whose rendered body was
+ * still below 300 words after structural remediation. Copy is intentionally
+ * limited to claims already present in the page, approved metadata or linked
+ * IPA English course pages.
  *
- * @param string $title   Current title.
- * @param int    $post_id Post ID.
- * @return string
+ * @return array<string,string>
  */
-add_filter( 'the_title', 'ipaenglish_localize_vietnamese_courses_title', 20, 2 );
-function ipaenglish_localize_vietnamese_courses_title( $title, $post_id ) {
-	if ( is_admin() ) {
-		return $title;
-	}
-
-	$context = ipaenglish_onpage_request_context();
-
-	if ( 'vi' !== $context['language'] || '/courses/' !== $context['path'] ) {
-		return $title;
-	}
-
-	static $courses_page_id = null;
-
-	if ( null === $courses_page_id ) {
-		$courses_page    = get_page_by_path( 'courses', OBJECT, 'page' );
-		$courses_page_id = $courses_page instanceof WP_Post ? (int) $courses_page->ID : 0;
-	}
-
-	return $courses_page_id > 0 && (int) $post_id === $courses_page_id ? 'Khóa học tiếng Anh' : $title;
+function ipaenglish_onpage_supporting_copy_map() {
+	return array(
+		'/book-a-test/' => 'The free placement test helps IPA English understand a learner’s current English level before guidance is given on a suitable learning pathway. Complete the form with the learner’s grade, school and any known English level, and the IPA English team will contact you to arrange the test.',
+		'/communicative-english-for-adults/' => 'Communicative English for Adults is coming soon at IPA English. The program is being developed around practical speaking and listening for real-world communication, with a focus on building confidence when using English. Contact IPA English for current information about the course and guidance on available learning options while the program is being prepared. Because the course is not yet open, this page does not promise dates or enrollment availability; the team can confirm the latest status directly.',
+		'/contact-us/' => 'Contact IPA English for information about courses, placement tests and learning pathways. You can reach the team by phone or email, or visit the Ecopark location shown on this page. The contact details above are the direct way to ask about current programs and the next suitable step for a learner. This makes it easier to confirm current availability before visiting the academy.',
+		'/courses/' => 'Explore English learning options at IPA English for different goals, including communication and academic development. The Global English for Teen Achievers page provides program information for teenage learners, while Communicative English for Adults is marked as coming soon. Use the course pages for current program details or contact IPA English for guidance on a suitable learning pathway.',
+	);
 }
 
 /**
@@ -444,5 +430,30 @@ function ipaenglish_filter_rendered_onpage_html( $html ) {
 		}
 	}
 
-	return $processor->get_updated_html();
+	$html = $processor->get_updated_html();
+
+	if ( 'vi' === $context['language'] && '/courses/' === $context['path'] ) {
+		$html = preg_replace(
+			'#(<div class="courses_filters__title">\s*<h1\b[^>]*>)\s*Courses\s*(</h1>)#iu',
+			'$1Khóa học tiếng Anh$2',
+			$html,
+			1
+		);
+	}
+
+	if ( 'en' === $context['language'] ) {
+		$supporting_copy = ipaenglish_onpage_supporting_copy_map();
+
+		if ( isset( $supporting_copy[ $context['path'] ] ) ) {
+			$section = '<section class="ipaenglish-seo-supporting-copy"><div class="container"><p>' . esc_html( $supporting_copy[ $context['path'] ] ) . '</p></div></section>';
+
+			if ( false !== stripos( $html, '<footer' ) ) {
+				$html = preg_replace( '#<footer\b#i', $section . '<footer', $html, 1 );
+			} elseif ( false !== stripos( $html, '</body>' ) ) {
+				$html = preg_replace( '#</body>#i', $section . '</body>', $html, 1 );
+			}
+		}
+	}
+
+	return $html;
 }
