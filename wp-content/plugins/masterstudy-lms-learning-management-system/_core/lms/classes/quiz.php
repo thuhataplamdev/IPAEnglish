@@ -2,6 +2,7 @@
 
 use MasterStudy\Lms\Pro\AddonsPlus\Grades\Services\GradeCalculator;
 use MasterStudy\Lms\Repositories\CoursePlayerRepository;
+use MasterStudy\Lms\Repositories\CurriculumRepository;
 use MasterStudy\Lms\Utility\Question;
 
 STM_LMS_Quiz::init();
@@ -67,6 +68,11 @@ class STM_LMS_Quiz {
 		$quiz_id         = intval( $_GET['quiz_id'] );
 		$user            = STM_LMS_User::get_current_user();
 		$user_id         = $user['id'] ?? null;
+
+		if ( empty( $user_id ) || ! self::user_can_write_quiz_progress( $user_id, $quiz_id ) ) {
+			die;
+		}
+
 		$duration        = self::get_quiz_duration( $quiz_id );
 		$already_started = STM_LMS_Helpers::simplify_db_array( stm_lms_get_user_quizzes_time( $user['id'], $quiz_id, array( 'end_time' ) ) );
 		$count_to        = ! empty( $duration ) ? time() + $duration : 0;
@@ -115,6 +121,10 @@ class STM_LMS_Quiz {
 			wp_die();
 		}
 
+		if ( empty( $user_id ) || ! masterstudy_lms_user_can_write_course_progress( $user_id, $course_id ) || ! self::quiz_belongs_to_course( $quiz_id, $course_id ) ) {
+			wp_die();
+		}
+
 		$total_questions = CoursePlayerRepository::masterstudy_lms_get_question_bank_total_items( $quiz_id );
 
 		$score_per_question = 100 / $total_questions;
@@ -152,6 +162,9 @@ class STM_LMS_Quiz {
 			}
 
 			$user_answer    = is_array( $answer ) ? implode( ',', $answer ) : $answer;
+			if ( 'multi_choice' === $type && is_array( $answer ) ) {
+				$user_answer = implode( ',', self::encode_answers( $answer ) );
+			}
 			$correct_answer = self::check_answer( $question_id, $answer, array(), $questions_order );
 			$progress      += $correct_answer ? $score_per_question : 0;
 			$user_answer_id = stm_lms_add_user_answer( compact( 'user_id', 'course_id', 'quiz_id', 'question_id', 'attempt_number', 'user_answer', 'correct_answer', 'questions_order' ) );
@@ -264,6 +277,11 @@ class STM_LMS_Quiz {
 		$course_id = intval( $_POST['sources']['post_id'] );
 		$quiz_id   = intval( $_POST['sources']['item_id'] );
 		$user_id   = get_current_user_id();
+
+		if ( empty( $user_id ) || ! masterstudy_lms_user_can_write_course_progress( $user_id, $course_id ) || ! self::quiz_belongs_to_course( $quiz_id, $course_id ) ) {
+			wp_send_json( $res );
+		}
+
 		$last_quiz = stm_lms_get_user_last_quiz( $user_id, $quiz_id, array( 'progress', 'status' ) );
 
 		if ( ! empty( $last_quiz ) && ! empty( $last_quiz['status'] ) && 'passed' === $last_quiz['status'] ) {
@@ -300,6 +318,28 @@ class STM_LMS_Quiz {
 		wp_send_json( $res );
 	}
 
+	private static function user_can_write_quiz_progress( int $user_id, int $quiz_id ): bool {
+		$course_ids = ( new CurriculumRepository() )->get_lesson_course_ids( $quiz_id );
+
+		if ( empty( $course_ids ) ) {
+			return true;
+		}
+
+		foreach ( $course_ids as $course_id ) {
+			if ( masterstudy_lms_user_can_write_course_progress( $user_id, (int) $course_id ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static function quiz_belongs_to_course( int $quiz_id, int $course_id ): bool {
+		$course_ids = ( new CurriculumRepository() )->get_lesson_course_ids( $quiz_id );
+
+		return empty( $course_ids ) || in_array( $course_id, array_map( 'intval', $course_ids ), true );
+	}
+
 	public static function deslash( $content ) {
 		$content = preg_replace( "/\\\+'/", "'", $content );
 
@@ -322,6 +362,99 @@ class STM_LMS_Quiz {
 			$answers = wp_kses_post( rawurlencode( $answers ) );
 		}
 		return $answers;
+	}
+
+	public static function parse_multi_choice_user_answers( string $stored_answer, array $options ): array {
+		if ( '' === trim( $stored_answer ) ) {
+			return array();
+		}
+
+		$normalized_options = array_values(
+			array_filter(
+				array_map( 'strval', $options ),
+				static function ( string $option ): bool {
+					return '' !== trim( $option );
+				}
+			)
+		);
+
+		if ( empty( $normalized_options ) ) {
+			return array();
+		}
+
+		$decoded_answers = array_values(
+			array_filter(
+				array_map(
+					'trim',
+					array_map( 'rawurldecode', explode( ',', $stored_answer ) )
+				),
+				static function ( string $value ): bool {
+					return '' !== $value;
+				}
+			)
+		);
+
+		if ( self::contains_only_known_multi_choice_answers( $decoded_answers, $normalized_options ) ) {
+			return $decoded_answers;
+		}
+
+		$legacy_answers = self::parse_legacy_multi_choice_user_answers( $stored_answer, $normalized_options );
+		if ( ! empty( $legacy_answers ) ) {
+			return $legacy_answers;
+		}
+
+		return $decoded_answers;
+	}
+
+	private static function contains_only_known_multi_choice_answers( array $answers, array $options ): bool {
+		if ( empty( $answers ) ) {
+			return true;
+		}
+
+		foreach ( $answers as $answer ) {
+			if ( ! in_array( $answer, $options, true ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static function parse_legacy_multi_choice_user_answers( string $stored_answer, array $options ): array {
+		$memo    = array();
+		$matcher = function ( int $option_index, int $offset, bool $has_selected ) use ( $stored_answer, $options, &$matcher, &$memo ) {
+			$key = "{$option_index}|{$offset}|" . ( $has_selected ? '1' : '0' );
+			if ( array_key_exists( $key, $memo ) ) {
+				return $memo[ $key ];
+			}
+
+			if ( $option_index >= count( $options ) ) {
+				$memo[ $key ] = strlen( $stored_answer ) === $offset ? array() : false;
+				return $memo[ $key ];
+			}
+
+			$skip = $matcher( $option_index + 1, $offset, $has_selected );
+			if ( false !== $skip ) {
+				$memo[ $key ] = $skip;
+				return $memo[ $key ];
+			}
+
+			$piece = ( $has_selected ? ',' : '' ) . $options[ $option_index ];
+			$size  = strlen( $piece );
+			if ( substr( $stored_answer, $offset, $size ) === $piece ) {
+				$rest = $matcher( $option_index + 1, $offset + $size, true );
+				if ( false !== $rest ) {
+					$memo[ $key ] = array_merge( array( $options[ $option_index ] ), $rest );
+					return $memo[ $key ];
+				}
+			}
+
+			$memo[ $key ] = false;
+			return false;
+		};
+
+		$matches = $matcher( 0, 0, false );
+		return false === $matches ? array() : $matches;
 	}
 
 	public static function sanitize_answers( $answers ) {
@@ -440,7 +573,7 @@ class STM_LMS_Quiz {
 
 					foreach ( $answers as $i => $correct_answer ) {
 						$correct = true;
-						if ( strtolower( $correct_answer['text'] ) !== strtolower( $answer[ $i ] ) ) {
+						if ( ! Question::text_answers_match( $correct_answer['text'], $answer[ $i ] ?? '' ) ) {
 							$correct = false;
 							break;
 						}
@@ -459,10 +592,7 @@ class STM_LMS_Quiz {
 								break;
 							}
 
-							$user_ans    = trim( strtolower( stripslashes( rawurldecode( $answer[ $i ] ) ) ) );
-							$correct_ans = trim( strtolower( stripslashes( rawurldecode( html_entity_decode( $correct_answer['answer'], ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) ) ) );
-
-							if ( $correct_ans !== $user_ans ) {
+							if ( ! Question::text_answers_match( $correct_answer['answer'], $answer[ $i ] ) ) {
 								$correct = false;
 								break;
 							}

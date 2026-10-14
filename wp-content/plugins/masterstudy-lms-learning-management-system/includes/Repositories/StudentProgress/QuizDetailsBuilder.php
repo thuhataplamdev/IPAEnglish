@@ -5,6 +5,7 @@ namespace MasterStudy\Lms\Repositories\StudentProgress;
 use MasterStudy\Lms\Enums\QuestionType;
 use MasterStudy\Lms\Repositories\QuestionRepository;
 use MasterStudy\Lms\Repositories\QuizRepository;
+use MasterStudy\Lms\Utility\Question;
 use STM_LMS_Helpers;
 
 final class QuizDetailsBuilder {
@@ -205,8 +206,16 @@ final class QuizDetailsBuilder {
 	}
 
 	private function normalize_multiple_choice_answers( array $answers, array $last_answers, bool $show_correct_answer ): array {
-		$user_answers = ! empty( $last_answers['user_answer'] )
-			? array_map( 'rawurldecode', explode( ',', (string) $last_answers['user_answer'] ) )
+		$option_values = array_map(
+			static function ( array $answer ): string {
+				return ! empty( $answer['text_image']['url'] )
+					? trim( rawurldecode( (string) $answer['text'] ) ) . '|' . (string) $answer['text_image']['url']
+					: trim( rawurldecode( (string) $answer['text'] ) );
+			},
+			$answers
+		);
+		$user_answers  = ! empty( $last_answers['user_answer'] )
+			? \STM_LMS_Quiz::parse_multi_choice_user_answers( (string) $last_answers['user_answer'], $option_values )
 			: array();
 		$normalized   = array();
 
@@ -256,7 +265,7 @@ final class QuizDetailsBuilder {
 				'index'      => (int) $index,
 				'expected'   => $expected,
 				'actual'     => $actual,
-				'is_correct' => '' !== $actual && 0 === strcasecmp( trim( $actual ), trim( html_entity_decode( $expected, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) ),
+				'is_correct' => Question::text_answers_match( $expected, $actual ),
 			);
 		}
 
@@ -350,7 +359,7 @@ final class QuizDetailsBuilder {
 				'expected'   => $expected,
 				'actual'     => $actual,
 				'explain'    => wp_kses_post( (string) ( $answer['explain'] ?? '' ) ),
-				'is_correct' => '' !== $actual && 0 === strcasecmp( $actual, $expected ),
+				'is_correct' => Question::text_answers_match( $expected, $actual ),
 			);
 		}
 

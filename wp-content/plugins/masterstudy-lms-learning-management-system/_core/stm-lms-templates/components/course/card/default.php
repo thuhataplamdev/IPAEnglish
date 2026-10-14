@@ -10,13 +10,20 @@
 
 wp_enqueue_style( 'masterstudy-course-card' );
 
-$public              = (bool) ( $public ?? false );
-$student_card        = (bool) ( $student_card ?? false );
-$instructor_card     = (bool) ( $instructor_card ?? false );
-$wishlist            = (bool) ( $wishlist ?? false );
-$reviews             = (bool) ( $reviews ?? false );
-$course              = STM_LMS_Courses::get_course_submetas( $course );
-$is_featured_enabled = STM_LMS_Options::get_option( 'enable_featured_courses', true );
+$public                  = (bool) ( $public ?? false );
+$student_card            = (bool) ( $student_card ?? false );
+$instructor_card         = (bool) ( $instructor_card ?? false );
+$wishlist                = (bool) ( $wishlist ?? false );
+$reviews                 = (bool) ( $reviews ?? false );
+$course                  = STM_LMS_Courses::get_course_submetas( $course );
+$is_featured_enabled     = STM_LMS_Options::get_option( 'enable_featured_courses', true );
+$is_coming_soon          = $course['availability'] && is_ms_lms_addon_enabled( 'coming_soon' );
+$show_course_details     = ! $is_coming_soon || (bool) get_post_meta( $course['id'], 'coming_soon_show_course_details', true );
+$show_course_price       = ! $is_coming_soon || (bool) get_post_meta( $course['id'], 'coming_soon_show_course_price', true );
+$show_coming_soon_bottom = ( $reviews && $show_course_details ) || ( ! $student_card && $show_course_price );
+$status_bg_style         = ! empty( $course['current_status']['bg_color'] ) ? esc_attr( 'background-color: ' . $course['current_status']['bg_color'] . ';' ) : '';
+$status_text_style       = ! empty( $course['current_status']['text_color'] ) ? esc_attr( 'color: ' . $course['current_status']['text_color'] . ';' ) : '';
+$status_label_style      = ! empty( $course['current_status']['text_color'] ) ? esc_attr( 'color: ' . $course['current_status']['text_color'] . ';' ) : '';
 
 if ( $course['lazyload'] ) {
 	wp_enqueue_script( 'masterstudy_lazysizes' );
@@ -34,15 +41,25 @@ if ( $course['lazyload'] ) {
 		}
 		if ( ! empty( $course['current_status'] ) ) {
 			?>
-			<div class="masterstudy-course-card__status <?php echo esc_attr( $course['current_status']['status'] ?? '' ); ?>">
-				<span><?php echo esc_html( $course['current_status']['label'] ); ?></span>
+			<div
+				<?php if ( ! empty( $status_bg_style ) || ! empty( $status_text_style ) ) : ?>
+					style="<?php echo esc_attr( $status_bg_style ); ?> <?php echo esc_attr( $status_text_style ); ?>"
+				<?php endif; ?>
+				class="masterstudy-course-card__status <?php echo esc_attr( $course['current_status']['status'] ?? '' ); ?>">
+				<span
+					<?php if ( ! empty( $status_label_style ) ) : ?>
+						style="<?php echo esc_attr( $status_label_style ); ?>"
+					<?php endif; ?>
+				>
+					<?php echo esc_html( $course['current_status']['label'] ); ?>
+				</span>
 			</div>
 		<?php } ?>
 		<a href="<?php echo esc_url( $course['url'] ); ?>" class="masterstudy-course-card__image-link">
 			<?php echo wp_kses_post( masterstudy_get_image( $course['id'], $course['lazyload'], 'masterstudy-course-card__image', $course['img_width'], $course['img_height'] ) ); ?>
 		</a>
 		<div class="masterstudy-course-card__info">
-			<?php if ( ! empty( $course['terms'] ) ) { ?>
+			<?php if ( ! empty( $course['terms'] ) && $show_course_details ) { ?>
 				<span class="masterstudy-course-card__info-category">
 					<a href="<?php echo esc_url( STM_LMS_Course::courses_page_url() . '?terms[]=' . $course['terms']->term_id . '&category[]=' . $course['terms']->term_id ); ?>">
 						<?php echo esc_html( $course['terms']->name ); ?>
@@ -66,14 +83,47 @@ if ( $course['lazyload'] ) {
 				?>
 			</div>
 			<?php
-			if ( $course['availability'] && is_ms_lms_addon_enabled( 'coming_soon' ) ) {
+			if ( $is_coming_soon ) {
+				if ( $instructor_card && $show_coming_soon_bottom ) {
+					?>
+					<div class="masterstudy-course-card__bottom">
+						<?php
+						if ( $reviews && $show_course_details ) {
+							STM_LMS_Templates::show_lms_template( 'components/course/card/global/rating', array( 'course' => $course ) );
+						}
+
+						if ( ! $student_card && $show_course_price ) {
+							STM_LMS_Templates::show_lms_template( 'components/course/card/global/price', array( 'course' => $course ) );
+						}
+						?>
+					</div>
+					<?php
+				}
 				STM_LMS_Templates::show_lms_template(
 					'global/coming_soon',
 					array(
-						'course_id' => $course['id'],
-						'mode'      => 'card',
+						'course_id'       => $course['id'],
+						'course'          => $course,
+						'has_bottom'      => $instructor_card && $show_coming_soon_bottom,
+						'instructor_card' => $instructor_card,
+						'mode'            => 'card',
 					),
 				);
+				if ( ! $instructor_card && $show_coming_soon_bottom ) {
+					?>
+					<div class="masterstudy-course-card__bottom">
+						<?php
+						if ( $reviews && $show_course_details ) {
+							STM_LMS_Templates::show_lms_template( 'components/course/card/global/rating', array( 'course' => $course ) );
+						}
+
+						if ( ! $student_card && $show_course_price ) {
+							STM_LMS_Templates::show_lms_template( 'components/course/card/global/price', array( 'course' => $course ) );
+						}
+						?>
+					</div>
+					<?php
+				}
 			} else {
 				?>
 				<div class="masterstudy-course-card__bottom">
