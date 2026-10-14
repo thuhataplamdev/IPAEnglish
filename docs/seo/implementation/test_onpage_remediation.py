@@ -80,10 +80,10 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
         self.assertIn("'@type'       => 'WebPage'", self.source)
 
     def test_vietnamese_h1_localization_covers_remaining_english_labels(self):
-        self.assertIn("Giá trị cốt lõi", self.source)
-        self.assertIn("Khóa học tiếng Anh", self.source)
-        self.assertIn("'/core-values/' === $context['path']", self.source)
-        self.assertIn("'/courses/' === $context['path']", self.source)
+        self.assertIn("$replacement = '<h1$1>Giá trị cốt lõi</h1>'", self.source)
+        self.assertIn("ipaenglish_localize_vietnamese_courses_title", self.source)
+        self.assertIn("get_page_by_path( 'courses', OBJECT, 'page' )", self.source)
+        self.assertIn("? 'Khóa học tiếng Anh' : $title", self.source)
 
 
 if __name__ == "__main__":
