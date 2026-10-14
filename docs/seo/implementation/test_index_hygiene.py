@@ -28,6 +28,17 @@ class SeoIndexHygieneContractTest(unittest.TestCase):
         self.assertIn("wp_safe_redirect", self.source)
         self.assertIn("ipaenglish_seo_non_tracking_query_keys", self.source)
 
+    def test_language_redirect_targets_are_idempotent(self):
+        self.assertIn("ipaenglish_seo_absolute_home_url", self.source)
+        self.assertIn("ipaenglish_seo_path_without_language_slug", self.source)
+        self.assertNotIn("wp_safe_redirect( home_url( $target_path )", self.source)
+        self.assertNotIn("$target      = home_url( '/' . $language_slug", self.source)
+
+    def test_homepage_translation_is_explicitly_preserved_in_sitemap(self):
+        self.assertIn("$is_home_url", self.source)
+        self.assertIn("get_url_slug", self.source)
+        self.assertIn("get_abs_home", self.source)
+
 
 if __name__ == "__main__":
     unittest.main()
