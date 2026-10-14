@@ -17,6 +17,7 @@ defined( 'ABSPATH' ) || exit;
  */
 function ipaenglish_seo_non_index_page_paths() {
 	return array(
+		'blog',
 		'user-account',
 		'user-public-account',
 		'user-public-account/tony-evans',
@@ -37,6 +38,20 @@ function ipaenglish_seo_non_index_page_paths() {
 		'my-account',
 		'courses-archive-gutenberg',
 		'certificate-page',
+	);
+}
+
+/**
+ * Teacher profiles that are currently too thin to be useful search landing pages.
+ *
+ * Keep this list explicit so a future, substantive teacher profile can remain
+ * indexable without reopening the whole teachers post type.
+ *
+ * @return string[]
+ */
+function ipaenglish_seo_non_index_teacher_slugs() {
+	return array(
+		'anthony-evans',
 	);
 }
 
@@ -73,11 +88,21 @@ function ipaenglish_seo_non_index_page_ids() {
  * @return array
  */
 function ipaenglish_seo_filter_sitemap_posts_query_args( $args, $post_type ) {
-	if ( 'page' !== $post_type ) {
+	$excluded_ids = array();
+
+	if ( 'page' === $post_type ) {
+		$excluded_ids = ipaenglish_seo_non_index_page_ids();
+	} elseif ( 'teachers' === $post_type ) {
+		foreach ( ipaenglish_seo_non_index_teacher_slugs() as $slug ) {
+			$teacher = get_page_by_path( $slug, OBJECT, 'teachers' );
+
+			if ( $teacher instanceof WP_Post ) {
+				$excluded_ids[] = (int) $teacher->ID;
+			}
+		}
+	} else {
 		return $args;
 	}
-
-	$excluded_ids = ipaenglish_seo_non_index_page_ids();
 
 	if ( empty( $excluded_ids ) ) {
 		return $args;
@@ -178,6 +203,14 @@ function ipaenglish_seo_request_uri_is_non_indexable() {
 		return true;
 	}
 
+	if ( 0 === strpos( $path, 'teachers/' ) ) {
+		$teacher_slug = substr( $path, strlen( 'teachers/' ) );
+
+		if ( in_array( $teacher_slug, ipaenglish_seo_non_index_teacher_slugs(), true ) ) {
+			return true;
+		}
+	}
+
 	if ( 'feed' === $path || preg_match( '#/feed/?$#', $path ) ) {
 		return true;
 	}
@@ -249,3 +282,33 @@ function ipaenglish_seo_filter_headers( $headers ) {
 	return $headers;
 }
 add_filter( 'wp_headers', 'ipaenglish_seo_filter_headers', 20 );
+
+/**
+ * Give the substantive Core Values page a crawlable internal link from the
+ * existing footer menu. The page is intentionally kept indexable and in the
+ * sitemap; this link removes its current orphan-page condition.
+ *
+ * @param string   $items Rendered menu item HTML.
+ * @param stdClass $args  wp_nav_menu() arguments.
+ * @return string
+ */
+function ipaenglish_seo_add_core_values_footer_link( $items, $args ) {
+	if ( empty( $args->theme_location ) || 'secondary' !== $args->theme_location ) {
+		return $items;
+	}
+
+	$core_values_url = home_url( '/core-values/' );
+
+	if ( false !== strpos( $items, $core_values_url ) ) {
+		return $items;
+	}
+
+	$items .= sprintf(
+		'<li class="menu-item ipaenglish-seo-core-values-link"><a href="%1$s">%2$s</a></li>',
+		esc_url( $core_values_url ),
+		esc_html__( 'Core Values', 'masterstudy' )
+	);
+
+	return $items;
+}
+add_filter( 'wp_nav_menu_items', 'ipaenglish_seo_add_core_values_footer_link', 20, 2 );
