@@ -440,11 +440,10 @@ function ipaenglish_link_home_core_values_heading( $html, $context ) {
 	}
 
 	$is_vi       = 'vi' === $context['language'];
-	$label       = $is_vi ? 'Giá trị cốt lõi' : 'Core Values';
 	$base        = untrailingslashit( (string) get_option( 'home' ) );
 	$target      = $base . ( $is_vi ? '/vi/core-values/' : '/core-values/' );
-	$pattern     = '#<h2([^>]*)>\\s*' . preg_quote( $label, '#' ) . '\\s*</h2>#u';
-	$replacement = '<h2$1><a class="ipaenglish-seo-core-values-link" href="' . esc_url( $target ) . '">' . esc_html( $label ) . '</a></h2>';
+	$pattern     = '#<h2([^>]*)>\\s*(Core Values|Giá trị cốt lõi)\\s*</h2>#u';
+	$replacement = '<h2$1><a class="ipaenglish-seo-core-values-link" href="' . esc_url( $target ) . '">$2</a></h2>';
 
 	return preg_replace( $pattern, $replacement, $html, 1 );
 }
