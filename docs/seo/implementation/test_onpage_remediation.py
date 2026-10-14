@@ -110,17 +110,34 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
         self.assertIn("return 'Khóa học tiếng Anh';", self.source)
         self.assertNotIn("courses_filters__title", self.source)
 
-    def test_supporting_copy_is_scoped_to_four_thin_english_landing_pages(self):
+    def test_supporting_copy_covers_exactly_ten_thin_landing_variants(self):
         self.assertIn("ipaenglish_onpage_supporting_copy_map", self.source)
         for path in (
             "/book-a-test/",
             "/communicative-english-for-adults/",
             "/contact-us/",
+            "/core-values/",
             "/courses/",
+            "/testimonials/",
         ):
-            self.assertRegex(self.source, rf"'{re.escape(path)}'\s*=>\s*'[^']+'");
-        self.assertIn("'en' === $context['language']", self.source)
+            self.assertRegex(self.source, rf"'{re.escape(path)}'\s*=>\s*array\(")
+
+        block = re.search(
+            r"function ipaenglish_onpage_supporting_copy_map\(\) \{(.*?)\n\}",
+            self.source,
+            re.S,
+        )
+        self.assertIsNotNone(block)
+        self.assertEqual(10, block.group(1).count("'heading'    =>"))
+        self.assertEqual(10, block.group(1).count("'paragraphs' => array("))
+        self.assertIn("Dùng bài kiểm tra đầu vào để xác định bước tiếp theo", block.group(1))
+        self.assertIn("Khóa học giao tiếp này hướng đến điều gì", block.group(1))
+        self.assertIn("Chuẩn bị gì trước khi liên hệ IPA English", block.group(1))
+        self.assertIn("Cách chọn lộ trình học phù hợp", block.group(1))
+        self.assertIn("isset( $supporting_copy[ $context['path'] ][ $context['language'] ] )", self.source)
         self.assertIn("ipaenglish-seo-supporting-copy", self.source)
+        self.assertIn("<h2>", self.source)
+        self.assertIn("foreach ( $copy['paragraphs'] as $paragraph )", self.source)
         self.assertIn("preg_replace( '#<footer\\b#i'", self.source)
         self.assertIn("preg_replace( '#</body>#i'", self.source)
 
@@ -131,11 +148,9 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
             re.S,
         )
         self.assertIsNotNone(block)
-        copy_values = re.findall(r"=> '([^']+)'", block.group(1))
-        self.assertEqual(4, len(copy_values))
-        audited_base_words = [299, 249, 268, 276]
-        projected_words = [base + len(copy.split()) for base, copy in zip(audited_base_words, copy_values)]
-        self.assertGreaterEqual(min(projected_words), 325)
+        paragraphs = re.findall(r"\n\t\t\t\t\t'([^']+)',", block.group(1))
+        self.assertEqual(20, len(paragraphs))
+        self.assertGreaterEqual(min(len(paragraph.split()) for paragraph in paragraphs), 45)
         for forbidden in ("guaranteed", "best", "number one", "certified result"):
             self.assertNotIn(forbidden, block.group(1).lower())
 
