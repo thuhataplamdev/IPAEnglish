@@ -81,9 +81,38 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
 
     def test_vietnamese_h1_localization_covers_remaining_english_labels(self):
         self.assertIn("$replacement = '<h1$1>Giá trị cốt lõi</h1>'", self.source)
-        self.assertIn("ipaenglish_localize_vietnamese_courses_title", self.source)
-        self.assertIn("get_page_by_path( 'courses', OBJECT, 'page' )", self.source)
-        self.assertIn("? 'Khóa học tiếng Anh' : $title", self.source)
+        self.assertIn("courses_filters__title", self.source)
+        self.assertIn("$1Khóa học tiếng Anh$2", self.source)
+        self.assertNotIn("ipaenglish_localize_vietnamese_courses_title", self.source)
+
+    def test_supporting_copy_is_scoped_to_four_thin_english_landing_pages(self):
+        self.assertIn("ipaenglish_onpage_supporting_copy_map", self.source)
+        for path in (
+            "/book-a-test/",
+            "/communicative-english-for-adults/",
+            "/contact-us/",
+            "/courses/",
+        ):
+            self.assertRegex(self.source, rf"'{re.escape(path)}'\s*=>\s*'[^']+'");
+        self.assertIn("'en' === $context['language']", self.source)
+        self.assertIn("ipaenglish-seo-supporting-copy", self.source)
+        self.assertIn("preg_replace( '#<footer\\b#i'", self.source)
+        self.assertIn("preg_replace( '#</body>#i'", self.source)
+
+    def test_supporting_copy_is_substantive_without_unverified_marketing_claims(self):
+        block = re.search(
+            r"function ipaenglish_onpage_supporting_copy_map\(\) \{(.*?)\n\}",
+            self.source,
+            re.S,
+        )
+        self.assertIsNotNone(block)
+        copy_values = re.findall(r"=> '([^']+)'", block.group(1))
+        self.assertEqual(4, len(copy_values))
+        audited_base_words = [299, 249, 268, 276]
+        projected_words = [base + len(copy.split()) for base, copy in zip(audited_base_words, copy_values)]
+        self.assertGreaterEqual(min(projected_words), 325)
+        for forbidden in ("guaranteed", "best", "number one", "certified result"):
+            self.assertNotIn(forbidden, block.group(1).lower())
 
 
 if __name__ == "__main__":
