@@ -9,6 +9,9 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
         repo_root = Path(__file__).resolve().parents[3]
         cls.functions = (repo_root / "wp-content/themes/masterstudy-child/functions.php").read_text(encoding="utf-8")
         cls.source = (repo_root / "wp-content/themes/masterstudy-child/inc/seo-onpage.php").read_text(encoding="utf-8")
+        cls.lms_filters = (
+            repo_root / "wp-content/plugins/masterstudy-lms-learning-management-system/_core/stm-lms-templates/courses/filters.php"
+        ).read_text(encoding="utf-8")
 
     def test_child_theme_loads_onpage_module(self):
         self.assertIn("inc/seo-onpage.php", self.functions)
@@ -81,9 +84,13 @@ class SeoOnPageRemediationContractTest(unittest.TestCase):
 
     def test_vietnamese_h1_localization_covers_remaining_english_labels(self):
         self.assertIn("$replacement = '<h1$1>Giá trị cốt lõi</h1>'", self.source)
-        self.assertIn("courses_filters__title", self.source)
-        self.assertIn("$1Khóa học tiếng Anh$2", self.source)
-        self.assertNotIn("ipaenglish_localize_vietnamese_courses_title", self.source)
+        self.assertIn("esc_html_e( 'Courses', 'masterstudy-lms-learning-management-system' )", self.lms_filters)
+        self.assertIn("add_filter( 'gettext', 'ipaenglish_localize_lms_courses_heading', 999, 3 )", self.source)
+        self.assertIn("'Courses' !== $text", self.source)
+        self.assertIn("'masterstudy-lms-learning-management-system' !== $domain", self.source)
+        self.assertIn("'vi' !== $context['language'] || '/courses/' !== $context['path']", self.source)
+        self.assertIn("return 'Khóa học tiếng Anh';", self.source)
+        self.assertNotIn("courses_filters__title", self.source)
 
     def test_supporting_copy_is_scoped_to_four_thin_english_landing_pages(self):
         self.assertIn("ipaenglish_onpage_supporting_copy_map", self.source)
