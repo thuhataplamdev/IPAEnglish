@@ -41,7 +41,7 @@
 		<?php if ( ! empty( $zalo_web_url ) || ! empty( $zalo_app_url ) ) : ?>
 			<a
 				class="ipa-floating-chat-button ipa-zalo-floating-button"
-				href="<?php echo esc_url( $zalo_app_url ?: $zalo_web_url, array( 'zalo', 'https', 'http' ) ); ?>"
+				href="<?php echo esc_url( $zalo_web_url ?: $zalo_app_url, array( 'zalo', 'https', 'http' ) ); ?>"
 				data-zalo-app-url="<?php echo esc_attr( $zalo_app_url ); ?>"
 				data-zalo-web-url="<?php echo esc_url( $zalo_web_url ); ?>"
 				rel="noopener noreferrer"
@@ -60,6 +60,15 @@
 				var zaloButton = document.querySelector('.ipa-zalo-floating-button');
 
 				if (!zaloButton || !zaloButton.dataset.zaloAppUrl) {
+					return;
+				}
+
+				// Zalo mobile apps ignore zalo://conversation and only open the home screen,
+				// so phones/tablets keep the zalo.me link, which opens the contact's profile.
+				var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+					(navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+				if (isMobile && zaloButton.dataset.zaloWebUrl) {
 					return;
 				}
 
